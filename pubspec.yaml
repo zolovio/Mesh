@@ -43,7 +43,7 @@ dependencies:
   percent_indicator: any
   flutter_riverpod: any
   firebase_messaging: any
-  firebase_auth: any
+  firebase_auth: ^4.1.0
   google_sign_in: any
   firebase_core: any
   cloud_firestore: any
@@ -53,6 +53,9 @@ dependencies:
   fluttertoast: any
   flick_video_player: any
   visibility_detector: any
+
+dependency_overrides:
+  collection: ^1.16.0
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +67,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  # flutter_lints: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
