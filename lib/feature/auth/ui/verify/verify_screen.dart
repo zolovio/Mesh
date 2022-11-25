@@ -114,7 +114,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                                   top: 32,
                                 ),
                                 height: 61,
-                                width: screenWidth * 0.7,
+                                width: screenWidth * 0.8,
                                 child: PinCodeTextField(
                                   // key: form,
                                   controller: otpController,
