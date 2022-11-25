@@ -19,7 +19,7 @@ class RemoteServices {
   }
 
   static Future updateactiveskills() async {
-    var response = await client.get(Uri.parse(
+    var response = await client.patch(Uri.parse(
         'https://mesh.kodagu.today/users/634a4d8b-e71a-493d-bbed-eadb98da3f54'));
     if (response.statusCode == 200) {
       return jsonDecode(response.body.toString());

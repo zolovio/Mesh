@@ -102,7 +102,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                                     ),
                                     TextSpan(
                                         text:
-                                            "+91 ${widget.verifyModel.mobileNumber}",
+                                            "+92 ${widget.verifyModel.mobileNumber}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black)),
