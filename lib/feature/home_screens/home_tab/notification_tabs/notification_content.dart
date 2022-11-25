@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mesh/feature/apply_offer/ui/apply_offer_screen.dart';
+import 'package:get/get.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/home_tab/user_tab.dart';
-import 'package:mesh/feature/home_screens/home_vm.dart';
-import 'package:mesh/feature/viewoffer/ui/view_offer_screen.dart';
+import 'package:mesh/screens/apply_offer_screen.dart';
+import 'package:mesh/screens/view_offer_screen.dart';
 import 'package:mesh/widgets/label.dart';
 import 'package:mesh/widgets/searchbar.dart';
 
-class CompetitionTab extends ConsumerStatefulWidget {
+class CompetitionTab extends StatefulWidget {
   const CompetitionTab({Key? key, this.edit = false}) : super(key: key);
   final bool edit;
   @override
-  ConsumerState<CompetitionTab> createState() => _CompetitionTabState();
+  State<CompetitionTab> createState() => _CompetitionTabState();
 }
 
-class _CompetitionTabState extends ConsumerState<CompetitionTab> {
+class _CompetitionTabState extends State<CompetitionTab> {
   int _selectedIndex = 0;
-  var controller;
-
+  final controller = Get.find<HomeController>();
   List<String> _tabs() => (controller.business.value)
       ? ["Active Training", "All Courses", "My Training"]
       : [
@@ -32,13 +31,6 @@ class _CompetitionTabState extends ConsumerState<CompetitionTab> {
         if (controller.business.value) NotificationContent(),
         NotificationContent()
       ];
-
-  @override
-  void initState() {
-    controller = ref.watch(homeVmProvider);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -97,38 +89,32 @@ class NotificationContent extends StatelessWidget {
       : super(key: key);
   final bool competition;
   final bool earnings;
+  final controller = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, _) {
-      final controller = ref.watch(homeVmProvider);
-      return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: (earnings) ? 6 : 4,
-          itemBuilder: (ctx, i) {
-            if (earnings && i == 0) {
-              return const _TotalEarning();
-            }
-            if (earnings && i == 1) {
-              return GestureDetector(
-                  onTap: () {
-                    //Get.toNamed("/bank-details"),
-                  },
-                  child: const _AddBankContainer());
-            }
-            if ((controller.business && !competition && i == 0) ||
-                (!controller.business && i == 0)) {
-              return Container(
-                  margin: const EdgeInsets.only(bottom: 7.5),
-                  child: const SearchBar(topSize: 15));
-            }
-            return Notification(
-                competition: competition,
-                applied: !(i == 2),
-                earnings: earnings);
-          });
-    });
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: (earnings) ? 6 : 4,
+        itemBuilder: (ctx, i) {
+          if (earnings && i == 0) {
+            return const _TotalEarning();
+          }
+          if (earnings && i == 1) {
+            return GestureDetector(
+                onTap: () => Get.toNamed("/bank-details"),
+                child: const _AddBankContainer());
+          }
+          if ((controller.business.value && !competition && i == 0) ||
+              (!controller.business.value && i == 0)) {
+            return Container(
+                margin: const EdgeInsets.only(bottom: 7.5),
+                child: const SearchBar(topSize: 15));
+          }
+          return Notification(
+              competition: competition, applied: !(i == 2), earnings: earnings);
+        });
   }
 }
 
@@ -281,119 +267,120 @@ class Notification extends StatelessWidget {
   final bool applied;
   final bool showClose;
 
+  final controller = Get.find<HomeController>();
+
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, _) {
-      final controller = ref.watch(homeVmProvider);
-
-      return Stack(
-        clipBehavior: Clip.none,
-        children: [
-          (controller.business)
-              ? GestureDetector(
-                  onTap: () {
-                    // Get.toNamed("/apply-details");
-                  },
-                  child: Container(
-                    margin: (controller.business)
-                        ? const EdgeInsets.symmetric(
-                            vertical: 7.5, horizontal: 18)
-                        : null,
-                    padding:
-                        (controller.business) ? const EdgeInsets.all(1) : null,
-                    // height: earnings ? 169 : 159,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xffEBF9F9),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          margin: (controller.business)
-                              ? null
-                              : const EdgeInsets.symmetric(
-                                  vertical: 7.5, horizontal: 18),
-                          // height: 121,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: const Color(0xffFAFAFA),
-                              border: (controller.business)
-                                  ? null
-                                  : Border.all(color: const Color(0xffDBD9D9))),
-                          child: Column(children: [
-                            NotifTitle(
-                              showClose: !controller.business,
-                              title: (controller.business)
-                                  ? "Course on Guitar"
-                                  : null,
-                              subtitle:
-                                  (controller.business) ? "By Bishen" : null,
-                            ),
-                            const SizedBox(height: 15),
-                            _NotifDetail(),
-                          ]),
-                        ),
-                        SizedBox(height: (earnings) ? 10 : 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            mainAxisAlignment: (earnings)
-                                ? MainAxisAlignment.spaceBetween
-                                : MainAxisAlignment.center,
-                            children: [
-                              (earnings)
-                                  ? Text("Total Earned",
-                                      style: TextStyle(
-                                          color: Theme.of(context).focusColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700))
-                                  : SvgPicture.asset(
-                                      "assets/icons/video-circle.svg"),
-                              const SizedBox(width: 4),
-                              (earnings)
-                                  ? Text("₹1,000.00",
-                                      style: TextStyle(
-                                          color: Theme.of(context).focusColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700))
-                                  : Text("Continue",
-                                      style: TextStyle(
-                                          color: Theme.of(context).focusColor,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w700))
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: (earnings) ? 10 : 8),
-                      ],
-                    ),
-                  ),
-                )
-              : Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 7.5, horizontal: 18),
-                  // height: 121,
-                  padding: const EdgeInsets.all(16),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        (controller.business.value)
+            ? GestureDetector(
+                onTap: () {
+                  Get.toNamed("/apply-details");
+                },
+                child: Container(
+                  margin: (controller.business.value)
+                      ? const EdgeInsets.symmetric(
+                          vertical: 7.5, horizontal: 18)
+                      : null,
+                  padding: (controller.business.value)
+                      ? const EdgeInsets.all(1)
+                      : null,
+                  // height: earnings ? 169 : 159,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xffFAFAFA),
-                      border: Border.all(color: const Color(0xffDBD9D9))),
-                  child: Column(children: [
-                    NotifTitle(
-                      showClose: showClose,
-                    ),
-                    const SizedBox(height: 15),
-                    _NotifDetail(),
-                    if (!competition) const SizedBox(height: 15),
-                    if (!competition && showClose) _NotifButtons()
-                  ]),
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xffEBF9F9),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        margin: (controller.business.value)
+                            ? null
+                            : const EdgeInsets.symmetric(
+                                vertical: 7.5, horizontal: 18),
+                        // height: 121,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xffFAFAFA),
+                            border: (controller.business.value)
+                                ? null
+                                : Border.all(color: const Color(0xffDBD9D9))),
+                        child: Column(children: [
+                          NotifTitle(
+                            showClose: !controller.business.value,
+                            title: (controller.business.value)
+                                ? "Course on Guitar"
+                                : null,
+                            subtitle: (controller.business.value)
+                                ? "By Bishen"
+                                : null,
+                          ),
+                          const SizedBox(height: 15),
+                          _NotifDetail(),
+                        ]),
+                      ),
+                      SizedBox(height: (earnings) ? 10 : 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: (earnings)
+                              ? MainAxisAlignment.spaceBetween
+                              : MainAxisAlignment.center,
+                          children: [
+                            (earnings)
+                                ? Text("Total Earned",
+                                    style: TextStyle(
+                                        color: Theme.of(context).focusColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700))
+                                : SvgPicture.asset(
+                                    "assets/icons/video-circle.svg"),
+                            const SizedBox(width: 4),
+                            (earnings)
+                                ? Text("₹1,000.00",
+                                    style: TextStyle(
+                                        color: Theme.of(context).focusColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700))
+                                : Text("Continue",
+                                    style: TextStyle(
+                                        color: Theme.of(context).focusColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700))
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: (earnings) ? 10 : 8),
+                    ],
+                  ),
                 ),
-          if (!controller.business && competition) _CustomClip(applied: applied)
-        ],
-      );
-    });
+              )
+            : Container(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 7.5, horizontal: 18),
+                // height: 121,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xffFAFAFA),
+                    border: Border.all(color: const Color(0xffDBD9D9))),
+                child: Column(children: [
+                  NotifTitle(
+                    showClose: showClose,
+                  ),
+                  const SizedBox(height: 15),
+                  _NotifDetail(),
+                  if (!competition) const SizedBox(height: 15),
+                  if (!competition && showClose) _NotifButtons()
+                ]),
+              ),
+        if (!controller.business.value && competition)
+          _CustomClip(applied: applied)
+      ],
+    );
   }
 }
 
@@ -444,54 +431,52 @@ class _NotifButtons extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  final controller = Get.find<HomeController>();
+
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, _) {
-      final controller = ref.watch(homeVmProvider);
-
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () {
-              controller.pages[2] = ApplyOfferScreen();
-            },
-            child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        GestureDetector(
+          onTap: () {
+            controller.pages[2] = ApplyOfferScreen();
+          },
+          child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Theme.of(context).focusColor),
+              ),
+              child: Row(
+                children: [
+                  SvgPicture.asset("assets/icons/edit.svg"),
+                  const SizedBox(width: 5),
+                  Text("Edit",
+                      style: TextStyle(
+                          color: Theme.of(context).focusColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700))
+                ],
+              )),
+        ),
+        GestureDetector(
+          onTap: () {
+            controller.pages[2] = ViewOfferScreen();
+          },
+          child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Theme.of(context).focusColor),
-                ),
-                child: Row(
-                  children: [
-                    SvgPicture.asset("assets/icons/edit.svg"),
-                    const SizedBox(width: 5),
-                    Text("Edit",
-                        style: TextStyle(
-                            color: Theme.of(context).focusColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700))
-                  ],
-                )),
-          ),
-          GestureDetector(
-            onTap: () {
-              controller.pages[2] = ViewOfferScreen();
-            },
-            child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Theme.of(context).focusColor),
-                child: const Text("Review Offers (23)",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700))),
-          ),
-        ],
-      );
-    });
+                  color: Theme.of(context).focusColor),
+              child: const Text("Review Offers (23)",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700))),
+        ),
+      ],
+    );
   }
 }
 
@@ -499,51 +484,49 @@ class _NotifDetail extends StatelessWidget {
   _NotifDetail({
     Key? key,
   }) : super(key: key);
+  final controller = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, _) {
-      final controller = ref.watch(homeVmProvider);
-
-      return Row(
-        children: [
-          if (!controller.business)
-            Container(
-                alignment: Alignment.center,
-                width: 36,
-                height: 36,
-                decoration: const BoxDecoration(shape: BoxShape.circle),
-                child: SvgPicture.asset("assets/icons/location.svg")),
-          if (controller.business)
-            const Text("Ratings",
-                style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
-          SizedBox(width: (controller.business) ? 8 : 12),
-          if (controller.business) SvgPicture.asset("assets/icons/star.svg"),
-          if (controller.business) const SizedBox(width: 3),
-          if (controller.business)
-            const Text("4.2",
-                style: TextStyle(fontSize: 14, color: Color(0xffFEC90C))),
-          if (!controller.business)
-            const Text("Mysore",
-                style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
-          const Spacer(),
-          const Text("Category",
-              style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
-          const SizedBox(width: 10),
+    return Row(
+      children: [
+        if (!controller.business.value)
           Container(
-              padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 15),
-              decoration: BoxDecoration(
-                  color: const Color(0xffF1F1F3),
-                  borderRadius: BorderRadius.circular(51)),
-              child: const Text(
-                "Singing",
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff949292)),
-              ))
-        ],
-      );
-    });
+              alignment: Alignment.center,
+              width: 36,
+              height: 36,
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              child: SvgPicture.asset("assets/icons/location.svg")),
+        if (controller.business.value)
+          const Text("Ratings",
+              style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
+        SizedBox(width: (controller.business.value) ? 8 : 12),
+        if (controller.business.value)
+          SvgPicture.asset("assets/icons/star.svg"),
+        if (controller.business.value) const SizedBox(width: 3),
+        if (controller.business.value)
+          const Text("4.2",
+              style: TextStyle(fontSize: 14, color: Color(0xffFEC90C))),
+        if (!controller.business.value)
+          const Text("Mysore",
+              style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
+        const Spacer(),
+        const Text("Category",
+            style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
+        const SizedBox(width: 10),
+        Container(
+            padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 15),
+            decoration: BoxDecoration(
+                color: const Color(0xffF1F1F3),
+                borderRadius: BorderRadius.circular(51)),
+            child: const Text(
+              "Singing",
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff949292)),
+            ))
+      ],
+    );
   }
 }
 
@@ -554,56 +537,53 @@ class NotifTitle extends StatelessWidget {
   final bool showClose;
   final String? title;
   final String? subtitle;
+  final controller = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, _) {
-      final controller = ref.watch(homeVmProvider);
-
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset("assets/images/vertical-image.png",
-                    width: (controller.business) ? 40 : 56,
-                    height: (controller.business) ? 40 : 55,
-                    fit: BoxFit.cover),
-              ),
-              const SizedBox(
-                width: 10.0,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title ?? "Wanted Song Composer",
-                      style: const TextStyle(
-                          fontSize: 16,
-                          color: Color(0xff252529),
-                          fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 2),
-                  Text(subtitle ?? "MESH Studio",
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xff949292)))
-                ],
-              )
-            ],
-          ),
-          if (showClose)
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              child: const Icon(
-                Icons.close,
-                size: 10,
-              ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset("assets/images/vertical-image.png",
+                  width: (controller.business.value) ? 40 : 56,
+                  height: (controller.business.value) ? 40 : 55,
+                  fit: BoxFit.cover),
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title ?? "Wanted Song Composer",
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xff252529),
+                        fontWeight: FontWeight.w600)),
+                const SizedBox(height: 2),
+                Text(subtitle ?? "MESH Studio",
+                    style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff949292)))
+              ],
             )
-        ],
-      );
-    });
+          ],
+        ),
+        if (showClose)
+          Container(
+            margin: const EdgeInsets.only(top: 5),
+            child: const Icon(
+              Icons.close,
+              size: 10,
+            ),
+          )
+      ],
+    );
   }
 }

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mesh/controller/home_controller.dart';
-import 'package:mesh/screens/home_screens/home_tab/home_tab.dart';
-import 'package:mesh/screens/home_screens/home_tab/user_tab.dart';
-import 'package:mesh/screens/home_screens/home_tab/user_tabs/about/about.dart';
-import 'package:mesh/screens/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
+import 'package:mesh/feature/home_screens/home_tab/user_tab.dart';
+import 'package:mesh/feature/home_screens/home_tab/user_tabs/about/about.dart';
+import 'package:mesh/feature/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
+// import 'package:mesh/screens/home_screens/home_tab/home_tab.dart';
+// import 'package:mesh/screens/home_screens/home_tab/user_tab.dart';
+// import 'package:mesh/screens/home_screens/home_tab/user_tabs/about/about.dart';
+// import 'package:mesh/screens/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
 import 'package:mesh/screens/view_offer_screen.dart';
 import 'package:mesh/widgets/button.dart';
 
 import 'package:mesh/widgets/gradient_oval_image.dart';
 
+import '../feature/home_screens/controllers/home_controller.dart';
+import '../feature/home_screens/home_tab/home_tab.dart';
 import '../widgets/icon_button.dart';
 
 class UserInfoScreen extends StatefulWidget {

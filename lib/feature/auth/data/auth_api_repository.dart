@@ -89,8 +89,10 @@ class AuthApiRepository implements IAuthApiRepository {
         }),
         // ),
       );
-      List<UserResModel> list =
-          (response.data as List).map((e) => UserResModel.fromJson(e)).toList();
+
+      List<UserResModel> list = (response["data"] as List)
+          .map((e) => UserResModel.fromJson(e))
+          .toList();
       return ApiResult.success(data: list);
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {

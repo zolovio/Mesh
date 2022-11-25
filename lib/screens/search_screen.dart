@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mesh/controller/home_controller.dart';
-import 'package:mesh/screens/home_screens/home_tab/home_tab.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 import 'package:mesh/widgets/icon_button.dart';
 import 'package:mesh/widgets/searchbar.dart';
+
+import '../feature/home_screens/controllers/home_controller.dart';
+import '../feature/home_screens/home_tab/home_tab.dart';
 
 class SearchScreen extends StatelessWidget {
   SearchScreen({Key? key}) : super(key: key);

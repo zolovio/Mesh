@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/home_tab/notification_tabs/notification_content.dart';
-import 'package:mesh/feature/home_screens/home_vm.dart';
-import 'package:mesh/feature/userinfo/ui/user_info_screen.dart';
+// import 'package:mesh/screens/home_screens/home_tab/notification_tabs/notification_content.dart';
+import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/icon_button.dart';
 
-class NotificationTab extends ConsumerStatefulWidget {
-  const NotificationTab({Key? key}) : super(key: key);
+class NotificationTab extends StatefulWidget {
+  NotificationTab({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<NotificationTab> createState() => _NotificationTabState();
+  State<NotificationTab> createState() => _NotificationTabState();
 }
 
-class _NotificationTabState extends ConsumerState<NotificationTab> {
+class _NotificationTabState extends State<NotificationTab> {
   int _selectedIndex = 0;
-  late final controller;
-  @override
-  void initState() {
-    controller = ref.read(homeVmProvider);
-    super.initState();
-  }
+  final controller = Get.find<HomeController>();
 
   List<Widget> _pages() => <Widget>[
         const CompetitionTab(),
-        (controller.business)
+        (controller.business.value)
             ? NotificationContent(
                 competition: true,
                 earnings: true,
@@ -49,7 +45,7 @@ class _NotificationTabState extends ConsumerState<NotificationTab> {
                           });
                         },
                         child: TabOption(
-                          text: (controller.business)
+                          text: (controller.business.value)
                               ? "My Training"
                               : "Competiton",
                           selectedIndex: _selectedIndex,
@@ -62,7 +58,7 @@ class _NotificationTabState extends ConsumerState<NotificationTab> {
                           });
                         },
                         child: TabOption(
-                          text: (controller.business)
+                          text: (controller.business.value)
                               ? "My Earnings"
                               : "Auditions",
                           selectedIndex: _selectedIndex,
@@ -82,8 +78,7 @@ class _NotificationTabState extends ConsumerState<NotificationTab> {
           removeTop: true,
           context: context,
           child: Container(
-              // color: Colors.white, child: _pages().elementAt(_selectedIndex)
-              )),
+              color: Colors.white, child: _pages().elementAt(_selectedIndex))),
     );
   }
 }
@@ -92,6 +87,7 @@ class _NotificationAppBar extends StatelessWidget {
   _NotificationAppBar({
     Key? key,
   }) : super(key: key);
+  // final controller = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Container(

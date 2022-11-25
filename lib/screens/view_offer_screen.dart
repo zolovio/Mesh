@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mesh/controller/home_controller.dart';
-import 'package:mesh/screens/home_screens/home_tab/notification_tab.dart';
+import 'package:mesh/feature/home_screens/home_tab/notification_tab.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 import 'package:mesh/widgets/icon_button.dart';
+
+import '../feature/home_screens/controllers/home_controller.dart';
 
 class ViewOfferScreen extends StatelessWidget {
   ViewOfferScreen({Key? key}) : super(key: key);

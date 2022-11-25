@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mesh/feature/home_screens/home_vm.dart';
-import 'package:mesh/screens/home_screens/home_tab/notification_tab.dart';
+import 'package:mesh/feature/home_screens/home_tab/notification_tab.dart';
 
-import 'package:mesh/screens/home_screens/home_tab/notification_tabs/notification_content.dart'
+import 'package:mesh/feature/home_screens/home_tab/notification_tabs/notification_content.dart'
     as n;
 import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/icon_button.dart';

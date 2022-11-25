@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
+import 'package:mesh/feature/home_screens/home_screen.dart';
 import 'package:mesh/screens/apply_details_screen.dart';
 import 'package:mesh/screens/bank_details_screen.dart';
 import 'package:mesh/screens/chat_screen.dart';
 import 'package:mesh/screens/comment_screen.dart';
 import 'package:mesh/screens/error_screen.dart';
-import 'package:mesh/screens/home_screens/home_screen.dart';
 import 'package:mesh/screens/login_screen.dart';
 import 'package:mesh/screens/message_screen.dart';
 import 'package:mesh/screens/more_apply_details_screen.dart';

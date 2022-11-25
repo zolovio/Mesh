@@ -149,10 +149,22 @@ class _SelectSkillScreenState extends State<SelectSkillScreen> {
                                           //       image: skills[i].image,
                                           //       selected: !skills[i].selected);
                                           // });
+                                          !skillscontroller
+                                                  .skillsList[i].selected
+                                              ? skillscontroller
+                                                  .selectedskillsList
+                                                  .add(skillscontroller
+                                                      .skillsList[i].id)
+                                              : skillscontroller
+                                                  .selectedskillsList
+                                                  .remove(skillscontroller
+                                                      .skillsList[i].id);
                                           skillscontroller
                                                   .skillsList[i].selected =
                                               !skillscontroller
                                                   .skillsList[i].selected;
+                                          // print(skillscontroller
+                                          //     .selectedskillsList);
                                           setState(() {});
                                         },
                                         child: SizedBox(
@@ -276,24 +288,32 @@ class _SelectSkillScreenState extends State<SelectSkillScreen> {
                           Expanded(
                             child: Align(
                               alignment: Alignment.bottomCenter,
-                              child: CustomButton(
-                                  margin: const EdgeInsets.all(0),
-                                  textSize: 16,
-                                  height: 59,
-                                  fontWeight: FontWeight.w600,
-                                  borderRadius: 8,
-                                  primaryColor: Theme.of(context).focusColor,
-                                  buttonText: "Continue",
-                                  onPressed: () {
-                                    // skillscontroller.fetchSkills();
-                                    navigatorKey.currentState
-                                        ?.pushNamed(AppRouter.prepareScreen);
-                                    // Get.toNamed("/login");
-                                    // Get.toNamed("/home");
-                                    // Get.toNamed("/error");
-                                    ///Get.toNamed("/prepare");
-                                    ///
-                                  }),
+                              child: skillscontroller.isSaving.value
+                                  ? Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : CustomButton(
+                                      margin: const EdgeInsets.all(0),
+                                      textSize: 16,
+                                      height: 59,
+                                      fontWeight: FontWeight.w600,
+                                      borderRadius: 8,
+                                      primaryColor:
+                                          Theme.of(context).focusColor,
+                                      buttonText: "Continue",
+                                      onPressed: () {
+                                        // skillscontroller.fetchSkills();
+                                        // navigatorKey.currentState
+                                        //     ?.pushNamed(AppRouter.prepareScreen);
+                                        skillscontroller.updateSkills(
+                                            userid:
+                                                '634a4d8b-e71a-493d-bbed-eadb98da3f54');
+                                        // Get.toNamed("/login");
+                                        // Get.toNamed("/home");
+                                        // Get.toNamed("/error");
+                                        ///Get.toNamed("/prepare");
+                                        ///
+                                      }),
                             ),
                           ),
                           const SizedBox(height: 20),
