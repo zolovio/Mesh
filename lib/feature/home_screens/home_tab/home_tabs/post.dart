@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:mesh/controller/post_like_controller.dart';
 import 'package:mesh/feature/home_screens/home_vm.dart';
 import 'package:mesh/feature/userinfo/ui/user_info_screen.dart';
 import 'package:mesh/widgets/post_widget.dart';
@@ -29,10 +31,10 @@ class _Post extends StatefulWidget {
   final bool question;
 
   @override
-  State<_Post> createState() => _PostStatee();
+  State<_Post> createState() => _PostState();
 }
 
-class _PostStatee extends State<_Post> {
+class _PostState extends State<_Post> {
   bool isPressed = false;
 
   @override
@@ -44,6 +46,9 @@ class _PostStatee extends State<_Post> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    print(widget.question);
+
     return Consumer(builder: (context, ref, _) {
       final controller = ref.watch(homeVmProvider);
 
@@ -67,6 +72,7 @@ class _PostStatee extends State<_Post> {
                           controller.pages[0] = const UserInfoScreen();
                         },
                         child: const PostTitle(user: "PostTile")),
+
                     //post image
                     if (!widget.question)
                       Flexible(
@@ -124,7 +130,7 @@ class _PostStatee extends State<_Post> {
 }
 
 class _PostDetails extends StatelessWidget {
-  const _PostDetails(
+  _PostDetails(
       {Key? key,
       required this.screenWidth,
       required this.onTap,
@@ -137,6 +143,8 @@ class _PostDetails extends StatelessWidget {
   final bool onPressed;
   final bool question;
 
+  PostLikeController controller = Get.put(PostLikeController());
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -147,39 +155,42 @@ class _PostDetails extends StatelessWidget {
                 screenWidth: screenWidth,
                 text:
                     "Another upcoming game strom.be ready urban city.Darklight Back 😍")
-            : Padding(
-                padding: const EdgeInsets.only(
-                    bottom: 3, left: 13, right: 16, top: 13),
-                child: Row(
-                  children: <Widget>[
-                    const _PostIcon(
-                        image: "assets/images/post-liked.png", text: "200"),
-                    SizedBox(
-                      width: screenWidth * 0.03,
+            : Obx(() => controller.isLoading.value
+                ? const Center(child: CircularProgressIndicator())
+                : Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: 3, left: 13, right: 16, top: 13),
+                    child: Row(
+                      children: <Widget>[
+                        _PostIcon(
+                            image: "assets/images/post-liked.png",
+                            text: controller.count.value),
+                        SizedBox(
+                          width: screenWidth * 0.03,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            // Get.toNamed("/comment");
+                          },
+                          child: const _PostIcon(
+                              image: "assets/images/comment.png", text: "5"),
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.02,
+                        ),
+                        const _PostIcon(
+                            image: "assets/images/share.png", text: "Share"),
+                        const Spacer(),
+                        GestureDetector(
+                            onTap: onTap,
+                            child: _PostIcon(
+                                image: (onPressed)
+                                    ? "assets/images/saved.png"
+                                    : "assets/images/save.png",
+                                text: ""))
+                      ],
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        // Get.toNamed("/comment");
-                      },
-                      child: const _PostIcon(
-                          image: "assets/images/comment.png", text: "5"),
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.02,
-                    ),
-                    const _PostIcon(
-                        image: "assets/images/share.png", text: "Share"),
-                    const Spacer(),
-                    GestureDetector(
-                        onTap: onTap,
-                        child: _PostIcon(
-                            image: (onPressed)
-                                ? "assets/images/saved.png"
-                                : "assets/images/save.png",
-                            text: ""))
-                  ],
-                ),
-              ),
+                  )),
         (question)
             ? Padding(
                 padding: const EdgeInsets.only(

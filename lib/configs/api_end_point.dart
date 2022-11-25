@@ -6,6 +6,7 @@ abstract class APIEndpoints {
   static String getUser = baseUrl + 'users?filter[email][_eq]=';
   static String login = baseUrl + 'auth/login';
   static String skills = baseUrl + 'items/skill?filter[status][_eq]=published';
+  static String likesCount = baseUrl + 'items/post_likes?filter[post][_eq]=';
 
   /// For App Usage
   static AuthTokenModel? authTokenData;
