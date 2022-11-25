@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 class GradientOvalImage extends StatelessWidget {
   final Color? color;
   final double? imageSize;
-  const GradientOvalImage({Key? key, this.color, this.imageSize})
-      : super(key: key);
+  final String img;
+  const GradientOvalImage({
+    Key? key,
+    this.color,
+    this.imageSize,
+    this.img =
+        "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +35,10 @@ class GradientOvalImage extends StatelessWidget {
           // margin: const EdgeInsets.all(4),
           width: imageSize ?? 52.0,
           height: imageSize ?? 52.0,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(
-                    "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80")),
+                fit: BoxFit.cover, image: NetworkImage(this.img)),
           ),
           margin: const EdgeInsets.symmetric(horizontal: 0.0),
         ),

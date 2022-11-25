@@ -175,9 +175,11 @@ class PostTitle extends StatelessWidget {
               //             "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80")),
               //   ),
               // ),
-              const GradientOvalImage(
-                imageSize: 48,
-              ),
+              GradientOvalImage(
+                  imageSize: 48,
+                  img: this.user?.avatar == null
+                      ? "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+                      : this.user?.avatar),
               const SizedBox(
                 width: 10.0,
               ),
