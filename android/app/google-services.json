@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:449637707302:android:4ee67b639c32bb050940e7",
         "android_client_info": {
-          "package_name": "com.example.meshapp"
+          "package_name": "com.example.mesh"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "449637707302-2buklngqk5qtr06vjqvs9ia07627urb0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.meshapp",
+            "package_name": "com.example.mesh",
             "certificate_hash": "a3553c93c8ce5c66d07d86c35f8a85e6c80d7df8"
           }
         },
@@ -25,7 +25,7 @@
           "client_id": "449637707302-6c1o9hnlqrs5ish3g61mebvhs8m0uqm0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.meshapp",
+            "package_name": "com.example.mesh",
             "certificate_hash": "f9d785c19b38f8197901fa98ea5671aa02efbbaf"
           }
         },
@@ -33,7 +33,7 @@
           "client_id": "449637707302-87os11b74ca068crnrghcv8m94ikij65.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.meshapp",
+            "package_name": "com.example.mesh",
             "certificate_hash": "772afed256552d760d62d222285593a46c0ef15e"
           }
         },
@@ -41,7 +41,7 @@
           "client_id": "449637707302-hc8l5tf55aci61h5mmgq6efoijeo5gon.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.meshapp",
+            "package_name": "com.example.mesh",
             "certificate_hash": "3765786b9c29aab17295392494e1c701255e528e"
           }
         },
@@ -49,7 +49,7 @@
           "client_id": "449637707302-on9kkk8hehi1vpeibd8umell6tufkrah.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.meshapp",
+            "package_name": "com.example.mesh",
             "certificate_hash": "9332e5a9be7d12dc0cd5bb5a1a4c9260d4b418c0"
           }
         },
