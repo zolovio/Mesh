@@ -7,6 +7,8 @@ import 'package:mesh/widgets/background_gradient.dart';
 import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/label.dart';
 
+import '../../../../configs/app_router.dart';
+import '../../../../main.dart';
 import '../../../../screens/more_apply_details_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -106,9 +108,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               buttonText: "Request OTP",
                               onPressed: () {
                                 FocusScope.of(context).unfocus();
-                                // navigatorKey.currentState
-                                //     ?.pushNamed(AppRouter.skillScreen);
-                                _vm.onRequestOtp(mobile.text.trim(), context);
+                                navigatorKey.currentState
+                                    ?.pushNamed(AppRouter.skillScreen);
+                                // _vm.onRequestOtp(mobile.text.trim(), context);
                               }),
                           const SizedBox(height: 32),
                           Row(
