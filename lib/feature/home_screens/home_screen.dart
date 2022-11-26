@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mesh/configs/app_router.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/main.dart';
 import 'package:mesh/screens/drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -43,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               backgroundColor: Theme.of(context).focusColor,
               onPressed: () {
-                Get.toNamed("/upload");
+                Get.toNamed(AppRouter.uploadScreen);
               },
               child: Transform(
                   alignment: Alignment.center,

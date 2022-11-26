@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:mesh/feature/home_screens/home_tab/notification_tab.dart';
+import 'package:mesh/feature/home_screens/models/file_model.dart';
 import 'package:mesh/feature/home_screens/models/post_model.dart';
 import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
 
@@ -23,7 +26,9 @@ class HomeController extends GetxController {
   var business = false.obs;
 
   var isLoading = true.obs;
+  var isupLoading = false.obs;
   var postsList = <PostModel>[].obs;
+  var filesList = <FileModel>[].obs;
 
   // @override
   // void onInit() {
@@ -47,6 +52,23 @@ class HomeController extends GetxController {
       }
     } finally {
       isLoading(false);
+    }
+  }
+
+  void UploadPostMedia(String file) async {
+    try {
+      isupLoading(true);
+      var data = await RemoteHomeServices.UploadFile(file);
+      print('all posts: ${data['data']}');
+      if (data != null) {
+        filesList.add(FileModel.fromJson(data));
+      }
+      if (kDebugMode) {
+        print(filesList);
+        update();
+      }
+    } finally {
+      isupLoading(false);
     }
   }
 }

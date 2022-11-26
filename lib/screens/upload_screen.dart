@@ -27,8 +27,7 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        // resizeToAvoidBottomInset: true,
-
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
             bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(120),
@@ -129,6 +128,7 @@ class PostQues extends StatefulWidget {
 
 class _PostQuesState extends State<PostQues> {
   final caption = TextEditingController();
+  final tag = TextEditingController();
   final controller = Get.find<HomeController>();
   XFile? _image;
 
@@ -147,10 +147,10 @@ class _PostQuesState extends State<PostQues> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => Column(
+      () => ListView(
         // physics: const NeverScrollableScrollPhysics(),
         // shrinkWrap: true,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
               width: double.infinity,
@@ -240,17 +240,42 @@ class _PostQuesState extends State<PostQues> {
                             ],
                           ),
                   if (!widget.ques) const SizedBox(height: 15),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    child: const Text("Type Tag to Enter",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff9D9D9D))),
+                  // Container(
+                  //   alignment: Alignment.topLeft,
+                  //   child: const Text("Type Tag to Enter",
+                  //       style: TextStyle(
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w600,
+                  //           color: Color(0xff9D9D9D))),
+                  // ),
+                  Form(
+                    child: TextFormField(
+                      controller: tag,
+                      // readOnly: controller.tags.value,
+
+                      onFieldSubmitted: (val) {
+                        print(tagList);
+                        tagList.add(val.toString());
+                        tag.clear();
+                        setState(() {});
+                      },
+                      style: const TextStyle(
+                          fontSize: 14, color: Color(0xff252529)),
+                      decoration: const InputDecoration(
+                          hintText: "Type Tag to Enter",
+                          labelStyle:
+                              TextStyle(fontSize: 14, color: Color(0xff252529)),
+                          hintStyle:
+                              TextStyle(fontSize: 14, color: Color(0xff9D9D9D)),
+                          contentPadding: EdgeInsets.all(0),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xffDCDBE0))),
+                          border: InputBorder.none),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   Container(
-                    height: 61,
+                    // height: 61,
                     width: double.infinity,
                     // margin: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
@@ -272,7 +297,9 @@ class _PostQuesState extends State<PostQues> {
                         for (String i in tagList)
                           GestureDetector(
                             onTap: () {
-                              controller.tags.value = false;
+                              // controller.tags.value = false;
+                              tagList.remove(i);
+                              setState(() {});
                             },
                             child: Container(
                                 decoration: BoxDecoration(
@@ -324,7 +351,9 @@ class _PostQuesState extends State<PostQues> {
                                 widget.ques && !controller.tags.value)
                             ? "Post"
                             : "Upload",
-                        onPressed: () {})))),
+                        onPressed: () {
+                          controller.UploadPostMedia(_image!.path);
+                        })))),
           ),
         ],
       ),

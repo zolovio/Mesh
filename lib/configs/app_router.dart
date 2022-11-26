@@ -7,6 +7,8 @@ import 'package:mesh/feature/home_screens/home_screen.dart';
 import 'package:mesh/feature/skills/ui/prepare_screen.dart';
 import 'package:mesh/feature/skills/ui/select_skill_screen.dart';
 
+import '../screens/upload_screen.dart';
+
 class AppRouter {
   static const String splashScreen = '/splash';
   static const String loginScreen = '/login';
@@ -16,6 +18,7 @@ class AppRouter {
   static const String verifyScreen = '/verifyScreen';
   static const String prepareScreen = '/prepareScreen';
   static const String homeScreen = '/homeScreen';
+  static const String uploadScreen = '/uploadScreen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -29,6 +32,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SelectSkillScreen());
       case homeScreen:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case uploadScreen:
+        return MaterialPageRoute(builder: (_) => const UploadScreen());
       case verifyScreen:
         return MaterialPageRoute(
             builder: (_) => VerifyScreen(
