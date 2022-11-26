@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mesh/screens/home_screens/home_tab/user_tab.dart';
+import 'package:mesh/feature/home_screens/home_tab/user_tab.dart';
+
 import 'package:mesh/screens/more_apply_details_screen.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/button.dart';

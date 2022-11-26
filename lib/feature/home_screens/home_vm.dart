@@ -10,7 +10,7 @@ class HomeVm extends ChangeNotifier {
   List<Widget> pages = <Widget>[
     const HomeTab(),
     Container(),
-    const NotificationTab(),
+    NotificationTab(),
     const UserInfoScreen(
       myprofile: true,
     )

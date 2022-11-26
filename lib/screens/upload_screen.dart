@@ -4,12 +4,13 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mesh/controller/home_controller.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 import 'package:mesh/widgets/icon_button.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../feature/home_screens/controllers/home_controller.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({Key? key}) : super(key: key);

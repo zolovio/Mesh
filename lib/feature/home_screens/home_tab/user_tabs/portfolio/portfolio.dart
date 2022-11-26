@@ -1,8 +1,8 @@
+import 'package:mesh/widgets/video_player/play_video.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mesh/widgets/icon_button.dart';
 import 'package:mesh/widgets/label.dart';
-import 'package:mesh/widgets/video_player/play_video.dart';
 
 class Portfolio extends StatefulWidget {
   Portfolio({Key? key, this.edit = false}) : super(key: key);

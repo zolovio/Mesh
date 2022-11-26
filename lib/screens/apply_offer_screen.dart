@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mesh/controller/home_controller.dart';
-import 'package:mesh/screens/home_screens/home_tab/notification_tab.dart';
-import 'package:mesh/screens/home_screens/home_tab/notification_tabs/notification_content.dart'
+
+// import 'package:mesh/screens/home_screens/home_tab/notification_tab.dart';
+import 'package:mesh/feature/home_screens/home_tab/notification_tabs/notification_content.dart'
     as n;
 import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/icon_button.dart';
+
+import '../feature/home_screens/controllers/home_controller.dart';
+import '../feature/home_screens/home_tab/notification_tab.dart';
 
 class ApplyOfferScreen extends StatelessWidget {
   ApplyOfferScreen({Key? key}) : super(key: key);

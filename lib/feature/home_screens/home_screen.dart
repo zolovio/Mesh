@@ -1,10 +1,8 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mesh/feature/home_screens/home_vm.dart';
-
-import '../drawer/ui/drawer.dart';
+import 'package:get/get.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/screens/drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,47 +12,55 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final controller = Get.put(HomeController());
+
+  @override
+  void initState() {
+    controller.fetchAllPosts();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, _) {
-      final _vm = ref.watch(homeVmProvider);
-      return Scaffold(
-        resizeToAvoidBottomInset: false,
-        drawer: Drawerr(),
-        body: _vm.pages[_vm.selectedPage],
-        floatingActionButton: Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.rotationZ(
-            math.pi / 4,
-          ),
-          child: SizedBox(
-            width: 60.26,
-            height: 61.97,
-            child: FloatingActionButton(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                backgroundColor: Theme.of(context).focusColor,
-                onPressed: () {
-                  // Get.toNamed("/upload");
-                },
-                child: Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.rotationZ(
-                      -math.pi / 4,
-                    ),
-                    child: Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border:
-                                Border.all(color: Colors.white, width: 1.5)),
-                        child: const Icon(Icons.add)))),
-          ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      drawer: Drawerr(),
+      body:
+          Obx(() => controller.pages.elementAt(controller.selectedpage.value)),
+      floatingActionButton: Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.rotationZ(
+          math.pi / 4,
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
+        child: SizedBox(
+          width: 60.26,
+          height: 61.97,
+          child: FloatingActionButton(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              backgroundColor: Theme.of(context).focusColor,
+              onPressed: () {
+                Get.toNamed("/upload");
+              },
+              child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationZ(
+                    -math.pi / 4,
+                  ),
+                  child: Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5)),
+                      child: const Icon(Icons.add)))),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: Obx(
+        () => BottomAppBar(
             elevation: 0,
             child: SizedBox(
                 height: 56,
@@ -63,45 +69,46 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        _vm.onSelectedPage(0);
+                        controller.selectedpage.value = 0;
                       },
                       child: BottomItem(
-                          selectedIndex: _vm.selectedPage,
+                          selectedIndex: controller.selectedpage.value,
                           index: 0,
                           image: "home-active"),
                     ),
                     GestureDetector(
                       onTap: () {
-                        _vm.onSelectedPage(1);
+                        setState(() {
+                          controller.selectedpage.value = 1;
+                        });
                       },
                       child: BottomItem(
-                          selectedIndex: _vm.selectedPage,
+                          selectedIndex: controller.selectedpage.value,
                           index: 1,
                           image: "cup"),
                     ),
                     GestureDetector(
                       onTap: () {
-                        _vm.onSelectedPage(2);
+                        controller.selectedpage.value = 2;
                       },
                       child: BottomItem(
-                          selectedIndex: _vm.selectedPage,
+                          selectedIndex: controller.selectedpage.value,
                           index: 2,
                           image: "notification"),
                     ),
                     GestureDetector(
                       onTap: () {
-                        _vm.onSelectedPage(3);
+                        controller.selectedpage.value = 3;
                       },
                       child: BottomItem(
-                          selectedIndex: _vm.selectedPage,
+                          selectedIndex: controller.selectedpage.value,
                           index: 3,
                           image: "image"),
                     ),
                   ],
                 ))),
-        // ),
-      );
-    });
+      ),
+    );
   }
 }
 

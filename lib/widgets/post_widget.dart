@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mesh/feature/home_screens/models/post_model.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 import 'package:mesh/widgets/icon_button.dart';
 import 'package:mesh/widgets/label.dart';
@@ -52,14 +53,20 @@ class PostCaption extends StatelessWidget {
     this.user,
     required this.text,
     required this.screenWidth,
+    required this.tags,
   }) : super(key: key);
 
   final double screenWidth;
   final String? user;
   final String text;
+  final List tags;
 
   @override
   Widget build(BuildContext context) {
+    String thistag = '';
+    tags.forEach((tag) {
+      thistag = '${thistag} #${tag}';
+    });
     return Padding(
       padding:
           const EdgeInsets.only(left: 13.0, right: 13, top: 10, bottom: 10),
@@ -71,10 +78,12 @@ class PostCaption extends StatelessWidget {
           children: [
             CustomRichText(
               user: user,
-              text: text,
+              text: ' $text',
             ),
             const SizedBox(height: 5),
-            Text("#Gameon #Reels #2022 #Mesh2022",
+            Text(
+                // "#Gameon #Reels #2022 #Mesh2022",
+                thistag.toString(),
                 style: TextStyle(
                     color: Theme.of(context).focusColor,
                     fontSize: 16,
@@ -136,12 +145,14 @@ class PostLikes extends StatelessWidget {
 }
 
 class PostTitle extends StatelessWidget {
-  const PostTitle({
+  PostTitle({
     Key? key,
     required this.user,
+    this.datecreated,
   }) : super(key: key);
 
-  final String user;
+  final UserCreated? user;
+  var datecreated;
 
   @override
   Widget build(BuildContext context) {
@@ -164,22 +175,31 @@ class PostTitle extends StatelessWidget {
               //             "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80")),
               //   ),
               // ),
-              const GradientOvalImage(
-                imageSize: 48,
-              ),
+              GradientOvalImage(
+                  imageSize: 48,
+                  img: this.user?.avatar == null
+                      ? "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+                      : this.user?.avatar),
               const SizedBox(
                 width: 10.0,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text("Harley James",
+                children: [
+                  Text(
+                      this.user == null
+                          ? "Harley James"
+                          : '${this.user?.firstName} ${this.user?.lastName}',
                       style: TextStyle(
                           fontSize: 16,
                           color: Color(0xff252529),
                           fontWeight: FontWeight.w600)),
                   SizedBox(height: 2),
-                  Text("30 Minutes",
+                  Text(
+                      this.datecreated == null
+                          ? "" //30 Minutes
+
+                          : '${DateTime.now().difference(this.datecreated).inDays.toString()} Days',
                       style: TextStyle(fontSize: 14, color: Color(0xff949292)))
                 ],
               )

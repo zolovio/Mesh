@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:mesh/controller/home_controller.dart';
-import 'package:mesh/screens/home_screens/home_tab/notification_tabs/notification_content.dart';
-import 'package:mesh/screens/home_screens/home_tab/user_tab.dart';
-import 'package:mesh/screens/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
+
+// import 'package:mesh/screens/home_screens/home_tab/notification_tabs/notification_content.dart';
+// import 'package:mesh/screens/home_screens/home_tab/user_tab.dart';
+// import 'package:mesh/screens/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
 import 'package:mesh/screens/view_offer_screen.dart';
 import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/icon_button.dart';
+
+import '../feature/home_screens/controllers/home_controller.dart';
+import '../feature/home_screens/home_tab/notification_tabs/notification_content.dart';
+import '../feature/home_screens/home_tab/user_tab.dart';
 
 class MoreApplyDetailsScreen extends StatefulWidget {
   const MoreApplyDetailsScreen({Key? key}) : super(key: key);

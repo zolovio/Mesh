@@ -4,12 +4,11 @@ import 'package:http/http.dart' as http;
 
 class RemoteServices {
   static var client = http.Client();
-
   static Future fetchactiveskills() async {
     var response = await client.get(Uri.parse(
         'https://mesh.kodagu.today/items/skill?filter[status][_eq]=published'));
     if (response.statusCode == 200) {
-      var jsonString = response.body.toString();
+      // var jsonString = response.body.toString();
 
       return jsonDecode(response.body.toString());
     } else {
@@ -18,10 +17,14 @@ class RemoteServices {
     }
   }
 
-  static Future updateactiveskills() async {
-    var response = await client.get(Uri.parse(
-        'https://mesh.kodagu.today/users/634a4d8b-e71a-493d-bbed-eadb98da3f54'));
+  static Future updateactiveskills(
+      {required List skillids, required String uid}) async {
+    var body = jsonEncode({"skills": skillids});
+    var response = await client
+        .patch(Uri.parse('https://mesh.kodagu.today/users/$uid'), body: body);
     if (response.statusCode == 200) {
+      print(response.body);
+
       return jsonDecode(response.body.toString());
     } else {
       //show error message

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import 'package:mesh/screens/home_screens/home_tab/user_tab.dart';
 import 'package:mesh/screens/more_apply_details_screen.dart';
 import 'package:mesh/widgets/background_gradient.dart';
 import 'package:mesh/widgets/button.dart';
 
 import 'package:mesh/widgets/label.dart';
+
+import '../feature/home_screens/home_tab/user_tab.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

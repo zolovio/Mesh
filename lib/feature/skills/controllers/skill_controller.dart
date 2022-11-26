@@ -3,9 +3,14 @@ import 'package:get/state_manager.dart';
 import 'package:mesh/feature/skills/models/active_skills_model.dart';
 import 'package:mesh/feature/skills/services/remote_services.dart';
 
+import '../../../configs/app_router.dart';
+import '../../../main.dart';
+
 class SkillsController extends GetxController {
   var isLoading = true.obs;
+  var isSaving = false.obs;
   var skillsList = <ActiveSkillsModel>[].obs;
+  var selectedskillsList = [].obs;
 
   @override
   void onInit() {
@@ -28,6 +33,27 @@ class SkillsController extends GetxController {
       }
     } finally {
       isLoading(false);
+    }
+  }
+
+  void updateSkills({required String userid}) async {
+    if (kDebugMode) {
+      print('selected skills: ${selectedskillsList}');
+    }
+    List selectedskills = [];
+    selectedskillsList.forEach((element) {
+      selectedskills.add({"skill_id": element.toString()});
+    });
+    print(selectedskills);
+    try {
+      isSaving(true);
+      var res = await RemoteServices.updateactiveskills(
+          skillids: selectedskills, uid: userid);
+      if (res != null) {
+        navigatorKey.currentState?.pushNamed(AppRouter.prepareScreen);
+      }
+    } finally {
+      isSaving(false);
     }
   }
 }
