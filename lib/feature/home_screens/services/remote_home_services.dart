@@ -40,23 +40,28 @@ class RemoteHomeServices {
     }
   }
 
-  static Future createpost() async {
+  static Future createpost({
+    required String postbody,
+    required List<String> posttags,
+    required List<Map<String, String>> filesids,
+    required String posttype,
+  }) async {
     var body = jsonEncode({
       "status": "published",
-      "body": "test2",
-      "tags": ["test2"],
-      "type": "image",
-      "files": [
-        {"directus_files_id": "00a7f281-69ee-4bb1-93e8-f833721c13cc"},
-        {"directus_files_id": "00a7f281-69ee-4bb1-93e8-f833721c13cc"},
-        {"directus_files_id": "00a7f281-69ee-4bb1-93e8-f833721c13cc"}
-      ]
+      "body": postbody,
+      "tags": posttags,
+      "type": posttype,
+      "files": filesids
+      // [
+      // {"directus_files_id": "00a7f281-69ee-4bb1-93e8-f833721c13cc"},
+      //   {"directus_files_id": "00a7f281-69ee-4bb1-93e8-f833721c13cc"},
+      //   {"directus_files_id": "00a7f281-69ee-4bb1-93e8-f833721c13cc"}
+      // ]
     });
-    var response = await client.post(
-        Uri.parse(
-            'https://mesh.kodagu.today/items/post?fiter[status][_eq]=published&fields=*,files.directus_files_id,user_created.*'),
-        body: body);
+    var response = await client
+        .post(Uri.parse('https://mesh.kodagu.today/items/post'), body: body);
     if (response.statusCode == 200) {
+      print(response.body.toString());
       return jsonDecode(response.body.toString());
     } else {
       //show error message

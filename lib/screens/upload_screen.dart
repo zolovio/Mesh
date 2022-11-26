@@ -337,23 +337,34 @@ class _PostQuesState extends State<PostQues> {
                     alignment: ((!widget.ques && _image == null))
                         ? Alignment.bottomCenter
                         : Alignment.topCenter,
-                    child: (CustomButton(
-                        margin: const EdgeInsets.all(13),
-                        textSize: 16,
-                        height: 59,
-                        fontWeight: FontWeight.w600,
-                        borderRadius: 8,
-                        primaryColor: (!widget.ques && _image == null ||
-                                widget.ques && !controller.tags.value)
-                            ? const Color(0xffC9CBCB)
-                            : Theme.of(context).focusColor,
-                        buttonText: (!widget.ques && _image == null ||
-                                widget.ques && !controller.tags.value)
-                            ? "Post"
-                            : "Upload",
-                        onPressed: () {
-                          controller.UploadPostMedia(_image!.path);
-                        })))),
+                    child: (controller.isupLoading.value
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.teal,
+                            ),
+                          )
+                        : CustomButton(
+                            margin: const EdgeInsets.all(13),
+                            textSize: 16,
+                            height: 59,
+                            fontWeight: FontWeight.w600,
+                            borderRadius: 8,
+                            primaryColor: (!widget.ques && _image == null ||
+                                    widget.ques && !controller.tags.value)
+                                ? const Color(0xffC9CBCB)
+                                : Theme.of(context).focusColor,
+                            buttonText: (!widget.ques && _image == null ||
+                                    widget.ques && !controller.tags.value)
+                                ? "Post"
+                                : "Upload",
+                            onPressed: () {
+                              controller.UploadPostMedia(
+                                filepath: _image!.path,
+                                postbody: caption.text.toString(),
+                                posttags: tagList,
+                                posttype: 'image',
+                              );
+                            })))),
           ),
         ],
       ),

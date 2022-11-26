@@ -10,6 +10,7 @@ import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
 
 import 'package:mesh/screens/user_info_screen.dart';
 
+import '../../../dependency/flutter_toast_dep.dart';
 import '../home_tab/home_tab.dart';
 
 class HomeController extends GetxController {
@@ -55,19 +56,69 @@ class HomeController extends GetxController {
     }
   }
 
-  void UploadPostMedia(String file) async {
+  Future UploadPostMedia({
+    required String filepath,
+    required String postbody,
+    required List<String> posttags,
+    // required List<Map<String, String>> filesids,
+    required String posttype,
+  }) async {
     try {
       isupLoading(true);
-      var data = await RemoteHomeServices.UploadFile(file);
+      var data = await RemoteHomeServices.UploadFile(filepath);
       print('all posts: ${data['data']}');
       if (data != null) {
         filesList.add(FileModel.fromJson(data));
+        UploadPost(
+            fileid: filesList[0].id.toString(),
+            postbody: postbody,
+            posttags: posttags,
+            posttype: posttype);
+        return filesList[0].id;
       }
       if (kDebugMode) {
         print(filesList);
         update();
       }
-    } finally {
+    } catch (e) {
+      FlutterToast.show(message: 'Error while uploading post.');
+      isupLoading(false);
+      return null;
+    }
+  }
+
+  void UploadPost({
+    required String fileid,
+    required String postbody,
+    required List<String> posttags,
+    // required List<Map<String, String>> filesids,
+    required String posttype,
+  }) async {
+    try {
+      var data = await RemoteHomeServices.createpost(
+          postbody: postbody,
+          posttags: posttags,
+          filesids: [
+            {"directus_files_id": fileid.toString()}
+          ],
+          posttype: posttype);
+      if (data != null) {
+        try {
+          // filesList.add(FileModel.fromJson(data));
+          isupLoading(false);
+          FlutterToast.show(message: 'Post Uploaded');
+        } catch (e) {
+          isupLoading(false);
+          FlutterToast.show(message: 'Error while uploading post.');
+        }
+      }
+      if (kDebugMode) {
+        print(filesList);
+        update();
+      }
+    } catch (e) {
+      FlutterToast.show(message: 'Error while uploading post.');
+
       isupLoading(false);
     }
   }
