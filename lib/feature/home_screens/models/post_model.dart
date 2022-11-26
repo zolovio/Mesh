@@ -44,8 +44,10 @@ class PostModel {
         dateUpdated: json["date_updated"] == null
             ? null
             : DateTime.parse(json["date_updated"]),
-        body: json["body"],
-        tags: List<String>.from(json["tags"].map((x) => x)),
+        body: json["body"] == null ? "" : json["body"],
+        tags: json["tags"] == null
+            ? []
+            : List<String>.from(json["tags"].map((x) => x)),
         file: json["file"],
         type: json["type"],
         userCreated: json["user_created"] == null

@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
-import 'package:mesh/feature/home_screens/models/post_model.dart';
-import 'package:mesh/widgets/video_player/mock_data.dart';
-
 import 'package:get/get.dart';
+import 'package:mesh/controller/post_like_controller.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/feature/home_screens/models/error_message.dart';
+import 'package:mesh/feature/home_screens/models/post_model.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/post_widget.dart';
+import 'package:mesh/widgets/video_player/mock_data.dart';
 import 'package:mesh/widgets/video_player/play_video.dart';
 
 class Post extends StatelessWidget {
@@ -111,6 +112,7 @@ class _PostStatee extends State<_Post> {
                     ),
                   if (widget.question)
                     _PostDetails(
+                      postId: widget.postdata!.id,
                       screenWidth: screenWidth,
                       hashtags: [],
                       posttitle: '',
@@ -133,6 +135,7 @@ class _PostStatee extends State<_Post> {
                   border: Border.all(color: const Color(0xffE7E6E6)),
                   borderRadius: BorderRadius.circular(10)),
               child: _PostDetails(
+                postId: widget.postdata!.id,
                 hashtags: widget.postdata!.tags,
                 posttitle: widget.postdata!.body,
                 question: widget.question,
@@ -152,7 +155,9 @@ class _PostStatee extends State<_Post> {
 }
 
 class _PostDetails extends StatelessWidget {
-  const _PostDetails(
+  final postController = Get.put(PostLikeController());
+
+  _PostDetails(
       {Key? key,
       required this.screenWidth,
       required this.onTap,
@@ -160,7 +165,8 @@ class _PostDetails extends StatelessWidget {
       required this.posttitle,
       required this.hashtags,
       this.mentioneduser = ' BishenPonnanna',
-      required this.onPressed})
+      required this.onPressed,
+      required this.postId})
       : super(key: key);
 
   final double screenWidth;
@@ -170,9 +176,12 @@ class _PostDetails extends StatelessWidget {
   final String posttitle;
   final String mentioneduser;
   final List hashtags;
+  final String postId;
+  bool postLike = false;
 
   @override
   Widget build(BuildContext context) {
+    postController.updateID(postId);
     return Column(
       children: [
         // post icons
@@ -182,39 +191,65 @@ class _PostDetails extends StatelessWidget {
                 screenWidth: screenWidth,
                 text:
                     "Another upcoming game strom.be ready urban city.Darklight Back 😍")
-            : Padding(
-                padding: const EdgeInsets.only(
-                    bottom: 3, left: 13, right: 16, top: 13),
-                child: Row(
-                  children: <Widget>[
-                    const _PostIcon(
-                        image: "assets/images/post-liked.png", text: "200"),
-                    SizedBox(
-                      width: screenWidth * 0.03,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.toNamed("/comment");
-                      },
-                      child: const _PostIcon(
-                          image: "assets/images/comment.png", text: "5"),
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.02,
-                    ),
-                    const _PostIcon(
-                        image: "assets/images/share.png", text: "Share"),
-                    const Spacer(),
-                    GestureDetector(
-                        onTap: onTap,
+            : Obx(() => Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: 3, left: 13, right: 16, top: 13),
+                  child: Row(
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () async {
+                          if (!postController.postLike.value) {
+                            postController.postLike.value =
+                                await postController.likeAPost(postId);
+
+                            print(postId);
+                            postController.getLikesCount(postId);
+                          } else {
+                            List<Errors>? postUnlike =
+                                await postController.unlikeAPost(postId);
+                            String? errorMessage = postUnlike!.first.message;
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(errorMessage!),
+                            ));
+                          }
+                        },
                         child: _PostIcon(
-                            image: (onPressed)
-                                ? "assets/images/saved.png"
-                                : "assets/images/save.png",
-                            text: ""))
-                  ],
-                ),
-              ),
+                            image: postController.postLike.value == true
+                                ? "assets/images/post-liked.png"
+                                : "assets/images/post-unliked.png",
+                            text: postController.postLike.value == true
+                                ? (int.parse(postController.like_count.value) +
+                                        1)
+                                    .toString()
+                                : postController.like_count.value),
+                      ),
+                      SizedBox(
+                        width: screenWidth * 0.03,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed("/comment");
+                        },
+                        child: const _PostIcon(
+                            image: "assets/images/comment.png", text: "5"),
+                      ),
+                      SizedBox(
+                        width: screenWidth * 0.02,
+                      ),
+                      const _PostIcon(
+                          image: "assets/images/share.png", text: "Share"),
+                      const Spacer(),
+                      GestureDetector(
+                          onTap: onTap,
+                          child: _PostIcon(
+                              image: (onPressed)
+                                  ? "assets/images/saved.png"
+                                  : "assets/images/save.png",
+                              text: ""))
+                    ],
+                  ),
+                )),
         (question)
             ? Padding(
                 padding: const EdgeInsets.only(
@@ -288,10 +323,6 @@ class _PostIcon extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 // Positioned(
 //                     top: 2,
