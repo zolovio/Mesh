@@ -3,6 +3,7 @@ import 'package:mesh/feature/home_screens/api_repository/post_likes_api.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/like_post_model.dart';
 import 'package:mesh/feature/home_screens/models/post_like_model.dart';
+import 'package:mesh/feature/home_screens/models/post_liked_by_user.dart';
 
 class PostLikeController extends GetxController {
   List<LikeCount>? likeCount = <LikeCount>[].obs;
@@ -11,6 +12,7 @@ class PostLikeController extends GetxController {
   var isLoading = false.obs;
   var postId = "".obs;
   var postLike = false.obs;
+  var userLikedPostsList = [].obs;
 
   @override
   Future<void> onInit() async {
@@ -29,16 +31,17 @@ class PostLikeController extends GetxController {
   updateID(String postID) {
     postId.value = postID;
     getLikesCount(postId.value);
-    print('im print ${postId.value}');
+    postLikedByUser(postID);
   }
 
-  getLikesCount(String postId) async {
+  Future<String?> getLikesCount(String postId) async {
     try {
       isLoading(true);
 
-      LikeCount likeCount = await PostLikesApi.getLikesCount(postId);
+      LikeCount likeCount = await PostApi.getLikesCount(postId);
 
       like_count.value = likeCount.count!;
+      return likeCount.count;
     } finally {
       isLoading(false);
     }
@@ -48,14 +51,13 @@ class PostLikeController extends GetxController {
     try {
       isLoading(true);
 
-      LikePost likePost = await PostLikesApi.likeAPost(postId);
-
-      print(likePost.toJson());
-      print(likePost.like?.post);
+      LikePost likePost = await PostApi.likeAPost(postId);
 
       if (likePost.like!.id != null) {
+        postLike(true);
         return true;
       } else {
+        postLike(false);
         return false;
       }
 
@@ -69,7 +71,7 @@ class PostLikeController extends GetxController {
     try {
       isLoading(true);
 
-      ErrorMessage unlikePost = await PostLikesApi.unlikeAPost(postId);
+      ErrorMessage unlikePost = await PostApi.unlikeAPost(postId);
 
       // print(unlikePost.toJson());
 
@@ -83,6 +85,26 @@ class PostLikeController extends GetxController {
       // }
 
       // like_count.value = likeCount.count!;
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<List<Data>?> postLikedByUser(String postId) async {
+    try {
+      isLoading(true);
+
+      PostLikedByUser userLike = await PostApi.postLikedByUser(postId);
+
+      if (userLike.data?.first.id != null) {
+        if (userLikedPostsList.isEmpty)
+          userLikedPostsList.value = userLike.data!;
+        postLike(true);
+        return userLike.data;
+      } else {
+        postLike(false);
+        return [];
+      }
     } finally {
       isLoading(false);
     }

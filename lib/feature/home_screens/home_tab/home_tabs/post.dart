@@ -16,6 +16,7 @@ class Post extends StatelessWidget {
   // final HomeController controller = HomeController();
   @override
   Widget build(BuildContext context) {
+    PostLikeController postController = Get.put(PostLikeController());
     return GetBuilder<HomeController>(
       builder: (controller) {
         if (kDebugMode) {
@@ -33,9 +34,7 @@ class Post extends StatelessWidget {
                 itemCount: (question) ? 7 : controller.postsList.length,
                 itemBuilder: (ctx, i) {
                   return _Post(
-                    question: question,
-                    postdata: controller.postsList[i],
-                  );
+                      question: question, postdata: controller.postsList[i]);
                 },
               );
       },
@@ -60,6 +59,9 @@ class _Post extends StatefulWidget {
 class _PostStatee extends State<_Post> {
   bool isPressed = false;
   final controller = Get.find<HomeController>();
+  final postController = Get.put(PostLikeController());
+  late String likeCount;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -67,96 +69,116 @@ class _PostStatee extends State<_Post> {
   }
 
   @override
+  void initState() {
+    postLikeCount();
+    super.initState();
+  }
+
+  postLikeCount() async {
+    isLoading = true;
+    String? count = await postController.getLikesCount(widget.postdata!.id);
+    setState(() {
+      likeCount = count!;
+    });
+    isLoading = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-      // width: screenWidth * 0.8,
-      margin: const EdgeInsets.only(top: 3, bottom: 10, left: 10, right: 10),
-      child: Column(
-        children: [
-          Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            elevation: 0,
-            color: Colors.white,
+    return isLoading
+        ? Container()
+        : Container(
+            // width: screenWidth * 0.8,
+            margin:
+                const EdgeInsets.only(top: 3, bottom: 10, left: 10, right: 10),
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  GestureDetector(
-                      onTap: () {
-                        controller.pages[0] = const UserInfoScreen();
-                      },
-                      child: PostTitle(
-                        user: widget.postdata?.userCreated,
-                        datecreated: widget.postdata?.dateCreated,
-                      )),
-                  //post image
-                  if (!widget.question)
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10)),
-                          child: FeedPlayer(items: mockData["items"][0])
-                          // Image.asset(
-                          //   "assets/images/video.jpg",
-                          //   width: double.infinity,
-                          //   height: 254,
-                          //   fit: BoxFit.fill,
-                          // ),
+              children: [
+                Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  elevation: 0,
+                  color: Colors.white,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        GestureDetector(
+                            onTap: () {
+                              controller.pages[0] = const UserInfoScreen();
+                            },
+                            child: PostTitle(
+                              user: widget.postdata?.userCreated,
+                              datecreated: widget.postdata?.dateCreated,
+                            )),
+                        //post image
+                        if (!widget.question)
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(10),
+                                    bottomRight: Radius.circular(10)),
+                                child: FeedPlayer(items: mockData["items"][0])
+                                // Image.asset(
+                                //   "assets/images/video.jpg",
+                                //   width: double.infinity,
+                                //   height: 254,
+                                //   fit: BoxFit.fill,
+                                // ),
+                                ),
                           ),
-                    ),
-                  if (widget.question)
-                    _PostDetails(
+                        if (widget.question)
+                          _PostDetails(
+                            postId: widget.postdata!.id,
+                            screenWidth: screenWidth,
+                            hashtags: [],
+                            posttitle: '',
+                            onTap: () {
+                              setState(() {
+                                isPressed = !isPressed;
+                              });
+                            },
+                            question: widget.question,
+                            onPressed: isPressed,
+                            postController: postController,
+                            likeCount: likeCount,
+                          ),
+                      ]),
+                ),
+                const SizedBox(height: 15),
+                if (!widget.question)
+                  Container(
+                    margin: const EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                        color: const Color(0xffF1F1F1),
+                        border: Border.all(color: const Color(0xffE7E6E6)),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: _PostDetails(
                       postId: widget.postdata!.id,
+                      hashtags: widget.postdata!.tags,
+                      posttitle: widget.postdata!.body,
+                      question: widget.question,
                       screenWidth: screenWidth,
-                      hashtags: [],
-                      posttitle: '',
                       onTap: () {
                         setState(() {
                           isPressed = !isPressed;
                         });
                       },
-                      question: widget.question,
                       onPressed: isPressed,
+                      postController: postController,
+                      likeCount: likeCount,
                     ),
-                ]),
-          ),
-          const SizedBox(height: 15),
-          if (!widget.question)
-            Container(
-              margin: const EdgeInsets.only(left: 5, right: 5),
-              decoration: BoxDecoration(
-                  color: const Color(0xffF1F1F1),
-                  border: Border.all(color: const Color(0xffE7E6E6)),
-                  borderRadius: BorderRadius.circular(10)),
-              child: _PostDetails(
-                postId: widget.postdata!.id,
-                hashtags: widget.postdata!.tags,
-                posttitle: widget.postdata!.body,
-                question: widget.question,
-                screenWidth: screenWidth,
-                onTap: () {
-                  setState(() {
-                    isPressed = !isPressed;
-                  });
-                },
-                onPressed: isPressed,
-              ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
   }
 }
 
 class _PostDetails extends StatelessWidget {
-  final postController = Get.put(PostLikeController());
-
   _PostDetails(
       {Key? key,
       required this.screenWidth,
@@ -166,7 +188,9 @@ class _PostDetails extends StatelessWidget {
       required this.hashtags,
       this.mentioneduser = ' BishenPonnanna',
       required this.onPressed,
-      required this.postId})
+      required this.postId,
+      required this.postController,
+      required this.likeCount})
       : super(key: key);
 
   final double screenWidth;
@@ -178,10 +202,17 @@ class _PostDetails extends StatelessWidget {
   final List hashtags;
   final String postId;
   bool postLike = false;
+  final PostLikeController postController;
+  final String likeCount;
 
   @override
   Widget build(BuildContext context) {
-    postController.updateID(postId);
+    // postController.updateID(postId);
+
+    print('================================');
+    print(postController.userLikedPostsList().contains(postId));
+    print('================================');
+
     return Column(
       children: [
         // post icons
@@ -215,14 +246,20 @@ class _PostDetails extends StatelessWidget {
                           }
                         },
                         child: _PostIcon(
-                            image: postController.postLike.value == true
-                                ? "assets/images/post-liked.png"
-                                : "assets/images/post-unliked.png",
+                            image:
+                                // postController
+                                //         .userLikedPostsList()
+                                //         .contains(postId)
+                                //     ?
+                                postController.postLike.value == true
+                                    ? "assets/images/post-liked.png"
+                                    : "assets/images/post-unliked.png",
+                            // : "assets/images/post-unliked.png",
                             text: postController.postLike.value == true
                                 ? (int.parse(postController.like_count.value) +
                                         1)
                                     .toString()
-                                : postController.like_count.value),
+                                : likeCount),
                       ),
                       SizedBox(
                         width: screenWidth * 0.03,
