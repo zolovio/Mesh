@@ -108,9 +108,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               buttonText: "Request OTP",
                               onPressed: () {
                                 FocusScope.of(context).unfocus();
-                                navigatorKey.currentState
-                                    ?.pushNamed(AppRouter.skillScreen);
-                                // _vm.onRequestOtp(mobile.text.trim(), context);
+                                // navigatorKey.currentState
+                                //     ?.pushNamed(AppRouter.skillScreen);
+                                _vm.onRequestOtp(mobile.text.trim(), context);
                               }),
                           const SizedBox(height: 32),
                           Row(

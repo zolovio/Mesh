@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:mesh/feature/auth/domain/model/auth_token_model.dart';
 import 'package:mesh/feature/home_screens/home_tab/notification_tab.dart';
 import 'package:mesh/feature/home_screens/models/file_model.dart';
 import 'package:mesh/feature/home_screens/models/post_model.dart';
@@ -10,6 +12,7 @@ import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
 
 import 'package:mesh/screens/user_info_screen.dart';
 
+import '../../../configs/api_end_point.dart';
 import '../../../dependency/flutter_toast_dep.dart';
 import '../home_tab/home_tab.dart';
 
@@ -30,22 +33,26 @@ class HomeController extends GetxController {
   var isupLoading = false.obs;
   var postsList = <PostModel>[].obs;
   var filesList = <FileModel>[].obs;
+  FlutterSecureStorage storage = FlutterSecureStorage();
 
-  // @override
-  // void onInit() {
-  //   fetchAllPosts();
-  //   super.onInit();
-  // }
+  @override
+  void onInit() {
+    // fetchAllPosts();
+    RemoteHomeServices.refreshToken();
+    super.onInit();
+  }
 
   void fetchAllPosts() async {
     try {
       isLoading(true);
       var posts = await RemoteHomeServices.fetchposts();
-      print('all posts: ${posts['data']}');
+      // print('all posts: ${posts['data']}');
       if (posts != null) {
         for (var post in posts['data']) {
           postsList.add(PostModel.fromJson(post));
         }
+        isLoading(false);
+
         if (kDebugMode) {
           print(postsList);
         }
@@ -53,6 +60,7 @@ class HomeController extends GetxController {
       }
     } finally {
       isLoading(false);
+      update();
     }
   }
 

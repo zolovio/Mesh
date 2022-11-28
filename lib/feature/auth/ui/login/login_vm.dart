@@ -9,8 +9,6 @@ import 'package:mesh/dependency/flutter_toast_dep.dart';
 import 'package:mesh/feature/auth/domain/model/veryfy_model.dart';
 import 'package:mesh/feature/auth/domain/usecase/auth_usecase.dart';
 import 'package:mesh/main.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 final AutoDisposeChangeNotifierProvider<LoginVm> loginVmProvider =
     ChangeNotifierProvider.autoDispose<LoginVm>((ref) {
