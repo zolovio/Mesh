@@ -11,6 +11,7 @@ import 'package:mesh/widgets/icon_button.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../feature/home_screens/controllers/home_controller.dart';
+import '../feature/home_screens/services/remote_home_services.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({Key? key}) : super(key: key);
@@ -171,7 +172,7 @@ class _PostQuesState extends State<PostQues> {
                       const SizedBox(width: 10),
                       Container(
                           // height: 30,
-                          width: 258,
+                          width: Get.width * 0.65,
                           padding: const EdgeInsets.only(bottom: 15),
                           child: TextField(
                             controller: caption,
@@ -357,14 +358,24 @@ class _PostQuesState extends State<PostQues> {
                                     widget.ques && !controller.tags.value)
                                 ? "Post"
                                 : "Upload",
-                            onPressed: () {
-                              controller.UploadPostMedia(
-                                filepath: _image!.path,
-                                postbody: caption.text.toString(),
-                                posttags: tagList,
-                                posttype: 'image',
-                              );
-                            })))),
+                            onPressed: (!widget.ques && _image == null ||
+                                    widget.ques && !controller.tags.value)
+                                ? () {
+                                    controller.UploadPost(
+                                      fileid: null,
+                                      postbody: caption.text.toString(),
+                                      posttags: tagList,
+                                      posttype: 'text',
+                                    );
+                                  }
+                                : () {
+                                    controller.UploadPostMedia(
+                                      filepath: _image!.path,
+                                      postbody: caption.text.toString(),
+                                      posttags: tagList,
+                                      posttype: 'image',
+                                    );
+                                  })))),
           ),
         ],
       ),

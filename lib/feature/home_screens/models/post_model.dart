@@ -29,7 +29,7 @@ class PostModel {
   DateTime dateCreated;
   String userUpdated;
   DateTime? dateUpdated;
-  String body;
+  String? body;
   List<String> tags;
   dynamic file;
   String type;
@@ -44,8 +44,10 @@ class PostModel {
         dateUpdated: json["date_updated"] == null
             ? null
             : DateTime.parse(json["date_updated"]),
-        body: json["body"],
-        tags: List<String>.from(json["tags"].map((x) => x)),
+        body: json["body"] == null ? null : json["body"],
+        tags: json["tags"] == null
+            ? []
+            : List<String>.from(json["tags"].map((x) => x)),
         file: json["file"],
         type: json["type"],
         userCreated: json["user_created"] == null
@@ -123,7 +125,7 @@ class UserCreated {
 
   factory UserCreated.fromJson(Map<String, dynamic> json) => UserCreated(
         id: json["id"],
-        firstName: json["first_name"],
+        firstName: json["first_name"] == null ? null : json["first_name"],
         lastName: json["last_name"],
         email: json["email"],
         password: json["password"],

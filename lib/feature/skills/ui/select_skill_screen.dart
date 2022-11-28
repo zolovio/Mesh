@@ -128,115 +128,127 @@ class _SelectSkillScreenState extends State<SelectSkillScreen> {
                                       color: Colors.teal,
                                     ),
                                   )
-                                : GridView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount:
-                                        skillscontroller.skillsList.length,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            childAspectRatio: 1.7,
-                                            crossAxisSpacing: 4.0,
-                                            mainAxisSpacing: 4.0),
-                                    itemBuilder: (context, i) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          // setState(() {
-                                          //   skills[i] = Skill(
-                                          //       text: skills[i].text,
-                                          //       image: skills[i].image,
-                                          //       selected: !skills[i].selected);
-                                          // });
-                                          !skillscontroller
-                                                  .skillsList[i].selected
-                                              ? skillscontroller
-                                                  .selectedskillsList
-                                                  .add(skillscontroller
-                                                      .skillsList[i].id)
-                                              : skillscontroller
-                                                  .selectedskillsList
-                                                  .remove(skillscontroller
-                                                      .skillsList[i].id);
-                                          skillscontroller
-                                                  .skillsList[i].selected =
+                                : skillscontroller.skillsList.isEmpty
+                                    ? Center(
+                                        child: Text('no skills available'),
+                                      )
+                                    : GridView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount:
+                                            skillscontroller.skillsList.length,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                childAspectRatio: 1.7,
+                                                crossAxisSpacing: 4.0,
+                                                mainAxisSpacing: 4.0),
+                                        itemBuilder: (context, i) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              // setState(() {
+                                              //   skills[i] = Skill(
+                                              //       text: skills[i].text,
+                                              //       image: skills[i].image,
+                                              //       selected: !skills[i].selected);
+                                              // });
                                               !skillscontroller
-                                                  .skillsList[i].selected;
-                                          // print(skillscontroller
-                                          //     .selectedskillsList);
-                                          setState(() {});
-                                        },
-                                        child: SizedBox(
-                                          width: 140,
-                                          height: 68,
-                                          child: Card(
-                                              elevation: (skillscontroller
-                                                      .skillsList[i].selected)
-                                                  ? 7
-                                                  : 0,
-                                              shadowColor: Theme.of(context)
-                                                  .focusColor
-                                                  .withOpacity(0.5),
-                                              color: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                  side: (!skillscontroller
+                                                      .skillsList[i].selected
+                                                  ? skillscontroller
+                                                      .selectedskillsList
+                                                      .add(skillscontroller
+                                                          .skillsList[i].id)
+                                                  : skillscontroller
+                                                      .selectedskillsList
+                                                      .remove(skillscontroller
+                                                          .skillsList[i].id);
+                                              skillscontroller
+                                                      .skillsList[i].selected =
+                                                  !skillscontroller
+                                                      .skillsList[i].selected;
+                                              // print(skillscontroller
+                                              //     .selectedskillsList);
+                                              setState(() {});
+                                            },
+                                            child: SizedBox(
+                                              width: 140,
+                                              height: 68,
+                                              child: Card(
+                                                  elevation: (skillscontroller
                                                           .skillsList[i]
                                                           .selected)
-                                                      ? BorderSide(
-                                                          color: const Color(
-                                                                  0xff97D3D3)
-                                                              .withOpacity(0.2))
-                                                      : BorderSide.none,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8)),
-                                              child: Container(
-                                                decoration: (skillscontroller
-                                                        .skillsList[i].selected)
-                                                    ? BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                        gradient:
-                                                            LinearGradient(
-                                                          colors: [
-                                                            Theme.of(context)
-                                                                .focusColor,
-                                                            const Color
-                                                                    .fromRGBO(
-                                                                47,
-                                                                166,
-                                                                167,
-                                                                0.45)
-                                                          ],
-                                                          begin: Alignment
-                                                              .topRight,
-                                                          end: Alignment
-                                                              .bottomLeft,
-                                                          stops: const [
-                                                            0.4,
-                                                            0.2
-                                                          ],
-                                                          tileMode:
-                                                              TileMode.clamp,
-                                                        ),
-                                                      )
-                                                    : null,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      CircleAvatar(
-                                                        radius: 15,
-                                                        backgroundColor:
-                                                            (skillscontroller
+                                                      ? 7
+                                                      : 0,
+                                                  shadowColor: Theme.of(context)
+                                                      .focusColor
+                                                      .withOpacity(0.5),
+                                                  color: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                      side: (!skillscontroller
+                                                              .skillsList[i]
+                                                              .selected)
+                                                          ? BorderSide(
+                                                              color: const Color(
+                                                                      0xff97D3D3)
+                                                                  .withOpacity(
+                                                                      0.2))
+                                                          : BorderSide.none,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                  child: Container(
+                                                    decoration:
+                                                        (skillscontroller
+                                                                .skillsList[i]
+                                                                .selected)
+                                                            ? BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    Theme.of(
+                                                                            context)
+                                                                        .focusColor,
+                                                                    const Color
+                                                                            .fromRGBO(
+                                                                        47,
+                                                                        166,
+                                                                        167,
+                                                                        0.45)
+                                                                  ],
+                                                                  begin: Alignment
+                                                                      .topRight,
+                                                                  end: Alignment
+                                                                      .bottomLeft,
+                                                                  stops: const [
+                                                                    0.4,
+                                                                    0.2
+                                                                  ],
+                                                                  tileMode:
+                                                                      TileMode
+                                                                          .clamp,
+                                                                ),
+                                                              )
+                                                            : null,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceAround,
+                                                        children: [
+                                                          CircleAvatar(
+                                                            radius: 15,
+                                                            backgroundColor: (skillscontroller
                                                                     .skillsList[
                                                                         i]
                                                                     .selected)
@@ -247,43 +259,44 @@ class _SelectSkillScreenState extends State<SelectSkillScreen> {
                                                                         0xff2FA6A7)
                                                                     .withOpacity(
                                                                         0.1),
-                                                        foregroundImage:
-                                                            NetworkImage(
-                                                                'https://mesh.kodagu.today/assets/${skillscontroller.skillsList[i].icon}'),
-                                                        // Icon(
-                                                        //    IconData(),
-                                                        //     color: (skills[i]
-                                                        //             .selected)
-                                                        //         ? Colors.white
-                                                        //         : Theme.of(context)
-                                                        //             .focusColor),
-                                                      ),
-                                                      Text(
-                                                          skillscontroller
-                                                              .skillsList[i]
-                                                              .title
-                                                              .toString(),
-                                                          style: (skillscontroller
+                                                            foregroundImage:
+                                                                NetworkImage(
+                                                                    'https://mesh.kodagu.today/assets/${skillscontroller.skillsList[i].icon}'),
+                                                            // Icon(
+                                                            //    IconData(),
+                                                            //     color: (skills[i]
+                                                            //             .selected)
+                                                            //         ? Colors.white
+                                                            //         : Theme.of(context)
+                                                            //             .focusColor),
+                                                          ),
+                                                          Text(
+                                                              skillscontroller
                                                                   .skillsList[i]
-                                                                  .selected)
-                                                              ? Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyMedium!
-                                                                  .copyWith(
-                                                                      color: Colors
-                                                                          .white)
-                                                              : Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyMedium)
-                                                    ],
-                                                  ),
-                                                ),
-                                              )),
-                                        ),
-                                      );
-                                    });
+                                                                  .title
+                                                                  .toString(),
+                                                              style: (skillscontroller
+                                                                      .skillsList[
+                                                                          i]
+                                                                      .selected)
+                                                                  ? Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyMedium!
+                                                                      .copyWith(
+                                                                          color: Colors
+                                                                              .white)
+                                                                  : Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyMedium)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )),
+                                            ),
+                                          );
+                                        });
                           }),
                           Expanded(
                             child: Align(

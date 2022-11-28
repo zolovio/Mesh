@@ -12,7 +12,6 @@ import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
 
 import 'package:mesh/screens/user_info_screen.dart';
 
-import '../../../configs/api_end_point.dart';
 import '../../../dependency/flutter_toast_dep.dart';
 import '../home_tab/home_tab.dart';
 
@@ -38,7 +37,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     // fetchAllPosts();
-    RemoteHomeServices.refreshToken();
+    // RemoteHomeServices.refreshToken();
     super.onInit();
   }
 
@@ -46,7 +45,7 @@ class HomeController extends GetxController {
     try {
       isLoading(true);
       var posts = await RemoteHomeServices.fetchposts();
-      // print('all posts: ${posts['data']}');
+      print('all posts: ${posts['data']}');
       if (posts != null) {
         for (var post in posts['data']) {
           postsList.add(PostModel.fromJson(post));
@@ -96,9 +95,9 @@ class HomeController extends GetxController {
   }
 
   void UploadPost({
-    required String fileid,
+    required fileid,
     required String postbody,
-    required List<String> posttags,
+    required posttags,
     // required List<Map<String, String>> filesids,
     required String posttype,
   }) async {
@@ -106,9 +105,11 @@ class HomeController extends GetxController {
       var data = await RemoteHomeServices.createpost(
           postbody: postbody,
           posttags: posttags,
-          filesids: [
-            {"directus_files_id": fileid.toString()}
-          ],
+          filesids: fileid == null
+              ? null
+              : [
+                  {"directus_files_id": fileid.toString()}
+                ],
           posttype: posttype);
       if (data != null) {
         try {
@@ -117,7 +118,7 @@ class HomeController extends GetxController {
           FlutterToast.show(message: 'Post Uploaded');
         } catch (e) {
           isupLoading(false);
-          FlutterToast.show(message: 'Error while uploading post.');
+          FlutterToast.show(message: 'Error while uploading post.1');
         }
       }
       if (kDebugMode) {
@@ -125,7 +126,7 @@ class HomeController extends GetxController {
         update();
       }
     } catch (e) {
-      FlutterToast.show(message: 'Error while uploading post.');
+      FlutterToast.show(message: 'Error while uploading post.$e');
 
       isupLoading(false);
     }

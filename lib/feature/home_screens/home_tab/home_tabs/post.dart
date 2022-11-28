@@ -20,23 +20,27 @@ class Post extends StatelessWidget {
         if (kDebugMode) {
           print(controller.postsList.length);
         }
-        return controller.postsList.isEmpty
+        return controller.isLoading.value
             ? Center(
                 child: CircularProgressIndicator(
                   color: Colors.teal,
                 ),
               )
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: (question) ? 7 : controller.postsList.length,
-                itemBuilder: (ctx, i) {
-                  return _Post(
-                    question: question,
-                    postdata: controller.postsList[i],
+            : controller.postsList.isEmpty
+                ? Center(
+                    child: Text('No Post Available'),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: (question) ? 7 : controller.postsList.length,
+                    itemBuilder: (ctx, i) {
+                      return _Post(
+                        question: question,
+                        postdata: controller.postsList[i],
+                      );
+                    },
                   );
-                },
-              );
       },
     );
   }
@@ -134,7 +138,7 @@ class _PostStatee extends State<_Post> {
                   borderRadius: BorderRadius.circular(10)),
               child: _PostDetails(
                 hashtags: widget.postdata!.tags,
-                posttitle: widget.postdata!.body,
+                posttitle: widget.postdata!.body.toString(),
                 question: widget.question,
                 screenWidth: screenWidth,
                 onTap: () {

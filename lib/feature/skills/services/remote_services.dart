@@ -1,12 +1,26 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:mesh/feature/skills/controllers/skill_controller.dart';
+
+import '../../auth/domain/model/auth_token_model.dart';
 
 class RemoteServices {
   static var client = http.Client();
+  static final controller = SkillsController();
   static Future fetchactiveskills() async {
-    var response = await client.get(Uri.parse(
-        'https://mesh.kodagu.today/items/skill?filter[status][_eq]=published'));
+    var authData = await controller.storage.read(key: 'authTokenData');
+    print(AuthTokenModel.deserialize(authData!).accessToken);
+    var response = await client.get(
+      Uri.parse(
+          'https://mesh.kodagu.today/items/skill?filter[status][_eq]=published'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer ${AuthTokenModel.deserialize(authData).accessToken}',
+      },
+    );
     if (response.statusCode == 200) {
       // var jsonString = response.body.toString();
 
