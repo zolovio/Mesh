@@ -6,6 +6,7 @@ import 'package:mesh/feature/auth/ui/verify/verify_screen.dart';
 import 'package:mesh/feature/home_screens/home_screen.dart';
 import 'package:mesh/feature/skills/ui/prepare_screen.dart';
 import 'package:mesh/feature/skills/ui/select_skill_screen.dart';
+import 'package:mesh/screens/comment_screen.dart';
 
 import '../screens/upload_screen.dart';
 
@@ -19,6 +20,7 @@ class AppRouter {
   static const String prepareScreen = '/prepareScreen';
   static const String homeScreen = '/homeScreen';
   static const String uploadScreen = '/uploadScreen';
+  static const String commentScreen = '/commentScreen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -39,6 +41,8 @@ class AppRouter {
             builder: (_) => VerifyScreen(
                   verifyModel: settings.arguments as VerifyModel,
                 ));
+      case commentScreen:
+        return MaterialPageRoute(builder: (_) => CommentScreen());
       default:
         return MaterialPageRoute(
             builder: (_) => RouteErrorScreen(

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mesh/configs/app_router.dart';
 import 'package:mesh/controller/post_like_controller.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
@@ -16,7 +17,6 @@ class Post extends StatelessWidget {
   // final HomeController controller = HomeController();
   @override
   Widget build(BuildContext context) {
-    PostLikeController postController = Get.put(PostLikeController());
     return GetBuilder<HomeController>(
       builder: (controller) {
         if (kDebugMode) {
@@ -77,8 +77,10 @@ class _PostStatee extends State<_Post> {
   postLikeCount() async {
     isLoading = true;
     String? count = await postController.getLikesCount(widget.postdata!.id);
+
     setState(() {
       likeCount = count!;
+      ;
     });
     isLoading = false;
   }
@@ -86,7 +88,7 @@ class _PostStatee extends State<_Post> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+
     return isLoading
         ? Container()
         : Container(
@@ -145,6 +147,8 @@ class _PostStatee extends State<_Post> {
                             onPressed: isPressed,
                             postController: postController,
                             likeCount: likeCount,
+                            postLike: postController.userLikedPostsList.value
+                                .contains(widget.postdata!.id),
                           ),
                       ]),
                 ),
@@ -170,6 +174,8 @@ class _PostStatee extends State<_Post> {
                       onPressed: isPressed,
                       postController: postController,
                       likeCount: likeCount,
+                      postLike: postController.userLikedPostsList.value
+                          .contains(widget.postdata!.id),
                     ),
                   ),
               ],
@@ -190,7 +196,8 @@ class _PostDetails extends StatelessWidget {
       required this.onPressed,
       required this.postId,
       required this.postController,
-      required this.likeCount})
+      required this.likeCount,
+      required this.postLike})
       : super(key: key);
 
   final double screenWidth;
@@ -201,17 +208,13 @@ class _PostDetails extends StatelessWidget {
   final String mentioneduser;
   final List hashtags;
   final String postId;
-  bool postLike = false;
+  final bool postLike;
   final PostLikeController postController;
   final String likeCount;
 
   @override
   Widget build(BuildContext context) {
     // postController.updateID(postId);
-
-    print('================================');
-    print(postController.userLikedPostsList().contains(postId));
-    print('================================');
 
     return Column(
       children: [
@@ -246,15 +249,11 @@ class _PostDetails extends StatelessWidget {
                           }
                         },
                         child: _PostIcon(
-                            image:
-                                // postController
-                                //         .userLikedPostsList()
-                                //         .contains(postId)
-                                //     ?
-                                postController.postLike.value == true
+                            image: postLike
+                                ? postController.postLike.value == true
                                     ? "assets/images/post-liked.png"
-                                    : "assets/images/post-unliked.png",
-                            // : "assets/images/post-unliked.png",
+                                    : "assets/images/post-unliked.png"
+                                : "assets/images/post-unliked.png",
                             text: postController.postLike.value == true
                                 ? (int.parse(postController.like_count.value) +
                                         1)
@@ -266,7 +265,7 @@ class _PostDetails extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.toNamed("/comment");
+                          Get.toNamed(AppRouter.commentScreen);
                         },
                         child: const _PostIcon(
                             image: "assets/images/comment.png", text: "5"),

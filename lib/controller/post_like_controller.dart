@@ -6,6 +6,7 @@ import 'package:mesh/feature/home_screens/models/post_like_model.dart';
 import 'package:mesh/feature/home_screens/models/post_liked_by_user.dart';
 
 class PostLikeController extends GetxController {
+  // final String userPostId;
   List<LikeCount>? likeCount = <LikeCount>[].obs;
   var like_count = "0".obs;
   var like_post = false.obs;
@@ -14,8 +15,12 @@ class PostLikeController extends GetxController {
   var postLike = false.obs;
   var userLikedPostsList = [].obs;
 
+  // PostLikeController(this.userPostId);
+
   @override
   Future<void> onInit() async {
+    // getLikesCount(userPostId);
+    // postLikedByUser(userPostId);
     super.onInit();
     // updateID(postID);
   }
