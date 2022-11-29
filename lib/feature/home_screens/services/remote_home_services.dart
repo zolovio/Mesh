@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:mesh/dependency/flutter_toast_dep.dart';
@@ -15,12 +16,20 @@ class RemoteHomeServices {
   static Future refreshToken() async {
     var authData = await controller.storage.read(key: 'authTokenData');
     print(AuthTokenModel.deserialize(authData!).refreshToken);
-    var body = jsonEncode({
-      "refresh_token":
-          AuthTokenModel.deserialize(authData).refreshToken.toString(),
+    var body = json.encode({
+      "refresh_token": '${AuthTokenModel.deserialize(authData).refreshToken}',
     });
-    var response = await client
-        .post(Uri.parse('https://mesh.kodagu.today/auth/refresh'), body: body);
+    print('body: $body');
+    var response = await client.post(
+      Uri.parse('https://mesh.kodagu.today/auth/refresh'),
+      body: body,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        // 'Authorization':
+        //     'Bearer ${AuthTokenModel.deserialize(authData).accessToken}',
+      },
+    );
     if (response.statusCode == 200) {
       print(response.body.toString());
       return jsonDecode(response.body.toString());
@@ -40,14 +49,15 @@ class RemoteHomeServices {
     var authData = await controller.storage.read(key: 'authTokenData');
     print(AuthTokenModel.deserialize(authData!).accessToken);
     var response = await client.get(
-        Uri.parse(
-            'https://mesh.kodagu.today/items/post?fiter[status][_eq]=published&fields=*,files.directus_files_id,user_created.*'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization':
-              'Bearer ${AuthTokenModel.deserialize(authData).accessToken}',
-        });
+      Uri.parse(
+          'https://mesh.kodagu.today/items/post?fiter[status][_eq]=published&fields=*,files.directus_files_id,user_created.*'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer ${AuthTokenModel.deserialize(authData).accessToken}',
+      },
+    );
     if (response.statusCode == 200) {
       // var jsonString = response.body.toString();
       print(response.body);
@@ -63,8 +73,19 @@ class RemoteHomeServices {
   }
 
   static Future UploadFile(String filepath) async {
+    var authData = await controller.storage.read(key: 'authTokenData');
+    print(AuthTokenModel.deserialize(authData!).accessToken);
     var postUri = Uri.parse("https://mesh.kodagu.today/files");
-    var request = http.MultipartRequest('POST', postUri);
+    var request = http.MultipartRequest(
+      'POST',
+      postUri,
+    );
+    request.headers.addAll({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization':
+          'Bearer ${AuthTokenModel.deserialize(authData).accessToken}',
+    });
     request.files.add(http.MultipartFile('file',
         File(filepath).readAsBytes().asStream(), File(filepath).lengthSync(),
         filename: filepath.split("/").last));
@@ -78,15 +99,22 @@ class RemoteHomeServices {
 
       return jsonDecode(responseString);
     } else {
+      print(response.statusCode);
+      // print(response.body);
+      //  print(response.statusCode);
+      //show error message
+      // FlutterToast.show(
+      //     message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
       //show error message
       return null;
     }
   }
 
   static Future createpost({
-    required String postbody,
+    required postbody,
     required List<String> posttags,
-    required List<Map<String, String>> filesids,
+    required filesids,
     required String posttype,
   }) async {
     var body = jsonEncode({
@@ -101,12 +129,34 @@ class RemoteHomeServices {
       //   {"directus_files_id": "00a7f281-69ee-4bb1-93e8-f833721c13cc"}
       // ]
     });
-    var response = await client
-        .post(Uri.parse('https://mesh.kodagu.today/items/post'), body: body);
+    var authData = await controller.storage.read(key: 'authTokenData');
+    print(AuthTokenModel.deserialize(authData!).accessToken);
+    var response = await client.post(
+      Uri.parse('https://mesh.kodagu.today/items/post'),
+      body: body,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer ${AuthTokenModel.deserialize(authData).accessToken}',
+      },
+    );
     if (response.statusCode == 200) {
       print(response.body.toString());
       return jsonDecode(response.body.toString());
     } else {
+      // print(response.statusCode);
+      if (kDebugMode) {
+        print(response.body);
+      }
+      controller.isupLoading(false);
+      controller.update();
+      print(response.statusCode);
+      print(response.body);
+      //show error message
+      // FlutterToast.show(
+      //     message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
       //show error message
       return null;
     }

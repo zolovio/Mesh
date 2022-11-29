@@ -1,14 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mesh/widgets/label.dart';
 import 'package:mesh/widgets/profile_cover_pic.dart';
+
+import '../configs/app_router.dart';
+import '../main.dart';
 
 class DrawerOption {
   final String image;
   final String text;
   final bool arrow;
+  final VoidCallback ontap;
 
-  DrawerOption({required this.image, required this.text, required this.arrow});
+  DrawerOption(
+      {required this.image,
+      required this.text,
+      required this.arrow,
+      required this.ontap});
 }
 
 class Drawerr extends StatelessWidget {
@@ -16,40 +26,81 @@ class Drawerr extends StatelessWidget {
 
   final List<DrawerOption> options = [
     DrawerOption(
-        image: "assets/icons/envelop.svg", text: "My Questions", arrow: true),
+      image: "assets/icons/envelop.svg",
+      text: "My Questions",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/message-yellow-dot.svg",
-        text: "My Posts",
-        arrow: true),
+      image: "assets/icons/message-yellow-dot.svg",
+      text: "My Posts",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/calendar.svg", text: "My Training", arrow: true),
+      image: "assets/icons/calendar.svg",
+      text: "My Training",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/graduate.svg",
-        text: "My Competition",
-        arrow: true),
+      image: "assets/icons/graduate.svg",
+      text: "My Competition",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/message-green-dot.svg",
-        text: "Audition",
-        arrow: true),
+      image: "assets/icons/message-green-dot.svg",
+      text: "Audition",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/bookmark.svg", text: "Bookmark", arrow: true),
+      image: "assets/icons/bookmark.svg",
+      text: "Bookmark",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/people.svg", text: "Collaborators", arrow: true),
+      image: "assets/icons/people.svg",
+      text: "Collaborators",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/envelop.svg",
-        text: "Follow Requests",
-        arrow: true),
+      image: "assets/icons/envelop.svg",
+      text: "Follow Requests",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/message-green-dot.svg",
-        text: "Settings",
-        arrow: true),
+      image: "assets/icons/message-green-dot.svg",
+      text: "Settings",
+      arrow: true,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/calendar.svg", text: "Marketplace", arrow: false),
+      image: "assets/icons/calendar.svg",
+      text: "Marketplace",
+      arrow: false,
+      ontap: () {},
+    ),
     DrawerOption(
-        image: "assets/icons/graduate.svg",
-        text: "Helps and FAQs",
-        arrow: true),
-    DrawerOption(image: "assets/icons/logout.svg", text: "Logout", arrow: false)
+      image: "assets/icons/graduate.svg",
+      text: "Helps and FAQs",
+      arrow: true,
+      ontap: () {},
+    ),
+    DrawerOption(
+        image: "assets/icons/logout.svg",
+        text: "Logout",
+        arrow: false,
+        ontap: () async {
+          await const FlutterSecureStorage().deleteAll();
+          FirebaseAuth.instance.signOut();
+          navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              AppRouter.loginScreen, (route) => false);
+        })
   ];
 
   @override
@@ -85,7 +136,10 @@ class Drawerr extends StatelessWidget {
             itemCount: options.length - 1,
             itemBuilder: (ctx, i) {
               return Column(children: [
-                DrawerOptions(options: options, i: i),
+                DrawerOptions(
+                  options: options,
+                  i: i,
+                ),
                 if (i != options.length - 2) const CustomDivider()
               ]);
             }),
@@ -100,9 +154,12 @@ class Drawerr extends StatelessWidget {
 }
 
 class DrawerOptions extends StatelessWidget {
-  const DrawerOptions(
-      {Key? key, required this.options, required this.i, this.color})
-      : super(key: key);
+  const DrawerOptions({
+    Key? key,
+    required this.options,
+    required this.i,
+    this.color,
+  }) : super(key: key);
 
   final List<DrawerOption> options;
   final int i;
@@ -111,7 +168,7 @@ class DrawerOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: options[i].ontap,
       child: Container(
           color: color,
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),

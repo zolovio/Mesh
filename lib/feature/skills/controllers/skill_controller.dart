@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/state_manager.dart';
 import 'package:mesh/feature/skills/models/active_skills_model.dart';
 import 'package:mesh/feature/skills/services/remote_services.dart';
@@ -11,7 +12,7 @@ class SkillsController extends GetxController {
   var isSaving = false.obs;
   var skillsList = <ActiveSkillsModel>[].obs;
   var selectedskillsList = [].obs;
-
+  final storage = FlutterSecureStorage();
   @override
   void onInit() {
     fetchSkills();
