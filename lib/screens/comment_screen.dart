@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mesh/controller/post_like_controller.dart';
+import 'package:mesh/feature/home_screens/controllers/post_like_controller.dart';
 import 'package:mesh/widgets/bottom_text_bar.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 
@@ -13,7 +13,6 @@ class CommentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(controller.postId.value);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,

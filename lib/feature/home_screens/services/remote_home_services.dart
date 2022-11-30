@@ -152,7 +152,7 @@ class RemoteHomeServices {
       if (kDebugMode) {
         print(response.body);
       }
-      controller.isupLoading(false);
+      controller.isUploading(false);
       controller.update();
       print(response.statusCode);
       print(response.body);
@@ -165,7 +165,7 @@ class RemoteHomeServices {
     }
   }
 
-  static Future getLikesCount(String postId) async {
+  static Future<LikeCount> getLikesCount(String postId) async {
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.get(
@@ -185,9 +185,12 @@ class RemoteHomeServices {
       LikeCount likeCount =
           LikeCount.fromJson(jsonDecode(response.body)["data"][0]);
       return likeCount;
-      // return jsonDecode(response.body)["data"];
     } else {
-      //show error message
+      print(response.statusCode);
+      // show error message
+      FlutterToast.show(
+          message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
       return LikeCount();
     }
   }
@@ -326,6 +329,33 @@ class RemoteHomeServices {
     } else {
       //show error message
       return LikePost();
+    }
+  }
+
+  static Future fetchQuestions() async {
+    print('fetching questions');
+    var authData = await controller.storage.read(key: 'authTokenData');
+
+    var response = await client.get(
+      Uri.parse(
+          'https://mesh.kodagu.today/items/question?fiter[statu][_eq]=published&fields=*,user_created.*'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+    if (response.statusCode == 200) {
+      print(response.body);
+      return jsonDecode(response.body.toString());
+    } else {
+      print(response.statusCode);
+      // show error message
+      FlutterToast.show(
+          message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
+      return null;
     }
   }
 }

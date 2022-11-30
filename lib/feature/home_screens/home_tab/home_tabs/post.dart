@@ -2,11 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mesh/configs/app_router.dart';
-import 'package:mesh/controller/post_like_controller.dart';
-import 'package:mesh/controller/questions_controller.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/post_model.dart';
+import 'package:mesh/feature/home_screens/models/questions_model.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/post_widget.dart';
 import 'package:mesh/widgets/video_player/mock_data.dart';
@@ -22,6 +21,10 @@ class Post extends StatelessWidget {
       builder: (controller) {
         if (kDebugMode) {
           print(controller.postsList.length);
+          print(controller.questionsList.length);
+          print(controller.questionsList);
+          print("List Count");
+          print(controller.likeCountList);
         }
         return controller.isLoading.value
             ? Center(
@@ -36,11 +39,16 @@ class Post extends StatelessWidget {
                 : ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: (question) ? 4 : controller.postsList.length,
+                    itemCount: (question)
+                        ? controller.questionsList.length
+                        : controller.postsList.length,
                     itemBuilder: (ctx, i) {
                       return _Post(
                         question: question,
                         postdata: controller.postsList[i],
+                        questionsData:
+                            question ? controller.questionsList[i] : Question(),
+                        likeCount: controller.likeCountList[i],
                       );
                     },
                   );
@@ -54,10 +62,14 @@ class _Post extends StatefulWidget {
     Key? key,
     required this.question,
     this.postdata,
+    required this.questionsData,
+    required this.likeCount,
   }) : super(key: key);
 
   final bool question;
   final PostModel? postdata;
+  final Question questionsData;
+  final String likeCount;
 
   @override
   State<_Post> createState() => _PostStatee();
@@ -66,11 +78,8 @@ class _Post extends StatefulWidget {
 class _PostStatee extends State<_Post> {
   bool isPressed = false;
   final controller = Get.find<HomeController>();
-
-  final postController = Get.put(PostLikeController());
-  final dataController = Get.put(DataController());
-  late String likeCount;
   bool isLoading = false;
+  late String likeCount;
 
   @override
   void initState() {
@@ -85,22 +94,20 @@ class _PostStatee extends State<_Post> {
 
   postLikeCount() async {
     isLoading = true;
-    String? count = await postController.getLikesCount(widget.postdata!.id);
+    String? count = await controller.getLikesCount(widget.postdata!.id);
 
-    setState(() {
-      likeCount = count!;
-      ;
-    });
+    print("Count -----------------");
+    print(count);
+    // setState(() {
+    likeCount = count!;
+    // });
     isLoading = false;
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    // dataController.getQuestionLikesById("fc3ad83a-34c4-496f-b2e5-45735908dd31");
-    postController.postCommentedByUser(widget.postdata!.id);
+    // final screenHeight = MediaQuery.of(context).size.height;
 
     return isLoading
         ? Container()
@@ -149,7 +156,7 @@ class _PostStatee extends State<_Post> {
                           _PostDetails(
                             screenWidth: screenWidth,
                             hashtags: [],
-                            posttitle: '',
+                            postTitle: '',
                             onTap: () {
                               setState(() {
                                 isPressed = !isPressed;
@@ -158,10 +165,11 @@ class _PostStatee extends State<_Post> {
                             question: widget.question,
                             onPressed: isPressed,
                             postId: widget.postdata!.id,
-                            postController: postController,
+                            controller: controller,
                             likeCount: likeCount,
-                            postLike: postController.userLikedPostsList.value
+                            postLike: controller.userLikedPostsList
                                 .contains(widget.postdata!.id),
+                            questionText: widget.questionsData.body!,
                           ),
                       ]),
                 ),
@@ -175,7 +183,7 @@ class _PostStatee extends State<_Post> {
                         borderRadius: BorderRadius.circular(10)),
                     child: _PostDetails(
                       hashtags: widget.postdata!.tags,
-                      posttitle: widget.postdata!.body.toString(),
+                      postTitle: widget.postdata!.body.toString(),
                       question: widget.question,
                       screenWidth: screenWidth,
                       onTap: () {
@@ -185,10 +193,12 @@ class _PostStatee extends State<_Post> {
                       },
                       onPressed: isPressed,
                       postId: widget.postdata!.id,
-                      postController: postController,
+                      controller: controller,
                       likeCount: likeCount,
-                      postLike: postController.userLikedPostsList.value
+                      postLike: controller.userLikedPostsList
                           .contains(widget.postdata!.id),
+                      questionText:
+                          widget.question ? widget.questionsData.body! : "",
                     ),
                   ),
               ],
@@ -203,27 +213,29 @@ class _PostDetails extends StatelessWidget {
       required this.screenWidth,
       required this.onTap,
       required this.question,
-      required this.posttitle,
+      required this.postTitle,
       required this.hashtags,
-      this.mentioneduser = ' BishenPonnanna',
+      this.mentionedUser = ' BishenPonnanna',
       required this.onPressed,
       required this.postId,
       required this.postLike,
-      required this.postController,
-      required this.likeCount})
+      required this.controller,
+      required this.likeCount,
+      required this.questionText})
       : super(key: key);
 
   final double screenWidth;
   final void Function()? onTap;
   final bool onPressed;
   final bool question;
-  final String posttitle;
-  final String mentioneduser;
+  final String postTitle;
+  final String mentionedUser;
   final List hashtags;
   final String postId;
   final bool postLike;
-  final PostLikeController postController;
+  final HomeController controller;
   final String likeCount;
+  final String questionText;
 
   @override
   Widget build(BuildContext context) {
@@ -234,8 +246,8 @@ class _PostDetails extends StatelessWidget {
             ? PostCaption(
                 tags: this.hashtags,
                 screenWidth: screenWidth,
-                text:
-                    "Another upcoming game strom.be ready urban city.Darklight Back 😍")
+                text: questionText,
+              )
             : Padding(
                 padding: const EdgeInsets.only(
                     bottom: 3, left: 13, right: 16, top: 13),
@@ -243,15 +255,15 @@ class _PostDetails extends StatelessWidget {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () async {
-                        if (!postController.postLike.value) {
-                          postController.postLike.value =
-                              await postController.likeAPost(postId);
+                        if (!controller.postLike.value) {
+                          controller.postLike.value =
+                              await controller.likeAPost(postId);
 
                           print(postId);
-                          postController.getLikesCount(postId);
+                          controller.getLikesCount(postId);
                         } else {
                           List<Errors>? postUnlike =
-                              await postController.unlikeAPost(postId);
+                              await controller.unlikeAPost(postId);
                           String? errorMessage = postUnlike!.first.message;
 
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -261,12 +273,12 @@ class _PostDetails extends StatelessWidget {
                       },
                       child: _PostIcon(
                           image: postLike
-                              ? postController.postLike.value == true
+                              ? controller.postLike.value == true
                                   ? "assets/images/post-liked.png"
                                   : "assets/images/post-unliked.png"
                               : "assets/images/post-unliked.png",
-                          text: postController.postLike.value == true
-                              ? (int.parse(postController.like_count.value) + 1)
+                          text: controller.postLike.value == true
+                              ? (int.parse(controller.like_count.value) + 1)
                                   .toString()
                               : likeCount),
                     ),
@@ -275,8 +287,8 @@ class _PostDetails extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        postController.postId.value = postId;
-                        print(postController.postId.value);
+                        controller.postId.value = postId;
+                        print(controller.postId.value);
                         Get.toNamed(AppRouter.commentScreen, arguments: postId);
                       },
                       child: const _PostIcon(
@@ -329,9 +341,9 @@ class _PostDetails extends StatelessWidget {
               )
             : PostCaption(
                 tags: this.hashtags,
-                user: this.mentioneduser,
+                user: this.mentionedUser,
                 screenWidth: screenWidth,
-                text: this.posttitle),
+                text: this.postTitle),
 
         // PostDate(
         //   screenWidth: screenWidth,

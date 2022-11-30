@@ -7,8 +7,8 @@ import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/file_model.dart';
 import 'package:mesh/feature/home_screens/models/like_post_model.dart';
 import 'package:mesh/feature/home_screens/models/post_like_model.dart';
-import 'package:mesh/feature/home_screens/models/post_liked_by_user.dart';
 import 'package:mesh/feature/home_screens/models/post_model.dart';
+import 'package:mesh/feature/home_screens/models/questions_model.dart';
 import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 
@@ -20,32 +20,32 @@ class HomeController extends GetxController {
     const HomeTab(),
     Container(),
     NotificationTab(),
-    const UserInfoScreen(
-      myprofile: true,
-    )
+    const UserInfoScreen(myprofile: true)
   ].obs;
-  var selectedpage = 0.obs;
+
+  var selectedPage = 0.obs;
   var tags = false.obs;
   var business = false.obs;
 
   var isLoading = true.obs;
-  var isupLoading = false.obs;
+  var isUploading = false.obs;
   var postsList = <PostModel>[].obs;
   var filesList = <FileModel>[].obs;
 
-  List<LikeCount>? likeCount = <LikeCount>[].obs;
+  var postIdsList = <String>[].obs;
+  var likeCountList = <String>[].obs;
   var like_count = "0".obs;
   var like_post = false.obs;
   var postId = "".obs;
   var postLike = false.obs;
   var userLikedPostsList = [].obs;
 
+  var questionsList = <Question>[].obs;
+
   FlutterSecureStorage storage = FlutterSecureStorage();
 
   @override
   void onInit() {
-    // fetchAllPosts();
-    // RemoteHomeServices.refreshToken();
     super.onInit();
   }
 
@@ -57,6 +57,8 @@ class HomeController extends GetxController {
       if (posts != null) {
         for (var post in posts['data']) {
           postsList.add(PostModel.fromJson(post));
+          String? count = await getLikesCount(PostModel.fromJson(post).id);
+          likeCountList.add(count!);
         }
         isLoading(false);
 
@@ -79,7 +81,7 @@ class HomeController extends GetxController {
     required String posttype,
   }) async {
     try {
-      isupLoading(true);
+      isUploading(true);
       var data = await RemoteHomeServices.UploadFile(filepath);
       print('all posts: ${data['data']}');
       if (data != null) {
@@ -97,7 +99,7 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       FlutterToast.show(message: 'Error while uploading post.');
-      isupLoading(false);
+      isUploading(false);
       return null;
     }
   }
@@ -122,10 +124,10 @@ class HomeController extends GetxController {
       if (data != null) {
         try {
           // filesList.add(FileModel.fromJson(data));
-          isupLoading(false);
+          isUploading(false);
           FlutterToast.show(message: 'Post Uploaded');
         } catch (e) {
-          isupLoading(false);
+          isUploading(false);
           FlutterToast.show(message: 'Error while uploading post.1');
         }
       }
@@ -136,7 +138,7 @@ class HomeController extends GetxController {
     } catch (e) {
       FlutterToast.show(message: 'Error while uploading post.$e');
 
-      isupLoading(false);
+      isUploading(false);
     }
   }
 
@@ -146,7 +148,6 @@ class HomeController extends GetxController {
 
       LikeCount likeCount = await RemoteHomeServices.getLikesCount(postId);
 
-      like_count.value = likeCount.count!;
       return likeCount.count;
     } finally {
       isLoading(false);
@@ -196,46 +197,68 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<List<Data>?> postLikedByUser(String postId) async {
+  // Future<List<Data>?> postLikedByUser(String postId) async {
+  //   try {
+  //     isLoading(true);
+  //
+  //     PostLikedByUser userLike =
+  //         await RemoteHomeServices.postLikedByUser(postId);
+  //
+  //     if (userLike.data?.first.id != null) {
+  //       if (userLikedPostsList.isEmpty)
+  //         userLikedPostsList.value = userLike.data!;
+  //       postLike(true);
+  //       return userLike.data;
+  //     } else {
+  //       postLike(false);
+  //       return [];
+  //     }
+  //   } finally {
+  //     isLoading(false);
+  //   }
+  // }
+  //
+  // // Future<List<Data>?>
+  // postCommentedByUser(String postId) async {
+  //   try {
+  //     isLoading(true);
+  //
+  //     // PostLikedByUser userLike =
+  //     // await PostApi.postCommentedByUser(postId);
+  //
+  //     // if (userLike.data?.first.id != null) {
+  //     //   if (userLikedPostsList.isEmpty)
+  //     //     userLikedPostsList.value = userLike.data!;
+  //     //   postLike(true);
+  //     //   return userLike.data;
+  //     // } else {
+  //     //   postLike(false);
+  //     //   return [];
+  //     // }
+  //   } finally {
+  //     isLoading(false);
+  //   }
+  // }
+
+  void fetchAllQuestions() async {
     try {
       isLoading(true);
+      var questions = await RemoteHomeServices.fetchQuestions();
+      print('all questions: ${questions['data']}');
+      if (questions != null) {
+        for (var question in questions['data']) {
+          questionsList.add(Question.fromJson(question));
+        }
+        isLoading(false);
 
-      PostLikedByUser userLike =
-          await RemoteHomeServices.postLikedByUser(postId);
-
-      if (userLike.data?.first.id != null) {
-        if (userLikedPostsList.isEmpty)
-          userLikedPostsList.value = userLike.data!;
-        postLike(true);
-        return userLike.data;
-      } else {
-        postLike(false);
-        return [];
+        if (kDebugMode) {
+          print(questionsList);
+        }
+        update();
       }
     } finally {
       isLoading(false);
-    }
-  }
-
-  // Future<List<Data>?>
-  postCommentedByUser(String postId) async {
-    try {
-      isLoading(true);
-
-      // PostLikedByUser userLike =
-      // await PostApi.postCommentedByUser(postId);
-
-      // if (userLike.data?.first.id != null) {
-      //   if (userLikedPostsList.isEmpty)
-      //     userLikedPostsList.value = userLike.data!;
-      //   postLike(true);
-      //   return userLike.data;
-      // } else {
-      //   postLike(false);
-      //   return [];
-      // }
-    } finally {
-      isLoading(false);
+      update();
     }
   }
 }

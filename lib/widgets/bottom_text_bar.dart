@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mesh/controller/post_like_controller.dart';
+import 'package:mesh/feature/home_screens/controllers/post_like_controller.dart';
 import 'package:mesh/widgets/icon_button.dart';
 
 class BottomTextBar extends StatelessWidget {
@@ -34,7 +34,6 @@ class BottomTextBar extends StatelessWidget {
             controller: controller,
             onChanged: (value) {
               postLikeController.textFieldValue.value = value;
-              print(postLikeController.textFieldValue.value);
             },
             decoration: InputDecoration(
                 prefixIcon: (emoji)

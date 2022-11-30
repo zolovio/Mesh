@@ -125,7 +125,7 @@ class UserCreated {
 
   factory UserCreated.fromJson(Map<String, dynamic> json) => UserCreated(
         id: json["id"],
-        firstName: json["first_name"] == null ? null : json["first_name"],
+        firstName: json["first_name"] == null ? "" : json["first_name"],
         lastName: json["last_name"],
         email: json["email"],
         password: json["password"],

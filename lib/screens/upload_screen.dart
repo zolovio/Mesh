@@ -338,7 +338,7 @@ class _PostQuesState extends State<PostQues> {
                     alignment: ((!widget.ques && _image == null))
                         ? Alignment.bottomCenter
                         : Alignment.topCenter,
-                    child: (controller.isupLoading.value
+                    child: (controller.isUploading.value
                         ? Center(
                             child: CircularProgressIndicator(
                               color: Colors.teal,
