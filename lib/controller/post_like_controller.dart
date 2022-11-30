@@ -14,6 +14,7 @@ class PostLikeController extends GetxController {
   var postId = "".obs;
   var postLike = false.obs;
   var userLikedPostsList = [].obs;
+  RxString textFieldValue = "".obs;
 
   // PostLikeController(this.userPostId);
 
@@ -110,6 +111,50 @@ class PostLikeController extends GetxController {
         postLike(false);
         return [];
       }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  // Future<List<Data>?>
+  commentOnAPost(String comment, String postId) async {
+    try {
+      isLoading(true);
+
+      // PostLikedByUser userLike =
+      await PostApi.commentOnAPost(comment, postId);
+
+      // if (userLike.data?.first.id != null) {
+      //   if (userLikedPostsList.isEmpty)
+      //     userLikedPostsList.value = userLike.data!;
+      //   postLike(true);
+      //   return userLike.data;
+      // } else {
+      //   postLike(false);
+      //   return [];
+      // }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  // Future<List<Data>?>
+  postCommentedByUser(String postId) async {
+    try {
+      isLoading(true);
+
+      // PostLikedByUser userLike =
+      await PostApi.postCommentedByUser(postId);
+
+      // if (userLike.data?.first.id != null) {
+      //   if (userLikedPostsList.isEmpty)
+      //     userLikedPostsList.value = userLike.data!;
+      //   postLike(true);
+      //   return userLike.data;
+      // } else {
+      //   postLike(false);
+      //   return [];
+      // }
     } finally {
       isLoading(false);
     }

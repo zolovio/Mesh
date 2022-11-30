@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mesh/configs/app_router.dart';
 import 'package:mesh/controller/post_like_controller.dart';
+import 'package:mesh/controller/questions_controller.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/post_model.dart';
@@ -67,6 +68,7 @@ class _PostStatee extends State<_Post> {
   final controller = Get.find<HomeController>();
 
   final postController = Get.put(PostLikeController());
+  final dataController = Get.put(DataController());
   late String likeCount;
   bool isLoading = false;
 
@@ -96,6 +98,9 @@ class _PostStatee extends State<_Post> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    // dataController.getQuestionLikesById("fc3ad83a-34c4-496f-b2e5-45735908dd31");
+    postController.postCommentedByUser(widget.postdata!.id);
 
     return isLoading
         ? Container()
@@ -270,7 +275,9 @@ class _PostDetails extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(AppRouter.commentScreen);
+                        postController.postId.value = postId;
+                        print(postController.postId.value);
+                        Get.toNamed(AppRouter.commentScreen, arguments: postId);
                       },
                       child: const _PostIcon(
                           image: "assets/images/comment.png", text: "5"),

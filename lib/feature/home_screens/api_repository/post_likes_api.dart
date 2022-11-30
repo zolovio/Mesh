@@ -121,7 +121,38 @@ class PostApi {
     }
   }
 
-  static Future<LikePost> commentOnAPost(String comment, String postId) async {
+  // static Future<LikePost>
+  static Future postCommentedByUser(String postId) async {
+    var authData = await controller.storage.read(key: 'authTokenData');
+    var userData = await controller.storage.read(key: 'userData');
+    print(userData);
+
+    var response = await client.get(
+      Uri.parse(
+          "https://mesh.kodagu.today/items/post_comments?filter[post][_eq]=$postId&filter[user_created][_eq]=${json.decode(userData!)["data"][0]["user_created"]}"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print(response.body);
+
+      // LikePost likePost = LikePost.fromJson(jsonDecode(response.body));
+      // return likePost;
+      // return jsonDecode(response.body)["data"];
+    } else {
+      //show error message
+      print(response);
+      // return LikePost();
+    }
+  }
+
+  // static Future<LikePost>
+  static Future commentOnAPost(String comment, String postId) async {
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.post(
@@ -138,12 +169,12 @@ class PostApi {
     if (response.statusCode == 200) {
       print(response.body);
 
-      LikePost likePost = LikePost.fromJson(jsonDecode(response.body));
-      return likePost;
+      // LikePost likePost = LikePost.fromJson(jsonDecode(response.body));
+      // return likePost;
       // return jsonDecode(response.body)["data"];
     } else {
       //show error message
-      return LikePost();
+      // return LikePost();
     }
   }
 }

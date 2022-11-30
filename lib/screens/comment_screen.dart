@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mesh/controller/post_like_controller.dart';
 import 'package:mesh/widgets/bottom_text_bar.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 
 import '../widgets/icon_button.dart';
 
 class CommentScreen extends StatelessWidget {
-  const CommentScreen({Key? key}) : super(key: key);
+  final PostLikeController controller = Get.find<PostLikeController>();
+
+  CommentScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(controller.postId.value);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -42,7 +47,7 @@ class CommentScreen extends StatelessWidget {
                     return const _Comment();
                   }),
             ),
-            const BottomTextBar()
+            BottomTextBar(postId: controller.postId.value)
           ],
         ));
   }
