@@ -2,11 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:mesh/feature/auth/domain/model/comment_model.dart';
 import 'package:mesh/feature/home_screens/home_tab/notification_tab.dart';
+import 'package:mesh/feature/home_screens/models/comment_by_user_model.dart';
+import 'package:mesh/feature/home_screens/models/create_question_model.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/file_model.dart';
 import 'package:mesh/feature/home_screens/models/like_post_model.dart';
 import 'package:mesh/feature/home_screens/models/post_like_model.dart';
+import 'package:mesh/feature/home_screens/models/post_liked_by_user.dart';
 import 'package:mesh/feature/home_screens/models/post_model.dart';
 import 'package:mesh/feature/home_screens/models/questions_model.dart';
 import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
@@ -33,7 +37,7 @@ class HomeController extends GetxController {
   var filesList = <FileModel>[].obs;
 
   var postIdsList = <String>[].obs;
-  var likeCountList = <String>[].obs;
+  var postLCList = <String>[].obs;
   var like_count = "0".obs;
   var like_post = false.obs;
   var postId = "".obs;
@@ -41,6 +45,8 @@ class HomeController extends GetxController {
   var userLikedPostsList = [].obs;
 
   var questionsList = <Question>[].obs;
+
+  RxString textFieldValue = "".obs;
 
   FlutterSecureStorage storage = FlutterSecureStorage();
 
@@ -54,17 +60,30 @@ class HomeController extends GetxController {
       isLoading(true);
       var posts = await RemoteHomeServices.fetchposts();
       print('all posts: ${posts['data']}');
+
       if (posts != null) {
         for (var post in posts['data']) {
+          String postId = PostModel.fromJson(post).id;
+
+          String? count = await getLikesCount(postId);
+
+          postLCList.add(count!);
+
+          Count? userLike = await postLikedByUser(postId);
+
+          if (userLike!.id != "0") {
+            userLikedPostsList.add(true);
+          } else {
+            userLikedPostsList.add(false);
+          }
+
           postsList.add(PostModel.fromJson(post));
-          String? count = await getLikesCount(PostModel.fromJson(post).id);
-          likeCountList.add(count!);
         }
-        isLoading(false);
 
         if (kDebugMode) {
           print(postsList);
         }
+
         update();
       }
     } finally {
@@ -144,115 +163,137 @@ class HomeController extends GetxController {
 
   Future<String?> getLikesCount(String postId) async {
     try {
-      isLoading(true);
-
       LikeCount likeCount = await RemoteHomeServices.getLikesCount(postId);
 
       return likeCount.count;
     } finally {
-      isLoading(false);
+      update();
     }
   }
 
-  Future<bool> likeAPost(String postId) async {
+  Future<Count?> postLikedByUser(String postId) async {
     try {
-      isLoading(true);
+      Count userLike = await RemoteHomeServices.postLikedByUser(postId);
 
+      return userLike;
+    } finally {
+      update();
+    }
+  }
+
+  Future<bool> likeAPost(String postId, int index) async {
+    try {
       LikePost likePost = await RemoteHomeServices.likeAPost(postId);
 
       if (likePost.like!.id != null) {
-        postLike(true);
+        userLikedPostsList[index] = true;
+
+        String? count = await getLikesCount(postId);
+
+        postLCList[index] = count!;
+
+        Count? userLike = await postLikedByUser(postId);
+
+        if (userLike!.id != "0") {
+          userLikedPostsList[index] = true;
+        } else {
+          userLikedPostsList[index] = false;
+        }
+
+        update();
+
         return true;
       } else {
-        postLike(false);
         return false;
       }
-
-      // like_count.value = likeCount.count!;
     } finally {
-      isLoading(false);
+      update();
     }
   }
 
   Future<List<Errors>?> unlikeAPost(String postId) async {
     try {
-      isLoading(true);
-
       ErrorMessage unlikePost = await RemoteHomeServices.unlikeAPost(postId);
 
-      // print(unlikePost.toJson());
-
-      // postLike.value = false;
-
       return unlikePost.errors;
-      // if (likePost.like!.id != null) {
-      //   return true;
-      // } else {
-      //   return false;
-      // }
+    } finally {}
+  }
 
-      // like_count.value = likeCount.count!;
+  Future<Comment?> commentOnAPost(String comment, String postId) async {
+    try {
+      isLoading(true);
+
+      Comment commented =
+          await RemoteHomeServices.commentOnAPost(comment, postId);
+      print(commented);
+
+      return commented;
     } finally {
       isLoading(false);
     }
   }
 
-  // Future<List<Data>?> postLikedByUser(String postId) async {
-  //   try {
-  //     isLoading(true);
-  //
-  //     PostLikedByUser userLike =
-  //         await RemoteHomeServices.postLikedByUser(postId);
-  //
-  //     if (userLike.data?.first.id != null) {
-  //       if (userLikedPostsList.isEmpty)
-  //         userLikedPostsList.value = userLike.data!;
-  //       postLike(true);
-  //       return userLike.data;
-  //     } else {
-  //       postLike(false);
-  //       return [];
-  //     }
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
-  //
-  // // Future<List<Data>?>
-  // postCommentedByUser(String postId) async {
-  //   try {
-  //     isLoading(true);
-  //
-  //     // PostLikedByUser userLike =
-  //     // await PostApi.postCommentedByUser(postId);
-  //
-  //     // if (userLike.data?.first.id != null) {
-  //     //   if (userLikedPostsList.isEmpty)
-  //     //     userLikedPostsList.value = userLike.data!;
-  //     //   postLike(true);
-  //     //   return userLike.data;
-  //     // } else {
-  //     //   postLike(false);
-  //     //   return [];
-  //     // }
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
+  Future<CommentByUserModel> postCommentedByUser(String postId) async {
+    try {
+      isLoading(true);
+
+      CommentByUserModel commentByUserModel =
+          await RemoteHomeServices.postCommentedByUser(postId);
+
+      return commentByUserModel;
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<CreateQuestionModel?> createQuestion({
+    required String quesBody,
+    required quesTags,
+  }) async {
+    try {
+      CreateQuestionModel data = await RemoteHomeServices.createQuestion(
+        quesBody: quesBody,
+        quesTags: quesTags,
+      );
+
+      if (data != null) {
+        try {
+          isUploading(false);
+          FlutterToast.show(message: 'Post Uploaded');
+        } catch (e) {
+          isUploading(false);
+          FlutterToast.show(message: 'Error while uploading post.1');
+        }
+      }
+      if (kDebugMode) {
+        print(filesList);
+        update();
+      }
+      return data;
+    } catch (e) {
+      FlutterToast.show(message: 'Error while uploading post.$e');
+
+      isUploading(false);
+    }
+  }
 
   void fetchAllQuestions() async {
     try {
       isLoading(true);
+
+      if (questionsList.isNotEmpty) questionsList.clear();
+
       var questions = await RemoteHomeServices.fetchQuestions();
+
       print('all questions: ${questions['data']}');
+
       if (questions != null) {
         for (var question in questions['data']) {
           questionsList.add(Question.fromJson(question));
         }
-        isLoading(false);
 
         if (kDebugMode) {
-          print(questionsList);
+          print(questionsList.length);
         }
         update();
       }

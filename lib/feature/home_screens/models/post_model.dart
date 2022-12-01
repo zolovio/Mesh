@@ -126,7 +126,7 @@ class UserCreated {
   factory UserCreated.fromJson(Map<String, dynamic> json) => UserCreated(
         id: json["id"],
         firstName: json["first_name"] == null ? "" : json["first_name"],
-        lastName: json["last_name"],
+        lastName: json["last_name"] ?? "",
         email: json["email"],
         password: json["password"],
         location: json["location"],
@@ -141,7 +141,7 @@ class UserCreated {
         role: json["role"],
         token: json["token"],
         lastAccess: DateTime.parse(json["last_access"]),
-        lastPage: json["last_page"],
+        lastPage: json["last_page"] ?? "",
         provider: json["provider"],
         externalIdentifier: json["external_identifier"],
         authData: json["auth_data"],

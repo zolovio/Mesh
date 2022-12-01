@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:mesh/dependency/flutter_toast_dep.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/feature/home_screens/models/comment_by_user_model.dart';
+import 'package:mesh/feature/home_screens/models/create_question_model.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/like_post_model.dart';
 import 'package:mesh/feature/home_screens/models/post_like_model.dart';
@@ -35,6 +37,8 @@ class RemoteHomeServices {
     );
     if (response.statusCode == 200) {
       print(response.body.toString());
+      // await storage.write(
+      //     key: 'authTokenData', value: AuthTokenModel.serialize(success!));
       return jsonDecode(response.body.toString());
     } else {
       print(response.statusCode);
@@ -64,6 +68,8 @@ class RemoteHomeServices {
     if (response.statusCode == 200) {
       // var jsonString = response.body.toString();
       print(response.body);
+      refreshToken();
+
       return jsonDecode(response.body.toString());
     } else {
       print(response.statusCode);
@@ -181,6 +187,7 @@ class RemoteHomeServices {
 
     if (response.statusCode == 200) {
       print(response.body);
+      print(jsonDecode(response.body)["data"][0]);
 
       LikeCount likeCount =
           LikeCount.fromJson(jsonDecode(response.body)["data"][0]);
@@ -195,7 +202,40 @@ class RemoteHomeServices {
     }
   }
 
-  static Future likeAPost(String postId) async {
+  static Future<Count> postLikedByUser(String postId) async {
+    var authData = await controller.storage.read(key: 'authTokenData');
+    var userData = await controller.storage.read(key: 'userData');
+
+    var response = await client.get(
+      Uri.parse(
+          "https://mesh.kodagu.today/items/post_likes?filter[post][_eq]=$postId&filter[user_created][_eq]=${json.decode(userData!)["data"][0]["id"]}&aggregate[count]=id"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print(response.body);
+
+      Count likedPost =
+          Count.fromJson(jsonDecode(response.body)["data"][0]["count"]);
+      return likedPost;
+    } else {
+      //show error message
+      ErrorMessage.fromJson(jsonDecode(response.body));
+
+      FlutterToast.show(
+          message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
+
+      return Count();
+    }
+  }
+
+  static Future<LikePost> likeAPost(String postId) async {
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.post(
@@ -217,6 +257,9 @@ class RemoteHomeServices {
       // return jsonDecode(response.body)["data"];
     } else {
       //show error message
+      FlutterToast.show(
+          message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
       return LikePost();
     }
   }
@@ -247,62 +290,10 @@ class RemoteHomeServices {
 
       ErrorMessage errorMessage =
           ErrorMessage.fromJson(jsonDecode(response.body));
+      FlutterToast.show(
+          message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
       return errorMessage;
-    }
-  }
-
-  static Future postLikedByUser(String postId) async {
-    var authData = await controller.storage.read(key: 'authTokenData');
-    var userData = await controller.storage.read(key: 'userData');
-
-    var response = await client.get(
-      Uri.parse(
-          "https://mesh.kodagu.today/items/post_likes?filter[post][_eq]=$postId&filter[user_created][_eq]=${json.decode(userData!)["data"][0]["id"]}"),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization':
-            'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      print(response.body);
-      PostLikedByUser likedPost =
-          PostLikedByUser.fromJson(jsonDecode(response.body));
-      return likedPost;
-    } else {
-      //show error message
-      return PostLikedByUser();
-    }
-  }
-
-  // static Future<LikePost>
-  static Future postCommentedByUser(String postId) async {
-    var authData = await controller.storage.read(key: 'authTokenData');
-    var userData = await controller.storage.read(key: 'userData');
-
-    var response = await client.get(
-      Uri.parse(
-          "https://mesh.kodagu.today/items/post_comments?filter[post][_eq]=$postId&filter[user_created][_eq]=${json.decode(userData!)["data"][0]["id"]}"),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization':
-            'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      print(response.body);
-
-      // LikePost likePost = LikePost.fromJson(jsonDecode(response.body));
-      // return likePost;
-      // return jsonDecode(response.body)["data"];
-    } else {
-      //show error message
-      print(response);
-      // return LikePost();
     }
   }
 
@@ -328,7 +319,43 @@ class RemoteHomeServices {
       // return jsonDecode(response.body)["data"];
     } else {
       //show error message
+      FlutterToast.show(
+          message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
+
       return LikePost();
+    }
+  }
+
+  static Future<CommentByUserModel> postCommentedByUser(String postId) async {
+    var authData = await controller.storage.read(key: 'authTokenData');
+    var userData = await controller.storage.read(key: 'userData');
+
+    var response = await client.get(
+      Uri.parse(
+          "https://mesh.kodagu.today/items/post_comments?filter[post][_eq]=$postId&filter[user_created][_eq]=${json.decode(userData!)["data"][0]["id"]}"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print(response.body);
+
+      CommentByUserModel writeCommentModel =
+          CommentByUserModel.fromJson(jsonDecode(response.body));
+      return writeCommentModel;
+    } else {
+      //show error message
+      FlutterToast.show(
+          message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
+      print(response.body);
+
+      return CommentByUserModel();
     }
   }
 
@@ -356,6 +383,44 @@ class RemoteHomeServices {
           message: jsonDecode(response.body)['errors'][0]['message']);
       refreshToken();
       return null;
+    }
+  }
+
+  static Future<CreateQuestionModel> createQuestion({
+    required quesBody,
+    required List<String> quesTags,
+  }) async {
+    var body = jsonEncode({
+      "status": "published",
+      "body": quesBody,
+      "tags": quesTags,
+    });
+
+    var authData = await controller.storage.read(key: 'authTokenData');
+
+    var response = await client.post(
+      Uri.parse('https://mesh.kodagu.today/items/question'),
+      body: body,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+    if (response.statusCode == 200) {
+      print(response.body.toString());
+      CreateQuestionModel createQuestion =
+          CreateQuestionModel.fromJson(jsonDecode(response.body.toString()));
+      return createQuestion;
+    } else {
+      //show error message
+      FlutterToast.show(
+          message: jsonDecode(response.body)['errors'][0]['message']);
+      refreshToken();
+
+      print(response.body);
+      return CreateQuestionModel();
     }
   }
 }

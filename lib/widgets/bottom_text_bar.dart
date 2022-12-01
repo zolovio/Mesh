@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mesh/feature/home_screens/controllers/post_like_controller.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/widgets/icon_button.dart';
 
 class BottomTextBar extends StatelessWidget {
@@ -10,7 +10,7 @@ class BottomTextBar extends StatelessWidget {
   final bool emoji;
   final String postId;
   TextEditingController controller = TextEditingController();
-  final PostLikeController postLikeController = PostLikeController();
+  final HomeController homeController = HomeController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class BottomTextBar extends StatelessWidget {
           child: TextField(
             controller: controller,
             onChanged: (value) {
-              postLikeController.textFieldValue.value = value;
+              homeController.textFieldValue.value = value;
             },
             decoration: InputDecoration(
                 prefixIcon: (emoji)
@@ -56,8 +56,8 @@ class BottomTextBar extends StatelessWidget {
         AppBarIconButton(
           image: "assets/images/send-white.png",
           onTap: () {
-            postLikeController.commentOnAPost(
-                postLikeController.textFieldValue.value, postId);
+            homeController.commentOnAPost(
+                homeController.textFieldValue.value, postId);
           },
           circle: true,
           green: true,

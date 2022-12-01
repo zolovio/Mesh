@@ -37,7 +37,7 @@ class PostLikeController extends GetxController {
   updateID(String postID) {
     postId.value = postID;
     getLikesCount(postId.value);
-    postLikedByUser(postID);
+    // postLikedByUser(postID);
   }
 
   Future<String?> getLikesCount(String postId) async {
@@ -96,33 +96,32 @@ class PostLikeController extends GetxController {
     }
   }
 
-  Future<List<Data>?> postLikedByUser(String postId) async {
+  // Future<List<UserLikePost>?> postLikedByUser(String postId) async {
+  //   try {
+  //     isLoading(true);
+  //
+  //     PostLikedByUser userLike = await PostApi.postLikedByUser(postId);
+  //
+  //     if (userLike.data?.first.id != null) {
+  //       if (userLikedPostsList.isEmpty)
+  //         userLikedPostsList.value = userLike.data!;
+  //       postLike(true);
+  //       return userLike.data;
+  //     } else {
+  //       postLike(false);
+  //       return [];
+  //     }
+  //   } finally {
+  //     isLoading(false);
+  //   }
+  // }
+
+  Future<List<Data>?> commentOnAPost(String comment, String postId) async {
     try {
       isLoading(true);
 
-      PostLikedByUser userLike = await PostApi.postLikedByUser(postId);
-
-      if (userLike.data?.first.id != null) {
-        if (userLikedPostsList.isEmpty)
-          userLikedPostsList.value = userLike.data!;
-        postLike(true);
-        return userLike.data;
-      } else {
-        postLike(false);
-        return [];
-      }
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  // Future<List<Data>?>
-  commentOnAPost(String comment, String postId) async {
-    try {
-      isLoading(true);
-
-      // PostLikedByUser userLike =
-      await PostApi.commentOnAPost(comment, postId);
+      PostLikedByUser commented = await PostApi.commentOnAPost(comment, postId);
+      print(commented);
 
       // if (userLike.data?.first.id != null) {
       //   if (userLikedPostsList.isEmpty)

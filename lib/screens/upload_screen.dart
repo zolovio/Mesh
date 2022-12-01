@@ -4,14 +4,14 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mesh/feature/home_screens/models/create_question_model.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 import 'package:mesh/widgets/icon_button.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../feature/home_screens/controllers/home_controller.dart';
-import '../feature/home_screens/services/remote_home_services.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({Key? key}) : super(key: key);
@@ -149,9 +149,6 @@ class _PostQuesState extends State<PostQues> {
   Widget build(BuildContext context) {
     return Obx(
       () => ListView(
-        // physics: const NeverScrollableScrollPhysics(),
-        // shrinkWrap: true,
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
               width: double.infinity,
@@ -241,19 +238,9 @@ class _PostQuesState extends State<PostQues> {
                             ],
                           ),
                   if (!widget.ques) const SizedBox(height: 15),
-                  // Container(
-                  //   alignment: Alignment.topLeft,
-                  //   child: const Text("Type Tag to Enter",
-                  //       style: TextStyle(
-                  //           fontSize: 16,
-                  //           fontWeight: FontWeight.w600,
-                  //           color: Color(0xff9D9D9D))),
-                  // ),
                   Form(
                     child: TextFormField(
                       controller: tag,
-                      // readOnly: controller.tags.value,
-
                       onFieldSubmitted: (val) {
                         print(tagList);
                         tagList.add(val.toString());
@@ -298,7 +285,6 @@ class _PostQuesState extends State<PostQues> {
                         for (String i in tagList)
                           GestureDetector(
                             onTap: () {
-                              // controller.tags.value = false;
                               tagList.remove(i);
                               setState(() {});
                             },
@@ -333,32 +319,33 @@ class _PostQuesState extends State<PostQues> {
               )),
           Expanded(
             child: SizedBox(
-                height: (!widget.ques && _image == null) ? 200 : null,
-                child: Align(
-                    alignment: ((!widget.ques && _image == null))
-                        ? Alignment.bottomCenter
-                        : Alignment.topCenter,
-                    child: (controller.isUploading.value
-                        ? Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.teal,
-                            ),
-                          )
-                        : CustomButton(
-                            margin: const EdgeInsets.all(13),
-                            textSize: 16,
-                            height: 59,
-                            fontWeight: FontWeight.w600,
-                            borderRadius: 8,
-                            primaryColor: (!widget.ques && _image == null ||
-                                    widget.ques && !controller.tags.value)
-                                ? const Color(0xffC9CBCB)
-                                : Theme.of(context).focusColor,
-                            buttonText: (!widget.ques && _image == null ||
-                                    widget.ques && !controller.tags.value)
-                                ? "Post"
-                                : "Upload",
-                            onPressed: (!widget.ques && _image == null ||
+              height: (!widget.ques && _image == null) ? 200 : null,
+              child: Align(
+                alignment: ((!widget.ques && _image == null))
+                    ? Alignment.bottomCenter
+                    : Alignment.topCenter,
+                child: (controller.isUploading.value
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.teal,
+                        ),
+                      )
+                    : CustomButton(
+                        margin: const EdgeInsets.all(13),
+                        textSize: 16,
+                        height: 59,
+                        fontWeight: FontWeight.w600,
+                        borderRadius: 8,
+                        primaryColor: (!widget.ques && _image == null ||
+                                widget.ques && !controller.tags.value)
+                            ? const Color(0xffC9CBCB)
+                            : Theme.of(context).focusColor,
+                        buttonText: (!widget.ques && _image == null ||
+                                widget.ques && !controller.tags.value)
+                            ? "Post"
+                            : "Upload",
+                        onPressed: (!widget.ques)
+                            ? (!widget.ques && _image == null ||
                                     widget.ques && !controller.tags.value)
                                 ? () {
                                     controller.UploadPost(
@@ -375,7 +362,17 @@ class _PostQuesState extends State<PostQues> {
                                       posttags: tagList,
                                       posttype: 'image',
                                     );
-                                  })))),
+                                  }
+                            : () async {
+                                CreateQuestionModel? model =
+                                    await controller.createQuestion(
+                                  quesBody: caption.text.toString(),
+                                  quesTags: tagList,
+                                );
+                              },
+                      )),
+              ),
+            ),
           ),
         ],
       ),

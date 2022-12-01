@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
-
 import 'package:mesh/feature/home_screens/home_tab/home_tabs/post.dart';
+import 'package:mesh/screens/search_screen.dart';
 // import 'package:mesh/screens/home_screens/home_tab/home_tabs/post.dart';
 import 'package:mesh/screens/user_info_screen.dart';
-import 'package:mesh/screens/search_screen.dart';
 import 'package:mesh/widgets/label.dart';
-import 'package:mesh/widgets/pages.dart';
 
 import '../../../widgets/icon_button.dart';
 
@@ -54,6 +52,7 @@ class _HomeTabState extends State<HomeTab> {
                         )),
                     GestureDetector(
                         onTap: () {
+                          controller.fetchAllQuestions();
                           setState(() {
                             _selectedIndex = 1;
                           });

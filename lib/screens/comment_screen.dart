@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mesh/feature/home_screens/controllers/post_like_controller.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/widgets/bottom_text_bar.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 
 import '../widgets/icon_button.dart';
 
 class CommentScreen extends StatelessWidget {
-  final PostLikeController controller = Get.find<PostLikeController>();
+  final HomeController controller = Get.find<HomeController>();
 
   CommentScreen({Key? key}) : super(key: key);
 
