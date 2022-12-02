@@ -20,12 +20,12 @@ class Post extends StatelessWidget {
     return GetBuilder<HomeController>(
       builder: (controller) {
         if (kDebugMode) {
-          print(controller.postsList.length);
-          print(controller.questionsList.length);
-          print(controller.postLCList.length);
-          print(controller.postLCList);
-          print(controller.quesLCList.length);
-          print(controller.userLikedPostsList.length);
+          // print(controller.postsList.length);
+          // print(controller.questionsList.length);
+          // print(controller.postLCList.length);
+          // print(controller.postLCList);
+          // print(controller.quesLCList.length);
+          // print(controller.userLikedPostsList.length);
         }
 
         return controller.isLoading.value &&
@@ -121,12 +121,9 @@ class _PostStatee extends State<_Post> {
 
   @override
   Widget build(BuildContext context) {
-    print("Like COunt " + widget.likeCount);
     final screenWidth = MediaQuery.of(context).size.width;
     // final screenHeight = MediaQuery.of(context).size.height;
 
-    // if (widget.question)
-    //   controller.getQuestionLikeCountById(widget.questionsData.id!);
     return Container(
       // width: screenWidth * 0.8,
       margin: const EdgeInsets.only(top: 3, bottom: 10, left: 10, right: 10),
@@ -288,7 +285,6 @@ class _PostDetails extends StatelessWidget {
                         } else {
                           await controller.likeAPost(postId, index);
 
-                          print(postId);
                           controller.getLikesCount(postId);
                         }
                       },
@@ -309,7 +305,6 @@ class _PostDetails extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         controller.postId.value = postId;
-                        print(controller.postId.value);
                         Get.toNamed(AppRouter.commentScreen, arguments: postId);
                       },
                       child: const _PostIcon(
@@ -346,7 +341,6 @@ class _PostDetails extends StatelessWidget {
                         } else {
                           await controller.likeAQuestion(questionId, index);
 
-                          print(questionId);
                           controller.getLikeCountByQuestionId(questionId);
                         }
                       },

@@ -157,7 +157,7 @@ class _HomeAppBar extends StatelessWidget {
                           if (!controller.business.value)
                             const SizedBox(width: 5),
                           if (!controller.business.value)
-                            Text("Bishen 😎",
+                            Text(controller.userName.value,
                                 style:
                                     Theme.of(context).textTheme.headlineLarge)
                         ],

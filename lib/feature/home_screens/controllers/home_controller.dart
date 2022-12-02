@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -33,6 +35,7 @@ class HomeController extends GetxController {
   var selectedPage = 0.obs;
   var tags = false.obs;
   var business = false.obs;
+  var userName = "".obs;
 
   var isLoading = true.obs;
   var isUploading = false.obs;
@@ -57,7 +60,18 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
+    readUserData();
     super.onInit();
+  }
+
+  readUserData() async {
+    var userData = await storage.read(key: 'userData');
+
+    userName.value = json.decode(userData!)["data"][0]["first_name"] == null
+        ? json.decode(userData)["data"][0]["last_name"] == null
+            ? "Bishen 😎"
+            : json.decode(userData)["data"][0]["last_name"]
+        : json.decode(userData)["data"][0]["first_name"];
   }
 
   void fetchAllPosts() async {
