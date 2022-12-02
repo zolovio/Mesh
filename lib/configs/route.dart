@@ -17,7 +17,7 @@ import 'package:mesh/screens/verify_screen.dart';
 List<GetPage<dynamic>>? getPages = [
   GetPage(name: "/select", page: () => const SelectSkillScreen()),
   GetPage(name: "/home", page: () => const HomeScreen()),
-  GetPage(name: "/comment", page: () => const CommentScreen()),
+  GetPage(name: "/comment", page: () => CommentScreen()),
   GetPage(name: "/messages", page: () => const MessageScreen()),
   GetPage(name: "/chat", page: () => const ChatScreen()),
   GetPage(name: "/upload", page: () => const UploadScreen()),

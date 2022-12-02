@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mesh/common/api_result.dart';
 import 'package:mesh/common/dio_client.dart';
 import 'package:mesh/common/dio_network_exceptions.dart';
@@ -93,6 +96,9 @@ class AuthApiRepository implements IAuthApiRepository {
       List<UserResModel> list = (response["data"] as List)
           .map((e) => UserResModel.fromJson(e))
           .toList();
+
+      await FlutterSecureStorage()
+          .write(key: 'userData', value: jsonEncode(response));
       return ApiResult.success(data: list);
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {

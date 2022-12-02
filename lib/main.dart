@@ -9,7 +9,14 @@ import 'package:mesh/feature/auth/ui/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: "AIzaSyC_RoHbDgMmwpRA5aab1ooT-Qf0W5KkgyQ",
+      appId: "1:449637707302:android:4ee67b639c32bb050940e7",
+      messagingSenderId: "Messaging sender id here",
+      projectId: "meshapp-d2b57",
+    ),
+  );
   runApp(
     const ProviderScope(
       child: MyApp(),

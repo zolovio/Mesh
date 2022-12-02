@@ -1,26 +1,34 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
-import 'package:mesh/feature/home_screens/models/post_model.dart';
-import 'package:mesh/widgets/video_player/mock_data.dart';
-
 import 'package:get/get.dart';
+import 'package:mesh/configs/app_router.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/feature/home_screens/models/error_message.dart';
+import 'package:mesh/feature/home_screens/models/post_model.dart';
+import 'package:mesh/feature/home_screens/models/questions_model.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/post_widget.dart';
+import 'package:mesh/widgets/video_player/mock_data.dart';
 import 'package:mesh/widgets/video_player/play_video.dart';
 
 class Post extends StatelessWidget {
   Post({Key? key, this.question = false}) : super(key: key);
   final bool question;
-  // final HomeController controller = HomeController();
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (controller) {
         if (kDebugMode) {
           print(controller.postsList.length);
+          print(controller.questionsList.length);
+          print(controller.postLCList.length);
+          print(controller.userLikedPostsList.length);
         }
-        return controller.isLoading.value
+
+        return controller.isLoading.value &&
+                (controller.postsList.isEmpty ||
+                    controller.questionsList.isEmpty)
             ? Center(
                 child: CircularProgressIndicator(
                   color: Colors.teal,
@@ -33,11 +41,35 @@ class Post extends StatelessWidget {
                 : ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: (question) ? 7 : controller.postsList.length,
+                    itemCount: (question)
+                        ? controller.questionsList.length
+                        : controller.postsList.length,
                     itemBuilder: (ctx, i) {
                       return _Post(
+                        index: i,
                         question: question,
-                        postdata: controller.postsList[i],
+                        postdata: question
+                            ? PostModel(
+                                id: '',
+                                status: '',
+                                dateCreated: DateTime.now(),
+                                userUpdated: '',
+                                dateUpdated: DateTime.now(),
+                                body: "",
+                                tags: [],
+                                file: "",
+                                type: "",
+                                userCreated: null)
+                            : controller.postsList[i],
+                        questionsData:
+                            question ? controller.questionsList[i] : Question(),
+                        likeCount: question
+                            ? ""
+                            : controller.postLCList[i].isNotEmpty
+                                ? controller.postLCList[i]
+                                : "",
+                        isLikedByUser:
+                            question ? false : controller.userLikedPostsList[i],
                       );
                     },
                   );
@@ -49,12 +81,20 @@ class Post extends StatelessWidget {
 class _Post extends StatefulWidget {
   const _Post({
     Key? key,
+    required this.index,
     required this.question,
     this.postdata,
+    required this.questionsData,
+    required this.likeCount,
+    required this.isLikedByUser,
   }) : super(key: key);
 
+  final int index;
   final bool question;
   final PostModel? postdata;
+  final Question questionsData;
+  final String likeCount;
+  final bool isLikedByUser;
 
   @override
   State<_Post> createState() => _PostStatee();
@@ -65,6 +105,11 @@ class _PostStatee extends State<_Post> {
   final controller = Get.find<HomeController>();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
@@ -72,7 +117,8 @@ class _PostStatee extends State<_Post> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
       // width: screenWidth * 0.8,
       margin: const EdgeInsets.only(top: 3, bottom: 10, left: 10, right: 10),
@@ -117,7 +163,7 @@ class _PostStatee extends State<_Post> {
                     _PostDetails(
                       screenWidth: screenWidth,
                       hashtags: [],
-                      posttitle: '',
+                      postTitle: '',
                       onTap: () {
                         setState(() {
                           isPressed = !isPressed;
@@ -125,6 +171,14 @@ class _PostStatee extends State<_Post> {
                       },
                       question: widget.question,
                       onPressed: isPressed,
+                      postId: widget.postdata!.id,
+                      controller: controller,
+                      likeCount: widget.likeCount,
+                      postLike: controller.userLikedPostsList
+                          .contains(widget.postdata!.id),
+                      questionText: widget.questionsData.body!,
+                      isLikedByUser: widget.isLikedByUser,
+                      index: widget.index,
                     ),
                 ]),
           ),
@@ -138,7 +192,7 @@ class _PostStatee extends State<_Post> {
                   borderRadius: BorderRadius.circular(10)),
               child: _PostDetails(
                 hashtags: widget.postdata!.tags,
-                posttitle: widget.postdata!.body.toString(),
+                postTitle: widget.postdata!.body.toString(),
                 question: widget.question,
                 screenWidth: screenWidth,
                 onTap: () {
@@ -147,6 +201,14 @@ class _PostStatee extends State<_Post> {
                   });
                 },
                 onPressed: isPressed,
+                postId: widget.postdata!.id,
+                controller: controller,
+                likeCount: widget.likeCount,
+                postLike:
+                    controller.userLikedPostsList.contains(widget.postdata!.id),
+                questionText: widget.question ? widget.questionsData.body! : "",
+                isLikedByUser: widget.isLikedByUser,
+                index: widget.index,
               ),
             ),
         ],
@@ -161,19 +223,33 @@ class _PostDetails extends StatelessWidget {
       required this.screenWidth,
       required this.onTap,
       required this.question,
-      required this.posttitle,
+      required this.postTitle,
       required this.hashtags,
-      this.mentioneduser = ' BishenPonnanna',
-      required this.onPressed})
+      this.mentionedUser = ' BishenPonnanna',
+      required this.onPressed,
+      required this.postId,
+      required this.postLike,
+      required this.controller,
+      required this.likeCount,
+      required this.questionText,
+      required this.isLikedByUser,
+      required this.index})
       : super(key: key);
 
   final double screenWidth;
   final void Function()? onTap;
   final bool onPressed;
   final bool question;
-  final String posttitle;
-  final String mentioneduser;
+  final String postTitle;
+  final String mentionedUser;
   final List hashtags;
+  final String postId;
+  final bool postLike;
+  final HomeController controller;
+  final String likeCount;
+  final String questionText;
+  final bool isLikedByUser;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -184,21 +260,48 @@ class _PostDetails extends StatelessWidget {
             ? PostCaption(
                 tags: this.hashtags,
                 screenWidth: screenWidth,
-                text:
-                    "Another upcoming game strom.be ready urban city.Darklight Back 😍")
+                text: questionText,
+              )
             : Padding(
                 padding: const EdgeInsets.only(
                     bottom: 3, left: 13, right: 16, top: 13),
                 child: Row(
                   children: <Widget>[
-                    const _PostIcon(
-                        image: "assets/images/post-liked.png", text: "200"),
+                    GestureDetector(
+                      onTap: () async {
+                        if (isLikedByUser) {
+                          List<Errors>? postUnlike =
+                              await controller.unlikeAPost(postId);
+                          String? errorMessage = postUnlike!.first.message;
+
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(errorMessage!),
+                          ));
+                        } else {
+                          controller.postLike.value =
+                              await controller.likeAPost(postId, index);
+
+                          print(postId);
+                          controller.getLikesCount(postId);
+                        }
+                      },
+                      child: _PostIcon(
+                          image: isLikedByUser
+                              ? "assets/images/post-liked.png"
+                              : "assets/images/post-unliked.png",
+                          text: controller.postLike.value == true
+                              ? (int.parse(controller.like_count.value) + 1)
+                                  .toString()
+                              : likeCount),
+                    ),
                     SizedBox(
                       width: screenWidth * 0.03,
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed("/comment");
+                        controller.postId.value = postId;
+                        print(controller.postId.value);
+                        Get.toNamed(AppRouter.commentScreen, arguments: postId);
                       },
                       child: const _PostIcon(
                           image: "assets/images/comment.png", text: "5"),
@@ -250,9 +353,9 @@ class _PostDetails extends StatelessWidget {
               )
             : PostCaption(
                 tags: this.hashtags,
-                user: this.mentioneduser,
+                user: this.mentionedUser,
                 screenWidth: screenWidth,
-                text: this.posttitle),
+                text: this.postTitle),
 
         // PostDate(
         //   screenWidth: screenWidth,
@@ -292,10 +395,6 @@ class _PostIcon extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 // Positioned(
 //                     top: 2,

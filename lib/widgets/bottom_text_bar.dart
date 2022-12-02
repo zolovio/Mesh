@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/widgets/icon_button.dart';
 
 class BottomTextBar extends StatelessWidget {
-  const BottomTextBar({Key? key, this.emoji = false}) : super(key: key);
+  BottomTextBar({Key? key, this.emoji = false, required this.postId})
+      : super(key: key);
 
   final bool emoji;
+  final String postId;
+  TextEditingController controller = TextEditingController();
+  final HomeController homeController = HomeController();
 
   @override
   Widget build(BuildContext context) {
+    print(postId);
     return Container(
       height: 90,
       width: double.infinity,
@@ -25,6 +31,10 @@ class BottomTextBar extends StatelessWidget {
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(8)),
           child: TextField(
+            controller: controller,
+            onChanged: (value) {
+              homeController.textFieldValue.value = value;
+            },
             decoration: InputDecoration(
                 prefixIcon: (emoji)
                     ? Padding(
@@ -45,7 +55,10 @@ class BottomTextBar extends StatelessWidget {
         ),
         AppBarIconButton(
           image: "assets/images/send-white.png",
-          onTap: () {},
+          onTap: () {
+            homeController.commentOnAPost(
+                homeController.textFieldValue.value, postId);
+          },
           circle: true,
           green: true,
           size: 48,

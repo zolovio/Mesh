@@ -59,7 +59,7 @@ class ChatScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const BottomTextBar(emoji: true)
+              BottomTextBar(emoji: true, postId: "")
             ],
           ),
         ));

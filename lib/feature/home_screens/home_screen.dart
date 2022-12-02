@@ -1,9 +1,9 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mesh/configs/app_router.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
-import 'package:mesh/main.dart';
 import 'package:mesh/screens/drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     controller.fetchAllPosts();
-    // TODO: implement initState
+    controller.fetchAllQuestions();
     super.initState();
   }
 
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       drawer: Drawerr(),
       body:
-          Obx(() => controller.pages.elementAt(controller.selectedpage.value)),
+          Obx(() => controller.pages.elementAt(controller.selectedPage.value)),
       floatingActionButton: Transform(
         alignment: Alignment.center,
         transform: Matrix4.rotationZ(
@@ -71,39 +71,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        controller.selectedpage.value = 0;
+                        controller.selectedPage.value = 0;
                       },
                       child: BottomItem(
-                          selectedIndex: controller.selectedpage.value,
+                          selectedIndex: controller.selectedPage.value,
                           index: 0,
                           image: "home-active"),
                     ),
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          controller.selectedpage.value = 1;
+                          controller.selectedPage.value = 1;
                         });
                       },
                       child: BottomItem(
-                          selectedIndex: controller.selectedpage.value,
+                          selectedIndex: controller.selectedPage.value,
                           index: 1,
                           image: "cup"),
                     ),
                     GestureDetector(
                       onTap: () {
-                        controller.selectedpage.value = 2;
+                        controller.selectedPage.value = 2;
                       },
                       child: BottomItem(
-                          selectedIndex: controller.selectedpage.value,
+                          selectedIndex: controller.selectedPage.value,
                           index: 2,
                           image: "notification"),
                     ),
                     GestureDetector(
                       onTap: () {
-                        controller.selectedpage.value = 3;
+                        controller.selectedPage.value = 3;
                       },
                       child: BottomItem(
-                          selectedIndex: controller.selectedpage.value,
+                          selectedIndex: controller.selectedPage.value,
                           index: 3,
                           image: "image"),
                     ),
