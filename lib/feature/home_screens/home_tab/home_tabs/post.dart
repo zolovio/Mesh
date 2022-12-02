@@ -23,6 +23,8 @@ class Post extends StatelessWidget {
           print(controller.postsList.length);
           print(controller.questionsList.length);
           print(controller.postLCList.length);
+          print(controller.postLCList);
+          print(controller.quesLCList.length);
           print(controller.userLikedPostsList.length);
         }
 
@@ -64,12 +66,15 @@ class Post extends StatelessWidget {
                         questionsData:
                             question ? controller.questionsList[i] : Question(),
                         likeCount: question
-                            ? ""
-                            : controller.postLCList[i].isNotEmpty
-                                ? controller.postLCList[i]
-                                : "",
-                        isLikedByUser:
-                            question ? false : controller.userLikedPostsList[i],
+                            ? controller.quesLCList[i]
+                            : controller.postLCList[i],
+                        isLikedByUser: question
+                            ? controller.userLikedQuesList.isNotEmpty
+                                ? controller.userLikedQuesList[i]
+                                : false
+                            : controller.userLikedPostsList.isNotEmpty
+                                ? controller.userLikedPostsList[i]
+                                : false,
                       );
                     },
                   );
@@ -116,9 +121,12 @@ class _PostStatee extends State<_Post> {
 
   @override
   Widget build(BuildContext context) {
+    print("Like COunt " + widget.likeCount);
     final screenWidth = MediaQuery.of(context).size.width;
     // final screenHeight = MediaQuery.of(context).size.height;
 
+    // if (widget.question)
+    //   controller.getQuestionLikeCountById(widget.questionsData.id!);
     return Container(
       // width: screenWidth * 0.8,
       margin: const EdgeInsets.only(top: 3, bottom: 10, left: 10, right: 10),
@@ -169,6 +177,7 @@ class _PostStatee extends State<_Post> {
                           isPressed = !isPressed;
                         });
                       },
+                      questionId: widget.questionsData.id!,
                       question: widget.question,
                       onPressed: isPressed,
                       postId: widget.postdata!.id,
@@ -193,6 +202,7 @@ class _PostStatee extends State<_Post> {
               child: _PostDetails(
                 hashtags: widget.postdata!.tags,
                 postTitle: widget.postdata!.body.toString(),
+                questionId: "",
                 question: widget.question,
                 screenWidth: screenWidth,
                 onTap: () {
@@ -218,23 +228,24 @@ class _PostStatee extends State<_Post> {
 }
 
 class _PostDetails extends StatelessWidget {
-  const _PostDetails(
-      {Key? key,
-      required this.screenWidth,
-      required this.onTap,
-      required this.question,
-      required this.postTitle,
-      required this.hashtags,
-      this.mentionedUser = ' BishenPonnanna',
-      required this.onPressed,
-      required this.postId,
-      required this.postLike,
-      required this.controller,
-      required this.likeCount,
-      required this.questionText,
-      required this.isLikedByUser,
-      required this.index})
-      : super(key: key);
+  const _PostDetails({
+    Key? key,
+    required this.screenWidth,
+    required this.onTap,
+    required this.question,
+    required this.postTitle,
+    required this.hashtags,
+    this.mentionedUser = ' BishenPonnanna',
+    required this.onPressed,
+    required this.postId,
+    required this.postLike,
+    required this.controller,
+    required this.likeCount,
+    required this.questionId,
+    required this.questionText,
+    required this.isLikedByUser,
+    required this.index,
+  }) : super(key: key);
 
   final double screenWidth;
   final void Function()? onTap;
@@ -247,6 +258,7 @@ class _PostDetails extends StatelessWidget {
   final bool postLike;
   final HomeController controller;
   final String likeCount;
+  final String questionId;
   final String questionText;
   final bool isLikedByUser;
   final int index;
@@ -273,13 +285,8 @@ class _PostDetails extends StatelessWidget {
                           List<Errors>? postUnlike =
                               await controller.unlikeAPost(postId);
                           String? errorMessage = postUnlike!.first.message;
-
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(errorMessage!),
-                          ));
                         } else {
-                          controller.postLike.value =
-                              await controller.likeAPost(postId, index);
+                          await controller.likeAPost(postId, index);
 
                           print(postId);
                           controller.getLikesCount(postId);
@@ -289,10 +296,12 @@ class _PostDetails extends StatelessWidget {
                           image: isLikedByUser
                               ? "assets/images/post-liked.png"
                               : "assets/images/post-unliked.png",
-                          text: controller.postLike.value == true
-                              ? (int.parse(controller.like_count.value) + 1)
-                                  .toString()
-                              : likeCount),
+                          text:
+                              // isLikedByUser
+                              //     ? (int.parse(controller.like_count.value) + 1)
+                              //         .toString()
+                              //     :
+                              likeCount),
                     ),
                     SizedBox(
                       width: screenWidth * 0.03,
@@ -328,8 +337,25 @@ class _PostDetails extends StatelessWidget {
                     bottom: 13, left: 13, right: 16, top: 10),
                 child: Row(
                   children: <Widget>[
-                    const _PostIcon(
-                        image: "assets/images/post-liked.png", text: "200"),
+                    GestureDetector(
+                      onTap: () async {
+                        if (isLikedByUser) {
+                          List<Errors>? postUnlike =
+                              await controller.unlikeAQuestion(questionId);
+                          String? errorMessage = postUnlike!.first.message;
+                        } else {
+                          await controller.likeAQuestion(questionId, index);
+
+                          print(questionId);
+                          controller.getLikeCountByQuestionId(questionId);
+                        }
+                      },
+                      child: _PostIcon(
+                          image: isLikedByUser
+                              ? "assets/images/post-liked.png"
+                              : "assets/images/post-unliked.png",
+                          text: likeCount),
+                    ),
                     SizedBox(
                       width: screenWidth * 0.03,
                     ),

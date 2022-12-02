@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mesh/configs/app_router.dart';
 import 'package:mesh/feature/home_screens/models/create_question_model.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/button.dart';
@@ -347,28 +348,40 @@ class _PostQuesState extends State<PostQues> {
                         onPressed: (!widget.ques)
                             ? (!widget.ques && _image == null ||
                                     widget.ques && !controller.tags.value)
-                                ? () {
-                                    controller.UploadPost(
+                                ? () async {
+                                    var data = await controller.UploadPost(
                                       fileid: null,
                                       postbody: caption.text.toString(),
                                       posttags: tagList,
                                       posttype: 'text',
                                     );
+
+                                    if (data != null) {
+                                      Get.offAndToNamed(AppRouter.homeScreen);
+                                    }
                                   }
                                 : () {
-                                    controller.UploadPostMedia(
+                                    var data = controller.UploadPostMedia(
                                       filepath: _image!.path,
                                       postbody: caption.text.toString(),
                                       posttags: tagList,
                                       posttype: 'image',
                                     );
+
+                                    if (data != null) {
+                                      Get.offAndToNamed(AppRouter.homeScreen);
+                                    }
                                   }
                             : () async {
-                                CreateQuestionModel? model =
+                                CreateQuestion? model =
                                     await controller.createQuestion(
                                   quesBody: caption.text.toString(),
                                   quesTags: tagList,
                                 );
+
+                                if (model != null) {
+                                  Get.offAndToNamed(AppRouter.homeScreen);
+                                }
                               },
                       )),
               ),

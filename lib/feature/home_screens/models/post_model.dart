@@ -14,6 +14,7 @@ class PostModel {
   PostModel({
     required this.id,
     required this.status,
+    required this.userCreated,
     required this.dateCreated,
     required this.userUpdated,
     required this.dateUpdated,
@@ -21,11 +22,11 @@ class PostModel {
     required this.tags,
     required this.file,
     required this.type,
-    required this.userCreated,
   });
 
   String id;
   String status;
+  UserCreated? userCreated;
   DateTime dateCreated;
   String userUpdated;
   DateTime? dateUpdated;
@@ -33,11 +34,13 @@ class PostModel {
   List<String> tags;
   dynamic file;
   String type;
-  UserCreated? userCreated;
 
   factory PostModel.fromJson(Map<String, dynamic> json) => PostModel(
         id: json["id"],
         status: json["status"],
+        userCreated: json["user_created"] == null
+            ? null
+            : UserCreated.fromJson(json["user_created"]),
         dateCreated: DateTime.parse(json["date_created"]),
         userUpdated:
             json["user_updated"] == null ? 'null' : json["user_updated"],
@@ -50,14 +53,12 @@ class PostModel {
             : List<String>.from(json["tags"].map((x) => x)),
         file: json["file"],
         type: json["type"],
-        userCreated: json["user_created"] == null
-            ? null
-            : UserCreated.fromJson(json["user_created"]),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "status": status,
+        "user_created": userCreated == null ? null : userCreated!.toJson(),
         "date_created": dateCreated.toIso8601String(),
         "user_updated": userUpdated == null ? null : userUpdated,
         "date_updated":
@@ -66,7 +67,6 @@ class PostModel {
         "tags": List<dynamic>.from(tags.map((x) => x)),
         "file": file,
         "type": type,
-        "user_created": userCreated == null ? null : userCreated!.toJson(),
       };
 }
 

@@ -1,10 +1,10 @@
-class CommentModel {
-  Comment? comment;
+class UserCommentModel {
+  UserComment? comment;
 
-  CommentModel({this.comment});
+  UserCommentModel({this.comment});
 
-  CommentModel.fromJson(Map<String, dynamic> json) {
-    comment = json['data'] != null ? Comment.fromJson(json['data']) : null;
+  UserCommentModel.fromJson(Map<String, dynamic> json) {
+    comment = json['data'] != null ? UserComment.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -16,15 +16,15 @@ class CommentModel {
   }
 }
 
-class Comment {
+class UserComment {
   String? id;
   String? userCreated;
   String? dateCreated;
   String? post;
 
-  Comment({this.id, this.userCreated, this.dateCreated, this.post});
+  UserComment({this.id, this.userCreated, this.dateCreated, this.post});
 
-  Comment.fromJson(Map<String, dynamic> json) {
+  UserComment.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userCreated = json['user_created'];
     dateCreated = json['date_created'];

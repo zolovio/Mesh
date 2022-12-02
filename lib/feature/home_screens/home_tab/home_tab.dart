@@ -52,7 +52,6 @@ class _HomeTabState extends State<HomeTab> {
                         )),
                     GestureDetector(
                         onTap: () {
-                          controller.fetchAllQuestions();
                           setState(() {
                             _selectedIndex = 1;
                           });
