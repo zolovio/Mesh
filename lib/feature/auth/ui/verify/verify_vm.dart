@@ -109,7 +109,7 @@ class VerifyVm extends ChangeNotifier {
 
   resendOtp(VerifyModel verifyModel) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: '+92${verifyModel.mobileNumber}',
+      phoneNumber: '+91${verifyModel.mobileNumber}',
       verificationCompleted: (credential) {}, //PhoneAuthCredential
       verificationFailed: (FirebaseAuthException e) {
         log(e.toString());
