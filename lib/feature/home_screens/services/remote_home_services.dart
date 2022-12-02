@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:mesh/dependency/flutter_toast_dep.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/models/comment_by_user_model.dart';
-import 'package:mesh/feature/home_screens/models/user_comment_model.dart';
 import 'package:mesh/feature/home_screens/models/create_question_model.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/like_post_model.dart';
@@ -15,6 +14,7 @@ import 'package:mesh/feature/home_screens/models/post_like_model.dart';
 import 'package:mesh/feature/home_screens/models/post_liked_by_user.dart';
 import 'package:mesh/feature/home_screens/models/post_publish_model.dart';
 import 'package:mesh/feature/home_screens/models/ques_likes_by_id_model.dart';
+import 'package:mesh/feature/home_screens/models/user_comment_model.dart';
 
 import '../../auth/domain/model/auth_token_model.dart';
 
@@ -24,9 +24,9 @@ class RemoteHomeServices {
 
   static Future refreshToken() async {
     var authData = await controller.storage.read(key: 'authTokenData');
-    print(AuthTokenModel.deserialize(authData!).refreshToken);
+
     var body = json.encode({
-      "refresh_token": '${AuthTokenModel.deserialize(authData).refreshToken}',
+      "refresh_token": '${AuthTokenModel.deserialize(authData!).refreshToken}',
     });
     print('body: $body');
     var response = await client.post(
@@ -35,14 +35,24 @@ class RemoteHomeServices {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        // 'Authorization':
-        //     'Bearer ${AuthTokenModel.deserialize(authData).accessToken}',
       },
     );
     if (response.statusCode == 200) {
       print(response.body.toString());
-      // await storage.write(
-      //     key: 'authTokenData', value: AuthTokenModel.serialize(success!));
+
+      AuthTokenModel authTokenModel =
+          AuthTokenModel.fromJson(json.decode(response.body)["data"]);
+
+      await controller.storage.write(
+        key: 'authTokenData',
+        value: AuthTokenModel.serialize(
+          AuthTokenModel(
+            accessToken: authTokenModel.accessToken,
+            expires: authTokenModel.expires,
+            refreshToken: authTokenModel.refreshToken,
+          ),
+        ),
+      );
       return jsonDecode(response.body.toString());
     } else {
       print(response.statusCode);
