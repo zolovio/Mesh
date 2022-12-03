@@ -130,8 +130,8 @@ class _Comment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(response);
     final screenWidth = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {},
       child: Container(

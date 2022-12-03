@@ -84,7 +84,7 @@ class HomeController extends GetxController {
       }
 
       var posts = await RemoteHomeServices.fetchposts();
-      print('all posts: ${posts['data']}');
+      // print('all posts: ${posts['data']}');
 
       if (posts != null) {
         for (var post in posts['data']) {
@@ -129,7 +129,7 @@ class HomeController extends GetxController {
     try {
       isUploading(true);
       var data = await RemoteHomeServices.UploadFile(filepath);
-      print('all posts: ${data['data']}');
+      // print('all posts: ${data['data']}');
       if (data != null) {
         filesList.add(FileModel.fromJson(data));
         UploadPost(
@@ -253,7 +253,7 @@ class HomeController extends GetxController {
 
       UserComment commented =
           await RemoteHomeServices.commentOnAPost(comment, postId);
-      print(commented);
+      // print(commented);
 
       FlutterToast.show(message: "Comment Successful");
       return commented;
@@ -317,7 +317,7 @@ class HomeController extends GetxController {
 
       var questions = await RemoteHomeServices.fetchAllQuestions();
 
-      print('all questions: ${questions['data']}');
+      // print('all questions: ${questions['data']}');
 
       if (questions != null) {
         for (var question in questions['data']) {
@@ -356,7 +356,7 @@ class HomeController extends GetxController {
 
       var questions = await RemoteHomeServices.fetchAllQuestionByUserId();
 
-      print('all questions: ${questions['data']}');
+      // print('all questions: ${questions['data']}');
 
       // if (questions != null) {
       //   for (var question in questions['data']) {

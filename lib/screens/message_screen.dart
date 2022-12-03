@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mesh/screens/chat_screen.dart';
 import 'package:mesh/widgets/icon_button.dart';
 import 'package:mesh/widgets/searchbar.dart';
 
@@ -104,8 +103,8 @@ class _Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(response);
     final screenWidth = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         Get.toNamed("/chat");

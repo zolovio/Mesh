@@ -14,7 +14,6 @@ class BottomTextBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(postId);
     return Container(
       height: 90,
       width: double.infinity,
