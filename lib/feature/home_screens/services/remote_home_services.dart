@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:mesh/configs/app_router.dart';
 import 'package:mesh/dependency/flutter_toast_dep.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/models/comment_by_user_model.dart';
@@ -60,8 +62,10 @@ class RemoteHomeServices {
       //show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      Get.offAndToNamed(AppRouter.loginScreen);
       //show error message
-      return null;
+      return jsonDecode(response.body);
     }
   }
 
