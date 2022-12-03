@@ -77,6 +77,7 @@ class HomeController extends GetxController {
   void fetchAllPosts() async {
     try {
       isLoading(true);
+
       if (postsList.isNotEmpty) {
         postsList.clear();
         postLCList.clear();
@@ -128,6 +129,7 @@ class HomeController extends GetxController {
   }) async {
     try {
       isUploading(true);
+
       var data = await RemoteHomeServices.UploadFile(filepath);
       // print('all posts: ${data['data']}');
       if (data != null) {

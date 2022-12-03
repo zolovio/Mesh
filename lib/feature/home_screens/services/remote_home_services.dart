@@ -30,7 +30,9 @@ class RemoteHomeServices {
     var body = json.encode({
       "refresh_token": '${AuthTokenModel.deserialize(authData!).refreshToken}',
     });
+
     print('body: $body');
+
     var response = await client.post(
       Uri.parse('https://mesh.kodagu.today/auth/refresh'),
       body: body,
@@ -45,6 +47,8 @@ class RemoteHomeServices {
       AuthTokenModel authTokenModel =
           AuthTokenModel.fromJson(json.decode(response.body)["data"]);
 
+      await controller.storage.delete(key: "authTokenData");
+
       await controller.storage.write(
         key: 'authTokenData',
         value: AuthTokenModel.serialize(
@@ -57,9 +61,6 @@ class RemoteHomeServices {
       );
       return jsonDecode(response.body.toString());
     } else {
-      // print(response.statusCode);
-      // print(response.body);
-
       //show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
@@ -71,9 +72,8 @@ class RemoteHomeServices {
   }
 
   static Future fetchposts() async {
-    await refreshToken();
-
     // print('fetching posts');
+
     var authData = await controller.storage.read(key: 'authTokenData');
     // print(AuthTokenModel.deserialize(authData!).accessToken);
 
@@ -99,13 +99,13 @@ class RemoteHomeServices {
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
 
+      await refreshToken();
+
       return null;
     }
   }
 
   static Future UploadFile(String filepath) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
     // print(AuthTokenModel.deserialize(authData!).accessToken);
 
@@ -130,15 +130,13 @@ class RemoteHomeServices {
     // print(responseString);
 
     if (response.statusCode == 200) {
-      // var jsonString = response.body.toString();
       return jsonDecode(responseString);
     } else {
-      // print(response.statusCode);
-      // print(response.body);
-      //  print(response.statusCode);
       //show error message
       // FlutterToast.show(
       //     message: jsonDecode(responseString.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return null;
     }
@@ -150,8 +148,6 @@ class RemoteHomeServices {
     required filesids,
     required String posttype,
   }) async {
-    await refreshToken();
-
     var body = jsonEncode({
       "status": "published",
       "body": postbody,
@@ -193,20 +189,17 @@ class RemoteHomeServices {
       controller.isUploading(false);
       controller.update();
 
-      // print(response.statusCode);
-      // print(response.body);
-
       //show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return Publish();
     }
   }
 
   static Future<LikeCount> getLikesCount(String postId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.get(
@@ -227,19 +220,17 @@ class RemoteHomeServices {
           LikeCount.fromJson(jsonDecode(response.body)["data"][0]);
       return likeCount;
     } else {
-      // print(response.statusCode);
-
       // show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return LikeCount();
     }
   }
 
   static Future<Count> postLikedByUser(String postId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
     var userData = await controller.storage.read(key: 'userData');
 
@@ -267,13 +258,13 @@ class RemoteHomeServices {
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
 
+      await refreshToken();
+
       return Count();
     }
   }
 
   static Future<LikePost> likeAPost(String postId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.post(
@@ -292,19 +283,18 @@ class RemoteHomeServices {
 
       LikePost likePost = LikePost.fromJson(jsonDecode(response.body));
       return likePost;
-      // return jsonDecode(response.body)["data"];
     } else {
       //show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return LikePost();
     }
   }
 
   static Future unlikeAPost(String postId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.delete(
@@ -316,8 +306,6 @@ class RemoteHomeServices {
             'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
       },
     );
-
-    // print(response.body);
 
     if (response.statusCode == 200) {
       // print(response.body);
@@ -335,13 +323,13 @@ class RemoteHomeServices {
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
 
+      await refreshToken();
+
       return errorMessage;
     }
   }
 
   static Future commentOnAPost(String comment, String postId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.post(
@@ -367,13 +355,13 @@ class RemoteHomeServices {
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
 
+      await refreshToken();
+
       return LikePost();
     }
   }
 
   static Future<CommentByUserModel> postCommentedByUser(String postId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
     var userData = await controller.storage.read(key: 'userData');
 
@@ -399,16 +387,15 @@ class RemoteHomeServices {
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
 
-      // print(response.body);
+      await refreshToken();
 
       return CommentByUserModel();
     }
   }
 
   static Future fetchAllQuestions() async {
-    await refreshToken();
-
     // print('fetching questions');
+
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.get(
@@ -426,19 +413,17 @@ class RemoteHomeServices {
 
       return jsonDecode(response.body.toString());
     } else {
-      // print(response.statusCode);
-
       // show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return null;
     }
   }
 
   static Future fetchAllQuestionByUserId() async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
     var userData = await controller.storage.read(key: 'userData');
 
@@ -457,11 +442,11 @@ class RemoteHomeServices {
 
       return jsonDecode(response.body.toString());
     } else {
-      // print(response.statusCode);
-
       // show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return null;
     }
@@ -471,8 +456,6 @@ class RemoteHomeServices {
     required quesBody,
     required List<String> quesTags,
   }) async {
-    await refreshToken();
-
     var body = jsonEncode({
       "status": "published",
       "body": quesBody,
@@ -503,14 +486,13 @@ class RemoteHomeServices {
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
 
-      // print(response.body);
+      await refreshToken();
+
       return CreateQuestion();
     }
   }
 
   static Future<QuesLikesByIdModel> getQuestionLikesById(String quesId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.get(
@@ -526,25 +508,22 @@ class RemoteHomeServices {
 
     if (response.statusCode == 200) {
       // print(response.body);
-      // print(jsonDecode(response.body)["data"][0]);
 
       QuesLikesByIdModel model =
           QuesLikesByIdModel.fromJson(jsonDecode(response.body)["data"]);
       return model;
     } else {
-      // print(response.statusCode);
-
       // show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return QuesLikesByIdModel();
     }
   }
 
   static Future<LikeCount> getQuestionLikeCountById(String quesId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.get(
@@ -560,17 +539,16 @@ class RemoteHomeServices {
 
     if (response.statusCode == 200) {
       // print(response.body);
-      // print(jsonDecode(response.body)["data"][0]);
 
       LikeCount likeCount =
           LikeCount.fromJson(jsonDecode(response.body)["data"][0]);
       return likeCount;
     } else {
-      // print(response.statusCode);
-
       // show error message
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return LikeCount();
     }
@@ -578,8 +556,6 @@ class RemoteHomeServices {
 
   // static Future<Count>
   static Future quesLikedByUser(String quesId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
     var userData = await controller.storage.read(key: 'userData');
 
@@ -607,13 +583,13 @@ class RemoteHomeServices {
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
 
+      await refreshToken();
+
       return Count();
     }
   }
 
   static Future<LikeQuestion> likeAQuestion(String quesId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.post(
@@ -638,13 +614,13 @@ class RemoteHomeServices {
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
 
+      await refreshToken();
+
       return LikeQuestion();
     }
   }
 
   static Future unlikeAQuestion(String quesId) async {
-    await refreshToken();
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.delete(
@@ -656,8 +632,6 @@ class RemoteHomeServices {
             'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
       },
     );
-
-    // print(response.body);
 
     if (response.statusCode == 200) {
       // print(response.body);
@@ -674,6 +648,8 @@ class RemoteHomeServices {
 
       FlutterToast.show(
           message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
 
       return errorMessage;
     }
