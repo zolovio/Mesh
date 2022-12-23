@@ -66,7 +66,18 @@ class Post extends StatelessWidget {
                                 isSavedByUser: false,
                               )
                             : controller.postsList[i],
-                        questionsData: question ? controller.questionsList[i] : Question(),
+                        questionsData: question
+                            ? controller.questionsList[i]
+                            : Question(
+                                id: '',
+                                body: '',
+                                tags: [],
+                                likesCount: '',
+                                commentsCount: '',
+                                isLikedByUser: false,
+                                isCommentedByUser: false,
+                                isSavedByUser: false,
+                              ),
                       );
                     },
                   );
@@ -154,24 +165,18 @@ class _PostStatee extends State<_Post> {
                     ),
                   if (widget.question)
                     _PostDetails(
+                      postData: widget.postdata!,
+                      questionsData: widget.questionsData,
                       screenWidth: screenWidth,
-                      hashtags: [],
-                      postTitle: '',
                       onTap: () {
                         setState(() {
                           isPressed = !isPressed;
                         });
                       },
-                      questionId: widget.questionsData.id!,
-                      question: widget.question,
                       onPressed: isPressed,
-                      postId: widget.postdata!.id,
                       controller: controller,
-                      likeCount: widget.postdata!.likesCount,
-                      postLike: controller.userLikedPostsList.contains(widget.postdata!.id),
-                      questionText: widget.questionsData.body!,
-                      isLikedByUser: widget.postdata!.isLikedByUser,
                       index: widget.index,
+                      question: widget.question,
                     ),
                 ]),
           ),
@@ -182,10 +187,8 @@ class _PostStatee extends State<_Post> {
               decoration: BoxDecoration(
                   color: const Color(0xffF1F1F1), border: Border.all(color: const Color(0xffE7E6E6)), borderRadius: BorderRadius.circular(10)),
               child: _PostDetails(
-                hashtags: widget.postdata!.tags,
-                postTitle: widget.postdata!.body.toString(),
-                questionId: "",
-                question: widget.question,
+                postData: widget.postdata!,
+                questionsData: widget.questionsData,
                 screenWidth: screenWidth,
                 onTap: () {
                   setState(() {
@@ -193,13 +196,9 @@ class _PostStatee extends State<_Post> {
                   });
                 },
                 onPressed: isPressed,
-                postId: widget.postdata!.id,
                 controller: controller,
-                likeCount: widget.postdata!.likesCount,
-                postLike: controller.userLikedPostsList.contains(widget.postdata!.id),
-                questionText: widget.question ? widget.questionsData.body! : "",
-                isLikedByUser: widget.postdata!.isLikedByUser,
                 index: widget.index,
+                question: widget.question,
               ),
             ),
         ],
@@ -213,36 +212,24 @@ class _PostDetails extends StatelessWidget {
     Key? key,
     required this.screenWidth,
     required this.onTap,
-    required this.question,
-    required this.postTitle,
-    required this.hashtags,
     this.mentionedUser = ' BishenPonnanna',
     required this.onPressed,
-    required this.postId,
-    required this.postLike,
     required this.controller,
-    required this.likeCount,
-    required this.questionId,
-    required this.questionText,
-    required this.isLikedByUser,
     required this.index,
+    required this.postData,
+    required this.questionsData,
+    required this.question,
   }) : super(key: key);
 
   final double screenWidth;
   final void Function()? onTap;
   final bool onPressed;
-  final bool question;
-  final String postTitle;
   final String mentionedUser;
-  final List hashtags;
-  final String postId;
-  final bool postLike;
   final HomeController controller;
-  final String likeCount;
-  final String questionId;
-  final String questionText;
-  final bool isLikedByUser;
   final int index;
+  final PostModel postData;
+  final Question questionsData;
+  final bool question;
 
   @override
   Widget build(BuildContext context) {
@@ -251,9 +238,9 @@ class _PostDetails extends StatelessWidget {
         // post icons
         (question)
             ? PostCaption(
-                tags: this.hashtags,
+                tags: this.postData.tags,
                 screenWidth: screenWidth,
-                text: questionText,
+                text: questionsData.body!,
               )
             : Padding(
                 padding: const EdgeInsets.only(bottom: 3, left: 13, right: 16, top: 13),
@@ -261,33 +248,47 @@ class _PostDetails extends StatelessWidget {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () async {
-                        // if (isLikedByUser) {
-                        //   List<Errors>? postUnlike = await controller.unlikeAPost(postId);
-                        //   String? errorMessage = postUnlike!.first.message;
-                        // } else {
-                        //   await controller.likeAPost(postId, index);
-                        //
-                        //   controller.getLikesCount(postId);
-                        // }
+                        print(postData.isLikedByUser);
+                        if (postData.isLikedByUser) {
+                          List<Errors>? postUnlike = await controller.unlikeAPost(postData.id);
+                          String? errorMessage = postUnlike!.first.message;
+                        } else {
+                          bool postLiked = await controller.likeAPost(postData.id);
+
+                          if (postLiked) {
+                            controller.postsList[index] = PostModel(
+                                id: postData.id,
+                                status: postData.status,
+                                userCreated: postData.userCreated,
+                                dateCreated: postData.dateCreated,
+                                userUpdated: postData.userUpdated,
+                                dateUpdated: postData.dateUpdated,
+                                body: postData.body,
+                                tags: postData.tags,
+                                file: postData.file,
+                                type: postData.type,
+                                likesCount: (int.parse(postData.likesCount) + 1).toString(),
+                                commentsCount: postData.commentsCount,
+                                isLikedByUser: true,
+                                isCommentedByUser: postData.isCommentedByUser,
+                                isSavedByUser: postData.isSavedByUser);
+                          }
+                        }
                       },
                       child: _PostIcon(
-                          image: isLikedByUser ? "assets/images/post-liked.png" : "assets/images/post-unliked.png",
-                          text:
-                              // isLikedByUser
-                              //     ? (int.parse(controller.like_count.value) + 1)
-                              //         .toString()
-                              //     :
-                              likeCount),
+                        image: postData.isLikedByUser ? "assets/images/post-liked.png" : "assets/images/post-unliked.png",
+                        text: postData.likesCount,
+                      ),
                     ),
                     SizedBox(
                       width: screenWidth * 0.03,
                     ),
                     GestureDetector(
                       onTap: () {
-                        controller.postId.value = postId;
-                        Get.toNamed(AppRouter.commentScreen, arguments: postId);
+                        controller.postId.value = postData.id;
+                        Get.toNamed(AppRouter.commentScreen, arguments: postData.id);
                       },
-                      child: const _PostIcon(image: "assets/images/comment.png", text: "5"),
+                      child: _PostIcon(image: "assets/images/comment.png", text: postData.commentsCount),
                     ),
                     SizedBox(
                       width: screenWidth * 0.02,
@@ -295,7 +296,12 @@ class _PostDetails extends StatelessWidget {
                     const _PostIcon(image: "assets/images/share.png", text: "Share"),
                     const Spacer(),
                     GestureDetector(
-                        onTap: onTap, child: _PostIcon(image: (onPressed) ? "assets/images/saved.png" : "assets/images/save.png", text: ""))
+                      onTap: onTap,
+                      child: _PostIcon(
+                        image: (postData.isSavedByUser) ? "assets/images/saved.png" : "assets/images/save.png",
+                        text: "",
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -306,32 +312,61 @@ class _PostDetails extends StatelessWidget {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () async {
-                        if (isLikedByUser) {
-                          List<Errors>? postUnlike = await controller.unlikeAQuestion(questionId);
+                        if (questionsData.isLikedByUser!) {
+                          List<Errors>? postUnlike = await controller.unlikeAQuestion(questionsData.id!);
                           String? errorMessage = postUnlike!.first.message;
                         } else {
-                          await controller.likeAQuestion(questionId, index);
+                          bool quesLiked = await controller.likeAQuestion(questionsData.id!, index);
 
-                          controller.getLikeCountByQuestionId(questionId);
+                          if (quesLiked) {
+                            controller.questionsList[index] = Question(
+                              id: questionsData.id,
+                              dateCreated: questionsData.dateCreated,
+                              userCreated: questionsData.userCreated,
+                              media: questionsData.media,
+                              body: questionsData.body,
+                              tags: questionsData.tags,
+                              likesCount: (int.parse(questionsData.likesCount!) + 1).toString(),
+                              commentsCount: questionsData.commentsCount,
+                              isLikedByUser: true,
+                              isCommentedByUser: questionsData.isCommentedByUser,
+                              isSavedByUser: questionsData.isSavedByUser,
+                            );
+                          }
+
+                          // controller.getLikeCountByQuestionId(questionsData.id!);
                         }
                       },
-                      child: _PostIcon(image: isLikedByUser ? "assets/images/post-liked.png" : "assets/images/post-unliked.png", text: likeCount),
+                      child: _PostIcon(
+                        image: questionsData.isLikedByUser! ? "assets/images/post-liked.png" : "assets/images/post-unliked.png",
+                        text: questionsData.likesCount!,
+                      ),
                     ),
                     SizedBox(
                       width: screenWidth * 0.03,
                     ),
-                    const _PostIcon(image: "assets/images/comment.png", text: "5"),
+                    _PostIcon(image: "assets/images/comment.png", text: questionsData.commentsCount!),
                     SizedBox(
                       width: screenWidth * 0.02,
                     ),
                     const _PostIcon(image: "assets/images/share.png", text: "Share"),
                     const Spacer(),
                     GestureDetector(
-                        onTap: onTap, child: _PostIcon(image: (onPressed) ? "assets/images/saved.png" : "assets/images/save.png", text: ""))
+                      onTap: onTap,
+                      child: _PostIcon(
+                        image: (questionsData.isSavedByUser!) ? "assets/images/saved.png" : "assets/images/save.png",
+                        text: "",
+                      ),
+                    ),
                   ],
                 ),
               )
-            : PostCaption(tags: this.hashtags, user: this.mentionedUser, screenWidth: screenWidth, text: this.postTitle),
+            : PostCaption(
+                tags: this.postData.tags,
+                user: this.mentionedUser,
+                screenWidth: screenWidth,
+                text: this.postData.body!,
+              ),
 
         // PostDate(
         //   screenWidth: screenWidth,

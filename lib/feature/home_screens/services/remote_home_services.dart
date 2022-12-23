@@ -351,8 +351,7 @@ class RemoteHomeServices {
 
       ErrorMessage errorMessage = ErrorMessage.fromJson(jsonDecode(response.body));
 
-      // FlutterToast.show(
-      //     message: jsonDecode(response.body)['errors'][0]['message']);
+      FlutterToast.show(message: jsonDecode(response.body)['errors'][0]['message']);
 
       // await refreshToken();
 
@@ -421,12 +420,10 @@ class RemoteHomeServices {
   }
 
   static Future fetchAllQuestions() async {
-    // print('fetching questions');
-
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.get(
-      Uri.parse('https://mesh.kodagu.today/items/question?fiter[statu][_eq]=published&fields=*,user_created.*'),
+      Uri.parse('https://mesh.kodagu.today/metafeed/allquestion/-1/1'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -434,13 +431,12 @@ class RemoteHomeServices {
       },
     );
     if (response.statusCode == 200) {
-      // print(response.body);
+      print(response.body);
 
       return jsonDecode(response.body.toString());
     } else {
       // show error message
-      // FlutterToast.show(
-      //     message: jsonDecode(response.body)['errors'][0]['message']);
+      FlutterToast.show(message: jsonDecode(response.body)['errors'][0]['message']);
 
       // await refreshToken();
 
@@ -618,14 +614,13 @@ class RemoteHomeServices {
     );
 
     if (response.statusCode == 200) {
-      // print(response.body);
+      print(response.body);
 
-      LikeQuestion likeQuestion = LikeQuestion.fromJson(jsonDecode(response.body));
+      LikeQuestion likeQuestion = LikeQuestion.fromJson(jsonDecode(response.body)["data"]);
       return likeQuestion;
     } else {
       //show error message
-      // FlutterToast.show(
-      //     message: jsonDecode(response.body)['errors'][0]['message']);
+      FlutterToast.show(message: jsonDecode(response.body)['errors'][0]['message']);
 
       // await refreshToken();
 
@@ -656,8 +651,7 @@ class RemoteHomeServices {
 
       ErrorMessage errorMessage = ErrorMessage.fromJson(jsonDecode(response.body));
 
-      // FlutterToast.show(
-      //     message: jsonDecode(response.body)['errors'][0]['message']);
+      FlutterToast.show(message: jsonDecode(response.body)['errors'][0]['message']);
 
       // await refreshToken();
 

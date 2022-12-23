@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     refreshToken = await RemoteHomeServices.refreshToken();
 
     if (refreshToken['errors'] == null) {
-      controller.fetchAllPosts();
+      controller.fetchAllPosts(true);
       controller.fetchAllQuestions();
     } else {
       print(refreshToken["errors"]);

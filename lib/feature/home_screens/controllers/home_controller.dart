@@ -9,6 +9,7 @@ import 'package:mesh/feature/home_screens/models/comment_by_user_model.dart';
 import 'package:mesh/feature/home_screens/models/create_question_model.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/file_model.dart';
+import 'package:mesh/feature/home_screens/models/like_post_model.dart';
 import 'package:mesh/feature/home_screens/models/like_question_model.dart';
 import 'package:mesh/feature/home_screens/models/post_like_model.dart';
 import 'package:mesh/feature/home_screens/models/post_liked_by_user.dart';
@@ -52,7 +53,6 @@ class HomeController extends GetxController {
   var like_count = "0".obs;
   var like_post = false.obs;
   var postId = "".obs;
-  var userLikedPostsList = [].obs;
 
   var questionsList = <Question>[].obs;
   var quesIdsList = <String>[].obs;
@@ -79,14 +79,12 @@ class HomeController extends GetxController {
         : json.decode(userData)["data"][0]["first_name"];
   }
 
-  void fetchAllPosts() async {
+  void fetchAllPosts(bool loading) async {
     try {
-      isLoading(true);
+      isLoading(loading);
 
       if (postsList.isNotEmpty) {
         postsList.clear();
-        postLCList.clear();
-        userLikedPostsList.clear();
       }
 
       var posts = await RemoteHomeServices.fetchAllPosts();
@@ -175,63 +173,27 @@ class HomeController extends GetxController {
     }
   }
 
-  // Future<String?> getLikesCount(String postId) async {
-  //   try {
-  //     LikeCount likeCount = await RemoteHomeServices.getLikesCount(postId);
-  //
-  //     return likeCount.count;
-  //   } finally {
-  //     update();
-  //   }
-  // }
-  //
-  // Future<Count?> postLikedByUser(String postId) async {
-  //   try {
-  //     Count userLike = await RemoteHomeServices.postLikedByUser(postId);
-  //
-  //     return userLike;
-  //   } finally {
-  //     update();
-  //   }
-  // }
-  //
-  // Future<bool> likeAPost(String postId, int index) async {
-  //   try {
-  //     LikePost likePost = await RemoteHomeServices.likeAPost(postId);
-  //
-  //     if (likePost.like!.id != null) {
-  //       userLikedPostsList[index] = true;
-  //
-  //       String? count = await getLikesCount(postId);
-  //
-  //       postLCList[index] = count!;
-  //
-  //       Count? userLike = await postLikedByUser(postId);
-  //
-  //       if (userLike!.id != "0") {
-  //         userLikedPostsList[index] = true;
-  //       } else {
-  //         userLikedPostsList[index] = false;
-  //       }
-  //
-  //       update();
-  //
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   } finally {
-  //     update();
-  //   }
-  // }
-  //
-  // Future<List<Errors>?> unlikeAPost(String postId) async {
-  //   try {
-  //     ErrorMessage unlikePost = await RemoteHomeServices.unlikeAPost(postId);
-  //
-  //     return unlikePost.errors;
-  //   } finally {}
-  // }
+  Future<bool> likeAPost(String postId) async {
+    try {
+      LikePost likePost = await RemoteHomeServices.likeAPost(postId);
+
+      if (likePost.like!.id != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } finally {
+      update();
+    }
+  }
+
+  Future<List<Errors>?> unlikeAPost(String postId) async {
+    try {
+      ErrorMessage unlikePost = await RemoteHomeServices.unlikeAPost(postId);
+
+      return unlikePost.errors;
+    } finally {}
+  }
 
   Future<UserComment?> commentOnAPost(String comment, String postId) async {
     try {
@@ -296,30 +258,12 @@ class HomeController extends GetxController {
 
       if (questionsList.isNotEmpty) {
         questionsList.clear();
-        quesLCList.clear();
       }
 
       var questions = await RemoteHomeServices.fetchAllQuestions();
 
-      // print('all questions: ${questions['data']}');
-
       if (questions != null) {
-        for (var question in questions['data']) {
-          String quesId = Question.fromJson(question).id!;
-
-          String? count = await getLikeCountByQuestionId(quesId);
-
-          quesLCList.add(count!);
-          userLikedQuesList.add(false);
-
-          Count? userLike = await quesLikedByUser(quesId);
-
-          // if (userLike!.id != "0") {
-          //   userLikedPostsList.add(true);
-          // } else {
-          //   userLikedPostsList.add(false);
-          // }
-
+        for (var question in questions) {
           questionsList.add(Question.fromJson(question));
         }
 
@@ -409,22 +353,6 @@ class HomeController extends GetxController {
       LikeQuestion likeQuestion = await RemoteHomeServices.likeAQuestion(quesId);
 
       if (likeQuestion.id != null) {
-        userLikedQuesList[index] = true;
-
-        String? count = await getLikeCountByQuestionId(quesId);
-
-        quesLCList[index] = count!;
-
-        Count? userLike = await quesLikedByUser(quesId);
-
-        if (userLike!.id != "0") {
-          userLikedPostsList[index] = true;
-        } else {
-          userLikedPostsList[index] = false;
-        }
-
-        update();
-
         return true;
       } else {
         return false;
