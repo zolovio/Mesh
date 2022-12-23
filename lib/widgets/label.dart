@@ -168,16 +168,7 @@ class CustomRichText extends StatelessWidget {
   final String? text;
   final String? user;
   final String? hashtag;
-  const CustomRichText(
-      {Key? key,
-      this.fontSize,
-      this.color,
-      this.fontFamily,
-      this.height,
-      this.user,
-      this.hashtag,
-      this.text})
-      : super(key: key);
+  const CustomRichText({Key? key, this.fontSize, this.color, this.fontFamily, this.height, this.user, this.hashtag, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -190,13 +181,7 @@ class CustomRichText extends StatelessWidget {
           color: color ?? const Color(0xff615858),
         ),
         children: <TextSpan>[
-          if (user != null)
-            TextSpan(
-                text: user,
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff252529))),
+          if (user != null) TextSpan(text: user, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xff252529))),
           TextSpan(
               text: (text != null)
                   ? ((text!.length <= 70) ? text : text!.substring(0, 70))
@@ -209,8 +194,7 @@ class CustomRichText extends StatelessWidget {
 }
 
 class UnderLinedText extends StatelessWidget {
-  const UnderLinedText({Key? key, required this.text, this.italics = true})
-      : super(key: key);
+  const UnderLinedText({Key? key, required this.text, this.italics = true}) : super(key: key);
 
   final String text;
   final bool italics;
@@ -229,10 +213,10 @@ class UnderLinedText extends StatelessWidget {
               color: const Color(0xffF7D86C),
             )),
         Text(text,
-            style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                fontFamily: (!italics) ? "Manrope" : null,
-                fontStyle: (italics) ? FontStyle.italic : null,
-                color: const Color(0xff252529))),
+            style: Theme.of(context)
+                .textTheme
+                .headlineLarge!
+                .copyWith(fontFamily: (!italics) ? "Manrope" : null, fontStyle: (italics) ? FontStyle.italic : null, color: const Color(0xff252529))),
       ],
     );
   }
@@ -245,9 +229,7 @@ class CustomDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 13),
-        child: const Divider());
+    return Container(margin: const EdgeInsets.symmetric(horizontal: 13), child: const Divider());
   }
 }
 

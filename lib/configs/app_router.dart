@@ -6,7 +6,10 @@ import 'package:mesh/feature/auth/ui/verify/verify_screen.dart';
 import 'package:mesh/feature/home_screens/home_screen.dart';
 import 'package:mesh/feature/skills/ui/prepare_screen.dart';
 import 'package:mesh/feature/skills/ui/select_skill_screen.dart';
+import 'package:mesh/screens/chat_screen.dart';
 import 'package:mesh/screens/comment_screen.dart';
+import 'package:mesh/screens/message_screen.dart';
+import 'package:mesh/screens/notifications_screen.dart';
 
 import '../screens/upload_screen.dart';
 
@@ -21,6 +24,9 @@ class AppRouter {
   static const String homeScreen = '/homeScreen';
   static const String uploadScreen = '/uploadScreen';
   static const String commentScreen = '/commentScreen';
+  static const String messageScreen = '/messageScreen';
+  static const String chatScreen = '/chatScreen';
+  static const String notificationScreen = '/notificationScreen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -37,12 +43,15 @@ class AppRouter {
       case uploadScreen:
         return MaterialPageRoute(builder: (_) => const UploadScreen());
       case verifyScreen:
-        return MaterialPageRoute(
-            builder: (_) => VerifyScreen(
-                  verifyModel: settings.arguments as VerifyModel,
-                ));
+        return MaterialPageRoute(builder: (_) => VerifyScreen(verifyModel: settings.arguments as VerifyModel));
       case commentScreen:
         return MaterialPageRoute(builder: (_) => CommentScreen());
+      case messageScreen:
+        return MaterialPageRoute(builder: (_) => MessageScreen());
+      case chatScreen:
+        return MaterialPageRoute(builder: (_) => ChatScreen());
+      case notificationScreen:
+        return MaterialPageRoute(builder: (_) => NotificationScreen());
       default:
         return MaterialPageRoute(
             builder: (_) => RouteErrorScreen(
@@ -57,8 +66,7 @@ class RouteErrorScreen extends StatelessWidget {
   final String title;
   final String message;
 
-  const RouteErrorScreen({Key? key, required this.title, required this.message})
-      : super(key: key);
+  const RouteErrorScreen({Key? key, required this.title, required this.message}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

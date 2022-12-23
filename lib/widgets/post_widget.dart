@@ -5,13 +5,7 @@ import 'package:mesh/widgets/icon_button.dart';
 import 'package:mesh/widgets/label.dart';
 
 class PostDate extends StatelessWidget {
-  const PostDate(
-      {Key? key,
-      required this.screenWidth,
-      required,
-      this.startDate,
-      this.endDate})
-      : super(key: key);
+  const PostDate({Key? key, required this.screenWidth, required, this.startDate, this.endDate}) : super(key: key);
 
   final double screenWidth;
   final String? startDate;
@@ -20,28 +14,16 @@ class PostDate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(
-            left: 16.0, right: 16.0, top: 10.0, bottom: 25.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 10.0, bottom: 25.0),
         child: Row(
           children: [
-            Image.asset("assets/images/post-calendar.png",
-                height: 15, width: 15, fit: BoxFit.contain),
+            Image.asset("assets/images/post-calendar.png", height: 15, width: 15, fit: BoxFit.contain),
             SizedBox(width: screenWidth * 0.015),
-            Text(startDate ?? "26 May 2022",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: Theme.of(context).focusColor)),
+            Text(startDate ?? "26 May 2022", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Theme.of(context).focusColor)),
             SizedBox(width: screenWidth * 0.015),
-            Text("to",
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: Theme.of(context).indicatorColor, fontSize: 10)),
+            Text("to", style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).indicatorColor, fontSize: 10)),
             SizedBox(width: screenWidth * 0.015),
-            Text(endDate ?? "28 May 2022",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: Theme.of(context).focusColor)),
+            Text(endDate ?? "28 May 2022", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Theme.of(context).focusColor)),
           ],
         ));
   }
@@ -68,8 +50,7 @@ class PostCaption extends StatelessWidget {
       thistag = '${thistag} #${tag}';
     });
     return Padding(
-      padding:
-          const EdgeInsets.only(left: 13.0, right: 13, top: 10, bottom: 10),
+      padding: const EdgeInsets.only(left: 13.0, right: 13, top: 10, bottom: 10),
       child: SizedBox(
         width: screenWidth * 0.85,
         // padding: const EdgeInsets.all(5),
@@ -84,10 +65,7 @@ class PostCaption extends StatelessWidget {
             Text(
                 // "#Gameon #Reels #2022 #Mesh2022",
                 thistag.toString(),
-                style: TextStyle(
-                    color: Theme.of(context).focusColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600))
+                style: TextStyle(color: Theme.of(context).focusColor, fontSize: 16, fontWeight: FontWeight.w600))
           ],
         ),
       ),
@@ -124,19 +102,16 @@ class PostLikes extends StatelessWidget {
           // ),
           SizedBox(width: screenWidth * 0.015),
           RichText(
-            text: TextSpan(
-                style: Theme.of(context).textTheme.titleSmall,
-                children: <TextSpan>[
-                  TextSpan(
-                    text: likes,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 9),
-                  ),
-                  const TextSpan(
-                    text: " other liked it",
-                    style: TextStyle(fontSize: 9),
-                  )
-                ]),
+            text: TextSpan(style: Theme.of(context).textTheme.titleSmall, children: <TextSpan>[
+              TextSpan(
+                text: likes,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 9),
+              ),
+              const TextSpan(
+                text: " other liked it",
+                style: TextStyle(fontSize: 9),
+              )
+            ]),
           ),
         ],
       ),
@@ -164,17 +139,6 @@ class PostTitle extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              // Container(
-              //   height: 48.0,
-              //   width: 48.0,
-              //   decoration: const BoxDecoration(
-              //     shape: BoxShape.circle,
-              //     image: DecorationImage(
-              //         fit: BoxFit.cover,
-              //         image: NetworkImage(
-              //             "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80")),
-              //   ),
-              // ),
               GradientOvalImage(
                   imageSize: 48,
                   img: this.user?.avatar == null
@@ -187,22 +151,28 @@ class PostTitle extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      this.user == null
-                          ? "Harley James"
-                          : '${this.user?.firstName} ${this.user?.lastName}',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xff252529),
-                          fontWeight: FontWeight.w600)),
+                    this.user == null ||
+                            this.user?.firstName == null ||
+                            this.user?.firstName == "" ||
+                            this.user?.lastName == null ||
+                            this.user?.firstName == ""
+                        ? "Harley James"
+                        : '${this.user?.firstName} ${this.user?.lastName}',
+                    style: TextStyle(fontSize: 16, color: Color(0xff252529), fontWeight: FontWeight.w600),
+                  ),
                   SizedBox(height: 2),
                   Text(
-                      this.datecreated == null
-                          ? "" //30 Minutes
+                    this.datecreated == null
+                        ? "" //30 Minutes
 
-                          : '${DateTime.now().difference(this.datecreated).inDays.toString()} Days',
-                      style: TextStyle(fontSize: 14, color: Color(0xff949292)))
+                        : '${DateTime.now().difference(this.datecreated).inDays.toString()} Days',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xff949292),
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
           AppBarIconButton(image: "assets/images/more.png", onTap: () {})

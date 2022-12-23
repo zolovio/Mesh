@@ -23,49 +23,59 @@ class QuestionsModel {
 
 class Question {
   String? id;
-  String? status;
   String? dateCreated;
-  String? userUpdated;
-  String? dateUpdated;
+  UserCreated? userCreated;
+  String? media;
   String? body;
   List<String>? tags;
-  UserCreated? userCreated;
+  String? likesCount;
+  String? commentsCount;
+  bool? isLikedByUser;
+  bool? isCommentedByUser;
+  bool? isSavedByUser;
 
   Question(
       {this.id,
-      this.status,
       this.dateCreated,
-      this.userUpdated,
-      this.dateUpdated,
+      this.userCreated,
+      this.media,
       this.body,
       this.tags,
-      this.userCreated});
+      this.likesCount,
+      this.commentsCount,
+      this.isLikedByUser,
+      this.isCommentedByUser,
+      this.isSavedByUser});
 
   Question.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    status = json['status'];
     dateCreated = json['date_created'];
-    userUpdated = json['user_updated'];
-    dateUpdated = json['date_updated'];
+    userCreated = json['user_created'] != null ? new UserCreated.fromJson(json['user_created']) : null;
+    media = json['media'];
     body = json['body'];
     tags = json['tags'].cast<String>();
-    userCreated = json['user_created'] != null
-        ? new UserCreated.fromJson(json['user_created'])
-        : null;
+    likesCount = json['likescount'];
+    commentsCount = json['commentscount'];
+    isLikedByUser = json['isLikedByUser'];
+    isCommentedByUser = json['isCommentedByUser'];
+    isSavedByUser = json['isSavedByUser'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['status'] = this.status;
     data['date_created'] = this.dateCreated;
-    data['user_updated'] = this.userUpdated;
-    data['date_updated'] = this.dateUpdated;
-    data['body'] = this.body;
-    data['tags'] = this.tags;
     if (this.userCreated != null) {
       data['user_created'] = this.userCreated!.toJson();
     }
+    data['media'] = this.media;
+    data['body'] = this.body;
+    data['tags'] = this.tags;
+    data['likescount'] = this.likesCount;
+    data['commentscount'] = this.commentsCount;
+    data['isLikedByUser'] = this.isLikedByUser;
+    data['isCommentedByUser'] = this.isCommentedByUser;
+    data['isSavedByUser'] = this.isSavedByUser;
     return data;
   }
 }

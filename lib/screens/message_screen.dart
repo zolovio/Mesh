@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mesh/configs/app_router.dart';
+import 'package:mesh/screens/view_offer_screen.dart';
 import 'package:mesh/widgets/icon_button.dart';
 import 'package:mesh/widgets/searchbar.dart';
 
 import '../widgets/gradient_oval_image.dart';
 
 class MessageScreen extends StatelessWidget {
+  static String routeName = "/message";
   const MessageScreen({Key? key}) : super(key: key);
+
+  showModal(BuildContext context) => showModalBottomSheet<void>(
+        context: context,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (BuildContext context) {
+          return const ApplyFilter();
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +33,13 @@ class MessageScreen extends StatelessWidget {
             itemCount: 5,
             itemBuilder: (context, i) {
               if (i == 0) {
-                return const SearchBar(topSize: 15);
+                return SearchBar(
+                  topSize: 15,
+                  tapFunction: () {
+                    showModal(context);
+                    // print("Clicked");
+                  },
+                );
               }
 
               if (i == 1) {
@@ -33,19 +50,12 @@ class MessageScreen extends StatelessWidget {
                       child: Stories(),
                     ),
                     const SizedBox(height: 6),
-                    Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 13),
-                        child: const Divider())
+                    Container(margin: const EdgeInsets.symmetric(horizontal: 13), child: const Divider())
                   ],
                 );
               }
               return Column(
-                children: [
-                  const _Message(),
-                  Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 13),
-                      child: const Divider())
-                ],
+                children: [const _Message(), Container(margin: const EdgeInsets.symmetric(horizontal: 13), child: const Divider())],
               );
             }));
   }
@@ -62,9 +72,7 @@ class _MessageAppBar extends StatelessWidget {
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Color(0xffF5F6F6),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25)),
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
         ),
         padding: const EdgeInsets.only(top: 50, left: 20, bottom: 0, right: 20),
         child: Row(
@@ -78,15 +86,10 @@ class _MessageAppBar extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.fromLTRB(16.0, 16.0, 8.0, 20.0),
-              child: Text("Messenger",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Color(0xff252529),
-                      fontWeight: FontWeight.w600)),
+              child: Text("Messenger", style: TextStyle(fontSize: 20, color: Color(0xff252529), fontWeight: FontWeight.w600)),
             ),
             const Spacer(),
-            AppBarIconButton(
-                image: "assets/images/pencil.png", onTap: () {}, green: true)
+            AppBarIconButton(image: "assets/images/pencil.png", onTap: () {}, green: true)
           ],
         ));
   }
@@ -103,11 +106,12 @@ class _Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print(response);
     final screenWidth = MediaQuery.of(context).size.width;
-
     return GestureDetector(
       onTap: () {
-        Get.toNamed("/chat");
+        Navigator.pushNamed(context, AppRouter.chatScreen);
+        // Get.toNamed("/chat");
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
@@ -128,20 +132,12 @@ class _Message extends StatelessWidget {
                 const SizedBox(height: 5),
                 SizedBox(
                   width: screenWidth * 0.6,
-                  child: const Text("Travis Phillip",
-                      style: TextStyle(
-                          color: Color(0xff252529),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600)),
+                  child: const Text("Travis Phillip", style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600)),
                 ),
                 SizedBox(
                   width: screenWidth * 0.6,
-                  child: const Text(
-                      "awesome work done! really impressed. wanna work together??",
-                      style: TextStyle(
-                          color: Color(0xff959494),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400)),
+                  child: const Text("awesome work done! really impressed. wanna work together??",
+                      style: TextStyle(color: Color(0xff959494), fontSize: 14, fontWeight: FontWeight.w400)),
                 ),
 
                 // if (moreinfo())
@@ -198,9 +194,7 @@ class Stories extends StatelessWidget {
                   Stack(
                     alignment: Alignment.bottomRight,
                     children: <Widget>[
-                      Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 5),
-                          child: OvalImage(imageSize: 50)),
+                      Container(margin: const EdgeInsets.symmetric(horizontal: 5), child: OvalImage(imageSize: 50)),
                       Positioned(
                           right: 7.0,
                           // bottom: 20,
@@ -208,10 +202,7 @@ class Stories extends StatelessWidget {
                             width: 17,
                             height: 17,
                             decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context).focusColor,
-                                border:
-                                    Border.all(color: Colors.white, width: 4)),
+                                shape: BoxShape.circle, color: Theme.of(context).focusColor, border: Border.all(color: Colors.white, width: 4)),
                           ))
                     ],
                   ),
@@ -230,6 +221,101 @@ class Stories extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class ApplyFilter extends StatefulWidget {
+  const ApplyFilter({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<ApplyFilter> createState() => _ApplyFilterState();
+}
+
+class _ApplyFilterState extends State<ApplyFilter> {
+  // final controller = Get.find<HomeController>();
+
+  final List<String> sortOptions = ["Unread", "New", "Old"];
+
+  var value = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 268,
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                const SizedBox(
+                  width: 280,
+                  child: Text(
+                    "Apply Filter",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xff252529)),
+                  ),
+                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const CloseCircle())
+              ]),
+            ),
+            const Divider(
+              color: Color(0xffEBEAEA),
+            ),
+            for (int i = 0; i < sortOptions.length; i++)
+              GestureDetector(
+                onTap: () {
+                  if (value != sortOptions[i]) {
+                    setState(() {
+                      value = sortOptions[i];
+                    });
+                  } else {
+                    if (i == 0) {
+                      // controller.business.value = false;
+                    } else {
+                      // controller.business.value = true;
+                    }
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Container(
+                  width: 327,
+                  height: 48,
+                  margin: EdgeInsets.only(top: (i == 0) ? 5 : 8, bottom: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                  ),
+                  decoration: BoxDecoration(
+                      color: (value == sortOptions[i]) ? const Color(0xffEBF9F9) : const Color(0xffF7F7F7),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: (value == sortOptions[i]) ? Colors.transparent : const Color(0xffEEEEF0))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(sortOptions[i],
+                          style: TextStyle(fontSize: 18, color: (value == sortOptions[i]) ? Theme.of(context).focusColor : const Color(0xffA5A5A5))),
+                      // if (value == sortOptions[i])
+                      //   Radio(
+                      //       activeColor: Theme.of(context).focusColor,
+                      //       splashRadius: 9,
+                      //       value: sortOptions[i],
+                      //       focusColor: Theme.of(context).focusColor,
+                      //       groupValue: value,
+                      //       onChanged: (v) {})
+                    ],
+                  ),
+                ),
+              )
+          ],
+        ),
       ),
     );
   }

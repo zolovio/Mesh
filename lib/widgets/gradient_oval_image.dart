@@ -29,16 +29,14 @@ class GradientOvalImage extends StatelessWidget {
       ),
       child: Container(
         padding: const EdgeInsets.all(2),
-        decoration:
-            const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
         child: Container(
           // margin: const EdgeInsets.all(4),
           width: imageSize ?? 52.0,
           height: imageSize ?? 52.0,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            image: DecorationImage(
-                fit: BoxFit.cover, image: NetworkImage(this.img)),
+            image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(this.img)),
           ),
           margin: const EdgeInsets.symmetric(horizontal: 0.0),
         ),
@@ -48,21 +46,24 @@ class GradientOvalImage extends StatelessWidget {
 }
 
 class OvalImage extends StatelessWidget {
-  const OvalImage({Key? key, this.imageSize}) : super(key: key);
+  const OvalImage({Key? key, this.imageSize, this.imageUrl}) : super(key: key);
 
   final double? imageSize;
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: imageSize ?? 48.0,
       width: imageSize ?? 48.0,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
         image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(
-                "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80")),
+          fit: BoxFit.cover,
+          image: NetworkImage((imageUrl.toString().isEmpty)
+              ? imageUrl!
+              : "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80"),
+        ),
       ),
     );
   }

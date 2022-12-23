@@ -4,11 +4,9 @@
 
 import 'dart:convert';
 
-List<PostModel> PostModelFromJson(String str) =>
-    List<PostModel>.from(json.decode(str).map((x) => PostModel.fromJson(x)));
+List<PostModel> PostModelFromJson(String str) => List<PostModel>.from(json.decode(str).map((x) => PostModel.fromJson(x)));
 
-String PostModelToJson(List<PostModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String PostModelToJson(List<PostModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class PostModel {
   PostModel({
@@ -22,6 +20,11 @@ class PostModel {
     required this.tags,
     required this.file,
     required this.type,
+    required this.likesCount,
+    required this.commentsCount,
+    required this.isLikedByUser,
+    required this.isCommentedByUser,
+    required this.isSavedByUser,
   });
 
   String id;
@@ -34,25 +37,28 @@ class PostModel {
   List<String> tags;
   dynamic file;
   String type;
+  String likesCount;
+  String commentsCount;
+  bool isLikedByUser;
+  bool isCommentedByUser;
+  bool isSavedByUser;
 
   factory PostModel.fromJson(Map<String, dynamic> json) => PostModel(
         id: json["id"],
-        status: json["status"],
-        userCreated: json["user_created"] == null
-            ? null
-            : UserCreated.fromJson(json["user_created"]),
+        status: json["status"] == null ? "" : json["status"],
+        userCreated: json["user_created"] == null ? null : UserCreated.fromJson(json["user_created"]),
         dateCreated: DateTime.parse(json["date_created"]),
-        userUpdated:
-            json["user_updated"] == null ? 'null' : json["user_updated"],
-        dateUpdated: json["date_updated"] == null
-            ? null
-            : DateTime.parse(json["date_updated"]),
+        userUpdated: json["user_updated"] == null ? 'null' : json["user_updated"],
+        dateUpdated: json["date_updated"] == null ? null : DateTime.parse(json["date_updated"]),
         body: json["body"] == null ? null : json["body"],
-        tags: json["tags"] == null
-            ? []
-            : List<String>.from(json["tags"].map((x) => x)),
+        tags: json["tags"] == null ? [] : List<String>.from(json["tags"].map((x) => x)),
         file: json["file"],
         type: json["type"],
+        likesCount: json['likescount'],
+        commentsCount: json['commentscount'],
+        isLikedByUser: json['isLikedByUser'],
+        isCommentedByUser: json['isCommentedByUser'],
+        isSavedByUser: json['isSavedByUser'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -61,12 +67,16 @@ class PostModel {
         "user_created": userCreated == null ? null : userCreated!.toJson(),
         "date_created": dateCreated.toIso8601String(),
         "user_updated": userUpdated == null ? null : userUpdated,
-        "date_updated":
-            dateUpdated == null ? null : dateUpdated!.toIso8601String(),
+        "date_updated": dateUpdated == null ? null : dateUpdated!.toIso8601String(),
         "body": body,
         "tags": List<dynamic>.from(tags.map((x) => x)),
         "file": file,
         "type": type,
+        'likescount': this.likesCount,
+        'commentscount': this.commentsCount,
+        'isLikedByUser': this.isLikedByUser,
+        'isCommentedByUser': this.isCommentedByUser,
+        'isSavedByUser': this.isSavedByUser,
       };
 }
 
