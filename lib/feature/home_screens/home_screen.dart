@@ -39,7 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: Drawerr(),
+      drawer: Drawerr(
+        context: context,
+      ),
       body: Obx(() => controller.pages.elementAt(controller.selectedPage.value)),
       floatingActionButton: Transform(
         alignment: Alignment.center,
