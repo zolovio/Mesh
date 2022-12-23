@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/feature/home_screens/home_tab/home_tab.dart';
+import 'package:mesh/feature/home_screens/home_tab/home_tabs/post.dart';
 import 'package:mesh/feature/home_screens/home_tab/user_tab.dart';
 import 'package:mesh/feature/home_screens/home_tab/user_tabs/about/about.dart';
+import 'package:mesh/feature/home_screens/home_tab/user_tabs/bookmarks/bookmarks.dart';
 import 'package:mesh/feature/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
-// import 'package:mesh/screens/home_screens/home_tab/home_tab.dart';
-// import 'package:mesh/screens/home_screens/home_tab/user_tab.dart';
-// import 'package:mesh/screens/home_screens/home_tab/user_tabs/about/about.dart';
-// import 'package:mesh/screens/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
 import 'package:mesh/screens/view_offer_screen.dart';
 import 'package:mesh/widgets/button.dart';
-
 import 'package:mesh/widgets/gradient_oval_image.dart';
 
-import '../feature/home_screens/controllers/home_controller.dart';
-import '../feature/home_screens/home_tab/home_tab.dart';
 import '../widgets/icon_button.dart';
 
 class UserInfoScreen extends StatefulWidget {
+  static String routeName = "/user-info";
   const UserInfoScreen({Key? key, this.myprofile = false}) : super(key: key);
   final bool myprofile;
 
@@ -25,25 +23,15 @@ class UserInfoScreen extends StatefulWidget {
 }
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
-  int _selectedIndex = 0;
+  // int _selectedIndex = 0;
 
   bool following = false;
 
-  final List<Widget> _pages = <Widget>[
-    AboutTab(),
-    AboutTab(exp: true),
-    Container(),
-    Portfolio()
-  ];
   final controller = Get.find<HomeController>();
-
-  final List<String> _tabs = ["About", "Experience", "Training", "Portfolio"];
 
   showModal(BuildContext context) => showModalBottomSheet<void>(
         context: context,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (BuildContext context) {
           return const SwitchToBusiness();
         },
@@ -51,6 +39,13 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = widget.myprofile
+        ? <Widget>[Post(), Post(question: true), Bookmarks(), AboutTab(), AboutTab(exp: true), Container(), Portfolio()]
+        : <Widget>[Post(), Post(question: true), AboutTab(), AboutTab(exp: true), Container(), Portfolio()];
+
+    final List<String> _tabs = widget.myprofile
+        ? ["My Post", "My Questions", "Bookmarks", "About", "Experience", "Training", "Portfolio"]
+        : ["Post", "Questions", "About", "Experience", "Training", "Portfolio"];
     return NestedScrollView(
         controller: ScrollController(),
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -77,9 +72,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     decoration: const BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(25),
-                          bottomRight: Radius.circular(25)),
+                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
                     ),
                     child: Column(
                       children: [
@@ -108,10 +101,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                     onTap: () {
                                       showModal(context);
                                     },
-                                    child: const FollowButton(
-                                        text: "Switch to Business",
-                                        width: 176,
-                                        height: 40),
+                                    child: const FollowButton(text: "Switch to Business", width: 176, height: 40),
                                   ),
                                 ],
                               )
@@ -125,10 +115,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                             following = false;
                                           });
                                         },
-                                        child: const FollowButton(
-                                            text: "Following",
-                                            width: 101,
-                                            height: 40),
+                                        child: const FollowButton(text: "Following", width: 101, height: 40),
                                       ),
                                       const SizedBox(width: 10),
                                       CustomButton(
@@ -141,11 +128,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                           height: 40,
                                           textSize: 16,
                                           fontWeight: FontWeight.w600,
-                                          textColor:
-                                              Theme.of(context).focusColor,
+                                          textColor: Theme.of(context).focusColor,
                                           shadowColor: Colors.transparent,
-                                          borderColor:
-                                              Theme.of(context).focusColor,
+                                          borderColor: Theme.of(context).focusColor,
                                           primaryColor: Colors.transparent)
                                     ],
                                   )
@@ -161,11 +146,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             height: 65,
                             alignment: Alignment.center,
                             width: double.infinity,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 18, vertical: 10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xffF7F7F7)),
+                            margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xffF7F7F7)),
                             child: ListView.builder(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
@@ -173,15 +155,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 itemBuilder: (ctx, i) {
                                   return Tab(
                                       tabs: _tabs[i],
-                                      i: _selectedIndex,
+                                      i: controller.userInfoScreenSelectedIndex.value,
                                       index: i,
                                       onTap: () {
                                         setState(() {
-                                          _selectedIndex = i;
+                                          controller.userInfoScreenSelectedIndex.value = i;
                                         });
                                       });
                                 })),
-                        _pages.elementAt(_selectedIndex)
+                        _pages.elementAt(controller.userInfoScreenSelectedIndex.value)
                       ],
                     ))
               ],
@@ -190,12 +172,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 }
 
 class Tab extends StatelessWidget {
-  const Tab(
-      {Key? key,
-      required String tabs,
-      required this.onTap,
-      required this.i,
-      required this.index})
+  const Tab({Key? key, required String tabs, required this.onTap, required this.i, required this.index})
       : _tabs = tabs,
         super(key: key);
 
@@ -209,20 +186,13 @@ class Tab extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-          decoration: BoxDecoration(
-              color: (i == index) ? Colors.white : null,
-              borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(color: (i == index) ? Colors.white : null, borderRadius: BorderRadius.circular(8)),
           margin: const EdgeInsets.all(8),
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 15),
           alignment: Alignment.center,
           child: Text(
             _tabs,
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: (i == index)
-                    ? Theme.of(context).focusColor
-                    : const Color(0xff9D9D9D)),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: (i == index) ? Theme.of(context).focusColor : const Color(0xff9D9D9D)),
           )),
     );
   }
@@ -240,8 +210,7 @@ class _FollowerCount extends StatelessWidget {
       alignment: Alignment.center,
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
         boxShadow: [
           BoxShadow(
             color: Color(0xFFEEEFEF),
@@ -255,45 +224,30 @@ class _FollowerCount extends StatelessWidget {
         children: [
           Column(
             children: [
-              const Text("100",
-                  style: TextStyle(
-                      color: Color(0xff252529),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600)),
+              const Text("100", style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600)),
               Text(
                 "Posts",
-                style: TextStyle(
-                    color: Theme.of(context).focusColor, fontSize: 14),
+                style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14),
               )
             ],
           ),
           const SizedBox(width: 15),
           Column(
             children: [
-              const Text("300",
-                  style: TextStyle(
-                      color: Color(0xff252529),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600)),
+              const Text("300", style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600)),
               Text(
                 "Following",
-                style: TextStyle(
-                    color: Theme.of(context).focusColor, fontSize: 14),
+                style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14),
               )
             ],
           ),
           const SizedBox(width: 15),
           Column(
             children: [
-              const Text("2908",
-                  style: TextStyle(
-                      color: Color(0xff252529),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600)),
+              const Text("2908", style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600)),
               Text(
                 "Followers",
-                style: TextStyle(
-                    color: Theme.of(context).focusColor, fontSize: 14),
+                style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14),
               )
             ],
           ),
@@ -317,9 +271,7 @@ class _HomeAppBar extends StatelessWidget {
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Color(0xffEBF9F9),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25)),
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
         ),
         padding: const EdgeInsets.only(top: 50, left: 20, bottom: 0),
         child: Stack(
@@ -336,8 +288,7 @@ class _HomeAppBar extends StatelessWidget {
                   green: true,
                 ),
                 const Spacer(),
-                Image.asset("assets/images/star.png",
-                    height: 210, width: 140, fit: BoxFit.fill)
+                Image.asset("assets/images/star.png", height: 210, width: 140, fit: BoxFit.fill)
               ],
             ),
             Container(
@@ -345,15 +296,11 @@ class _HomeAppBar extends StatelessWidget {
               margin: const EdgeInsets.only(top: 10),
               child: Column(
                 children: [
-                  GradientOvalImage(
-                      imageSize: 86, color: Theme.of(context).focusColor),
+                  GradientOvalImage(imageSize: 86, color: Theme.of(context).focusColor),
                   const SizedBox(height: 10),
                   const Text(
                     "Bishen Ponnanna",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xff252529),
-                        fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 20, color: Color(0xff252529), fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(
                     height: 10,
@@ -364,10 +311,7 @@ class _HomeAppBar extends StatelessWidget {
                       children: [
                         Text(
                           "Male",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).focusColor,
-                              fontWeight: FontWeight.w600),
+                          style: TextStyle(fontSize: 16, color: Theme.of(context).focusColor, fontWeight: FontWeight.w600),
                         ),
                         const VerticalDivider(),
                         const Text(
@@ -392,12 +336,7 @@ class _HomeAppBar extends StatelessWidget {
 }
 
 class TabOption extends StatelessWidget {
-  const TabOption(
-      {Key? key,
-      required int selectedIndex,
-      required this.index,
-      this.radio = false,
-      required this.text})
+  const TabOption({Key? key, required int selectedIndex, required this.index, this.radio = false, required this.text})
       : _selectedIndex = selectedIndex,
         super(key: key);
 
@@ -413,9 +352,7 @@ class TabOption extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: (_selectedIndex == index) ? Colors.white : null,
-          border: Border.all(
-              color: Theme.of(context).indicatorColor,
-              width: (_selectedIndex == index) ? 8 : 1)),
+          border: Border.all(color: Theme.of(context).indicatorColor, width: (_selectedIndex == index) ? 8 : 1)),
       child: Align(
         alignment: Alignment.center,
         child: Row(
@@ -430,9 +367,7 @@ class TabOption extends StatelessWidget {
                     unselectedWidgetColor: const Color(0xffC6C5C5),
                   ),
                   child: Radio(
-                      visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity,
-                          vertical: VisualDensity.minimumDensity),
+                      visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       activeColor: Theme.of(context).focusColor,
                       value: index.toString(),
@@ -444,9 +379,7 @@ class TabOption extends StatelessWidget {
             if (radio && _selectedIndex == index) const SizedBox(width: 9),
             Text(text,
                 style: TextStyle(
-                    color: (_selectedIndex != index)
-                        ? const Color(0xff9D9D9D)
-                        : Theme.of(context).focusColor,
+                    color: (_selectedIndex != index) ? const Color(0xff9D9D9D) : Theme.of(context).focusColor,
                     fontSize: 18,
                     fontWeight: FontWeight.w600)),
           ],
@@ -483,24 +416,23 @@ class _SwitchToBusinessState extends State<SwitchToBusiness> {
             Container(
               margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(
-                      width: 280,
-                      child: Text(
-                        "Are you sure you want to switch to business account?",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff252529)),
-                      ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(
+                    width: 280,
+                    child: Text(
+                      "Are you sure you want to switch to business account?",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xff252529)),
                     ),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const CloseCircle())
-                  ]),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const CloseCircle(),
+                  )
+                ],
+              ),
             ),
             const Divider(
               color: Color(0xffEBEAEA),
@@ -529,23 +461,14 @@ class _SwitchToBusinessState extends State<SwitchToBusiness> {
                     horizontal: 18,
                   ),
                   decoration: BoxDecoration(
-                      color: (value == sortOptions[i])
-                          ? const Color(0xffEBF9F9)
-                          : const Color(0xffF7F7F7),
+                      color: (value == sortOptions[i]) ? const Color(0xffEBF9F9) : const Color(0xffF7F7F7),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: (value == sortOptions[i])
-                              ? Colors.transparent
-                              : const Color(0xffEEEEF0))),
+                      border: Border.all(color: (value == sortOptions[i]) ? Colors.transparent : const Color(0xffEEEEF0))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(sortOptions[i],
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: (value == sortOptions[i])
-                                  ? Theme.of(context).focusColor
-                                  : const Color(0xffA5A5A5))),
+                          style: TextStyle(fontSize: 18, color: (value == sortOptions[i]) ? Theme.of(context).focusColor : const Color(0xffA5A5A5))),
                       // if (value == sortOptions[i])
                       //   Radio(
                       //       activeColor: Theme.of(context).focusColor,

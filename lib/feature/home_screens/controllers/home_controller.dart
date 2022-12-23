@@ -18,6 +18,7 @@ import 'package:mesh/feature/home_screens/models/ques_likes_by_id_model.dart';
 import 'package:mesh/feature/home_screens/models/questions_model.dart';
 import 'package:mesh/feature/home_screens/models/user_comment_model.dart';
 import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
+import 'package:mesh/screens/search_screen.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 
 import '../../../dependency/flutter_toast_dep.dart';
@@ -26,9 +27,11 @@ import '../home_tab/home_tab.dart';
 class HomeController extends GetxController {
   List<Widget> pages = <Widget>[
     const HomeTab(),
-    Container(),
+    const SearchScreen(),
     NotificationTab(),
-    const UserInfoScreen(myprofile: true),
+    const UserInfoScreen(
+      myprofile: true,
+    )
   ].obs;
 
   var selectedPage = 0.obs;

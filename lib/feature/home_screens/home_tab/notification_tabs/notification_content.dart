@@ -1,12 +1,139 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/home_tab/user_tab.dart';
+import 'package:mesh/screens/apply_details_screen.dart';
 import 'package:mesh/screens/apply_offer_screen.dart';
+import 'package:mesh/screens/bank_details_screen.dart';
+import 'package:mesh/screens/more_apply_details_screen.dart';
 import 'package:mesh/screens/view_offer_screen.dart';
 import 'package:mesh/widgets/label.dart';
 import 'package:mesh/widgets/searchbar.dart';
+
+class AuditionTab extends StatefulWidget {
+  const AuditionTab({Key? key, this.edit = false}) : super(key: key);
+  final bool edit;
+  @override
+  State<AuditionTab> createState() => _AuditionTabState();
+}
+
+class _AuditionTabState extends State<AuditionTab> {
+  int _selectedIndex = 0;
+  final controller = Get.find<HomeController>();
+  List<String> _tabs() => (controller.business.value)
+      ? ["Active Training", "All Courses", "My Training"]
+      : [
+          "Active Auditions",
+          "My Auditions",
+        ];
+  pages() => <Widget>[
+        NotificationContent(
+          competition: true,
+        ),
+        if (controller.business.value) NotificationContent(),
+        NotificationContent()
+      ];
+
+  Color fabBackgroundColor = Color(0xff2FA6A7);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: (_selectedIndex == 0)
+          ? SpeedDial(
+              backgroundColor: fabBackgroundColor,
+              icon: Icons.add,
+              activeIcon: Icons.close,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.60,
+              onOpen: () {
+                setState(() {
+                  fabBackgroundColor = Colors.red;
+                });
+              },
+              onClose: () {
+                setState(() {
+                  fabBackgroundColor = Theme.of(context).focusColor;
+                });
+              },
+              children: [
+                SpeedDialChild(
+                  child: Image.asset(
+                    'assets/images/fab_1.png',
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.white,
+                  labelBackgroundColor: Colors.white,
+                  label: "Create Training",
+                  onTap: () {},
+                ),
+                SpeedDialChild(
+                  child: Image.asset(
+                    'assets/images/fab_2.png',
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.white,
+                  label: "Create Auditions",
+                  onTap: () {
+                    Navigator.pushNamed(context, MoreApplyDetailsScreen.routeName);
+                  },
+                ),
+                SpeedDialChild(
+                  child: Image.asset(
+                    'assets/images/fab_3.png',
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.white,
+                  label: "Create Competition",
+                  onTap: () {
+                    Navigator.pushNamed(context, MoreApplyDetailsScreen.routeName);
+                  },
+                ),
+              ],
+            )
+          : Container(),
+      body: Container(
+        margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+        width: double.infinity,
+        child: ListView(shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            for (int i = 0; i < _tabs().length; i++)
+              Stack(clipBehavior: Clip.none, children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIndex = i;
+                    });
+                  },
+                  child: Text(
+                    _tabs()[i],
+                    style: TextStyle(fontSize: 16, color: (_selectedIndex == i) ? Theme.of(context).focusColor : const Color(0xff9D9D9D)),
+                  ),
+                ),
+                if (_selectedIndex == i)
+                  Positioned(
+                      bottom: -15,
+                      right: (controller.business.value) ? 10 : 30,
+                      left: (controller.business.value) ? 10 : 30,
+                      child: Container(
+                        // width: 25,
+                        height: 4,
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)), color: Color(0xffF7D86C)),
+                      ))
+              ])
+          ]),
+          const SizedBox(height: 5),
+          const CustomDivider(),
+          pages().elementAt(_selectedIndex)
+          // const Pictures()
+        ]),
+      ),
+    );
+  }
+}
 
 class CompetitionTab extends StatefulWidget {
   const CompetitionTab({Key? key, this.edit = false}) : super(key: key);
@@ -31,35 +158,91 @@ class _CompetitionTabState extends State<CompetitionTab> {
         if (controller.business.value) NotificationContent(),
         NotificationContent()
       ];
+
+  Color fabBackgroundColor = Color(0xff2FA6A7);
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
-      width: double.infinity,
-      child: ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              for (int i = 0; i < _tabs().length; i++)
-                Stack(clipBehavior: Clip.none, children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = i;
-                      });
-                    },
-                    child: Text(
-                      _tabs()[i],
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: (_selectedIndex == i)
-                              ? Theme.of(context).focusColor
-                              : const Color(0xff9D9D9D)),
-                    ),
+    return Scaffold(
+      floatingActionButton: (_selectedIndex == 0)
+          ? SpeedDial(
+              backgroundColor: fabBackgroundColor,
+              icon: Icons.add,
+              activeIcon: Icons.close,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.60,
+              onOpen: () {
+                setState(() {
+                  fabBackgroundColor = Colors.red;
+                });
+              },
+              onClose: () {
+                setState(() {
+                  fabBackgroundColor = Theme.of(context).focusColor;
+                });
+              },
+              children: [
+                SpeedDialChild(
+                  child: Image.asset(
+                    'assets/images/fab_1.png',
+                    color: Colors.black,
                   ),
-                  if (_selectedIndex == i)
-                    Positioned(
+                  backgroundColor: Colors.white,
+                  labelBackgroundColor: Colors.white,
+                  label: "Create Training",
+                  onTap: () {
+                    Navigator.pushNamed(context, MoreApplyDetailsScreen.routeName);
+                  },
+                ),
+                SpeedDialChild(
+                  child: Image.asset(
+                    'assets/images/fab_2.png',
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.white,
+                  label: "Create Auditions",
+                  onTap: () {
+                    Navigator.pushNamed(context, MoreApplyDetailsScreen.routeName);
+                  },
+                ),
+                SpeedDialChild(
+                  child: Image.asset(
+                    'assets/images/fab_3.png',
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.white,
+                  label: "Create Competition",
+                  onTap: () {
+                    Navigator.pushNamed(context, MoreApplyDetailsScreen.routeName);
+                  },
+                ),
+              ],
+            )
+          : Container(),
+      body: Container(
+        margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+        width: double.infinity,
+        child: ListView(shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              for (int i = 0; i < _tabs().length; i++)
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedIndex = i;
+                        });
+                      },
+                      child: Text(
+                        _tabs()[i],
+                        style: TextStyle(fontSize: 16, color: (_selectedIndex == i) ? Theme.of(context).focusColor : const Color(0xff9D9D9D)),
+                      ),
+                    ),
+                    if (_selectedIndex == i)
+                      Positioned(
                         bottom: -15,
                         right: (controller.business.value) ? 10 : 30,
                         left: (controller.business.value) ? 10 : 30,
@@ -68,29 +251,44 @@ class _CompetitionTabState extends State<CompetitionTab> {
                           height: 4,
                           decoration: const BoxDecoration(
                               borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
                               color: Color(0xffF7D86C)),
-                        ))
-                ])
-            ]),
-            const SizedBox(height: 5),
-            const CustomDivider(),
-            pages().elementAt(_selectedIndex)
-            // const Pictures()
-          ]),
+                        ),
+                      ),
+                  ],
+                ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          const CustomDivider(),
+          pages().elementAt(_selectedIndex)
+          // const Pictures()
+        ]),
+      ),
     );
   }
 }
 
 class NotificationContent extends StatelessWidget {
-  NotificationContent(
-      {Key? key, this.competition = false, this.earnings = false})
-      : super(key: key);
+  NotificationContent({Key? key, this.competition = false, this.earnings = false}) : super(key: key);
   final bool competition;
   final bool earnings;
   final controller = Get.find<HomeController>();
 
+  showModal(BuildContext context) => showModalBottomSheet<void>(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        builder: (BuildContext context) {
+          return const ApplyFilter();
+        },
+      );
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -103,17 +301,21 @@ class NotificationContent extends StatelessWidget {
           }
           if (earnings && i == 1) {
             return GestureDetector(
-                onTap: () => Get.toNamed("/bank-details"),
+                onTap: () => Navigator.pushNamed(context, BankDetailsScreen.routeName),
+                // onTap: () => Get.toNamed("/bank-details"),
                 child: const _AddBankContainer());
           }
-          if ((controller.business.value && !competition && i == 0) ||
-              (!controller.business.value && i == 0)) {
+          if ((controller.business.value && !competition && i == 0) || (!controller.business.value && i == 0)) {
             return Container(
                 margin: const EdgeInsets.only(bottom: 7.5),
-                child: const SearchBar(topSize: 15));
+                child: SearchBar(
+                  topSize: 15,
+                  tapFunction: () {
+                    showModal(context);
+                  },
+                ));
           }
-          return Notification(
-              competition: competition, applied: !(i == 2), earnings: earnings);
+          return Notification(competition: competition, applied: !(i == 2), earnings: earnings);
         });
   }
 }
@@ -131,9 +333,7 @@ class _AddBankContainer extends StatelessWidget {
         width: double.infinity,
         // height: 83,
         decoration: BoxDecoration(
-            color: const Color(0xffFAFAFA),
-            border: Border.all(color: const Color(0xffDCDBDB)),
-            borderRadius: BorderRadius.circular(10)),
+            color: const Color(0xffFAFAFA), border: Border.all(color: const Color(0xffDCDBDB)), borderRadius: BorderRadius.circular(10)),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -149,20 +349,14 @@ class _AddBankContainer extends StatelessWidget {
                   const HeadingText(text: "Bank Details"),
                   Container(
                     margin: const EdgeInsets.only(top: 5),
-                    child: const Text(
-                        "This account is used to facilitate all your deposits and withdrawals",
-                        style:
-                            TextStyle(color: Color(0xff949292), fontSize: 12)),
+                    child: const Text("This account is used to facilitate all your deposits and withdrawals",
+                        style: TextStyle(color: Color(0xff949292), fontSize: 12)),
                   )
                 ],
               ),
             ),
             const Spacer(),
-            Text("Add Bank",
-                style: TextStyle(
-                    color: Theme.of(context).focusColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600))
+            Text("Add Bank", style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14, fontWeight: FontWeight.w600))
           ],
         ));
   }
@@ -176,91 +370,75 @@ class _TotalEarning extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 8.5),
-        width: double.infinity,
-        height: 83,
+      margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 8.5),
+      width: double.infinity,
+      height: 84,
+      decoration: BoxDecoration(
+          gradient: const RadialGradient(colors: [Color(0xffDBECEC), Color(0xff31A1A2)], focalRadius: 50, radius: 5, center: Alignment.topCenter),
+          borderRadius: BorderRadius.circular(10)),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-            gradient: const RadialGradient(
-                colors: [Color(0xffDBECEC), Color(0xff31A1A2)],
-                focalRadius: 50,
-                radius: 5,
-                center: Alignment.topCenter),
+            gradient: LinearGradient(
+              colors: [Theme.of(context).focusColor.withOpacity(0.7), Theme.of(context).focusColor],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: const [0.5, 0.2],
+              tileMode: TileMode.clamp,
+            ),
             borderRadius: BorderRadius.circular(10)),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).focusColor.withOpacity(0.7),
-                  Theme.of(context).focusColor
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: const [0.5, 0.2],
-                tileMode: TileMode.clamp,
-              ),
-              borderRadius: BorderRadius.circular(10)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text("Total Earned",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        )),
-                    Text("₹5,450.00",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 24,
-                        )),
-                  ]),
-              Container(
-                height: 41,
-                width: 110,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color.fromRGBO(63, 222, 224, 0.2),
-                          blurRadius: 2,
-                          spreadRadius: 1,
-                          offset: Offset(-3, -3)),
-                      BoxShadow(
-                          color: Color.fromRGBO(31, 110, 110, 0.5),
-                          blurRadius: 1,
-                          spreadRadius: 0,
-                          offset: Offset(3, 3)),
-                    ],
-                    color: Theme.of(context).focusColor.withOpacity(0.6)),
-                child: const Text(
-                  'Withdraw',
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: const [
+              Text("Total Earned",
                   style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14),
-                ),
+                    color: Colors.white,
+                    fontSize: 14,
+                  )),
+              Text("₹5,450.00",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                  )),
+            ]),
+            Container(
+              height: 41,
+              width: 110,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromRGBO(63, 222, 224, 0.2),
+                      blurRadius: 2,
+                      spreadRadius: 1,
+                      offset: Offset(-3, -3),
+                    ),
+                    BoxShadow(
+                      color: Color.fromRGBO(31, 110, 110, 0.5),
+                      blurRadius: 1,
+                      spreadRadius: 0,
+                      offset: Offset(3, 3),
+                    ),
+                  ],
+                  color: Theme.of(context).focusColor.withOpacity(0.6)),
+              child: const Text(
+                'Withdraw',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
 class Notification extends StatelessWidget {
-  Notification(
-      {Key? key,
-      this.competition = false,
-      this.earnings = false,
-      this.applied = true,
-      this.showClose = true})
-      : super(key: key);
+  Notification({Key? key, this.competition = false, this.earnings = false, this.applied = true, this.showClose = true}) : super(key: key);
 
   final bool competition;
   final bool earnings;
@@ -277,16 +455,12 @@ class Notification extends StatelessWidget {
         (controller.business.value)
             ? GestureDetector(
                 onTap: () {
-                  Get.toNamed("/apply-details");
+                  Navigator.pushNamed(context, ApplyDetailsScreen.routeName);
+                  // Get.toNamed("/apply-details");
                 },
                 child: Container(
-                  margin: (controller.business.value)
-                      ? const EdgeInsets.symmetric(
-                          vertical: 7.5, horizontal: 18)
-                      : null,
-                  padding: (controller.business.value)
-                      ? const EdgeInsets.all(1)
-                      : null,
+                  margin: (controller.business.value) ? const EdgeInsets.symmetric(vertical: 7.5, horizontal: 18) : null,
+                  padding: (controller.business.value) ? const EdgeInsets.all(1) : null,
                   // height: earnings ? 169 : 159,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -296,27 +470,18 @@ class Notification extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        margin: (controller.business.value)
-                            ? null
-                            : const EdgeInsets.symmetric(
-                                vertical: 7.5, horizontal: 18),
+                        margin: (controller.business.value) ? null : const EdgeInsets.symmetric(vertical: 7.5, horizontal: 18),
                         // height: 121,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: const Color(0xffFAFAFA),
-                            border: (controller.business.value)
-                                ? null
-                                : Border.all(color: const Color(0xffDBD9D9))),
+                            border: (controller.business.value) ? null : Border.all(color: const Color(0xffDBD9D9))),
                         child: Column(children: [
                           NotifTitle(
                             showClose: !controller.business.value,
-                            title: (controller.business.value)
-                                ? "Course on Guitar"
-                                : null,
-                            subtitle: (controller.business.value)
-                                ? "By Bishen"
-                                : null,
+                            title: (controller.business.value) ? "Course on Guitar" : null,
+                            subtitle: (controller.business.value) ? "By Bishen" : null,
                           ),
                           const SizedBox(height: 15),
                           _NotifDetail(),
@@ -326,30 +491,16 @@ class Notification extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Row(
-                          mainAxisAlignment: (earnings)
-                              ? MainAxisAlignment.spaceBetween
-                              : MainAxisAlignment.center,
+                          mainAxisAlignment: (earnings) ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
                           children: [
                             (earnings)
                                 ? Text("Total Earned",
-                                    style: TextStyle(
-                                        color: Theme.of(context).focusColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700))
-                                : SvgPicture.asset(
-                                    "assets/icons/video-circle.svg"),
+                                    style: TextStyle(color: Theme.of(context).focusColor, fontSize: 16, fontWeight: FontWeight.w700))
+                                : SvgPicture.asset("assets/icons/video-circle.svg"),
                             const SizedBox(width: 4),
                             (earnings)
-                                ? Text("₹1,000.00",
-                                    style: TextStyle(
-                                        color: Theme.of(context).focusColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700))
-                                : Text("Continue",
-                                    style: TextStyle(
-                                        color: Theme.of(context).focusColor,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700))
+                                ? Text("₹1,000.00", style: TextStyle(color: Theme.of(context).focusColor, fontSize: 16, fontWeight: FontWeight.w700))
+                                : Text("Continue", style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14, fontWeight: FontWeight.w700))
                           ],
                         ),
                       ),
@@ -359,14 +510,11 @@ class Notification extends StatelessWidget {
                 ),
               )
             : Container(
-                margin:
-                    const EdgeInsets.symmetric(vertical: 7.5, horizontal: 18),
+                margin: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 18),
                 // height: 121,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xffFAFAFA),
-                    border: Border.all(color: const Color(0xffDBD9D9))),
+                    borderRadius: BorderRadius.circular(10), color: const Color(0xffFAFAFA), border: Border.all(color: const Color(0xffDBD9D9))),
                 child: Column(children: [
                   NotifTitle(
                     showClose: showClose,
@@ -377,8 +525,7 @@ class Notification extends StatelessWidget {
                   if (!competition && showClose) _NotifButtons()
                 ]),
               ),
-        if (!controller.business.value && competition)
-          _CustomClip(applied: applied)
+        if (!controller.business.value && competition) _CustomClip(applied: applied)
       ],
     );
   }
@@ -405,22 +552,11 @@ class _CustomClip extends StatelessWidget {
                 height: 24,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                    color: (applied)
-                        ? const Color(0xff07864B)
-                        : const Color(0xffDAA400),
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8))),
+                    color: (applied) ? const Color(0xff07864B) : const Color(0xffDAA400),
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8))),
                 child: Text((applied) ? "Applied" : "Expires Soon",
-                    style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600))),
-            Positioned(
-                right: 0,
-                bottom: -8,
-                child: SvgPicture.asset(
-                    "assets/icons/${(applied) ? "green" : "yellow"}-triangle.svg"))
+                    style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600))),
+            Positioned(right: 0, bottom: -8, child: SvgPicture.asset("assets/icons/${(applied) ? "green" : "yellow"}-triangle.svg"))
           ],
         ));
   }
@@ -452,11 +588,7 @@ class _NotifButtons extends StatelessWidget {
                 children: [
                   SvgPicture.asset("assets/icons/edit.svg"),
                   const SizedBox(width: 5),
-                  Text("Edit",
-                      style: TextStyle(
-                          color: Theme.of(context).focusColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700))
+                  Text("Edit", style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14, fontWeight: FontWeight.w700))
                 ],
               )),
         ),
@@ -466,14 +598,8 @@ class _NotifButtons extends StatelessWidget {
           },
           child: Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).focusColor),
-              child: const Text("Review Offers (23)",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700))),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Theme.of(context).focusColor),
+              child: const Text("Review Offers (23)", style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700))),
         ),
       ],
     );
@@ -496,34 +622,21 @@ class _NotifDetail extends StatelessWidget {
               height: 36,
               decoration: const BoxDecoration(shape: BoxShape.circle),
               child: SvgPicture.asset("assets/icons/location.svg")),
-        if (controller.business.value)
-          const Text("Ratings",
-              style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
+        if (controller.business.value) const Text("Ratings", style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
         SizedBox(width: (controller.business.value) ? 8 : 12),
-        if (controller.business.value)
-          SvgPicture.asset("assets/icons/star.svg"),
+        if (controller.business.value) SvgPicture.asset("assets/icons/star.svg"),
         if (controller.business.value) const SizedBox(width: 3),
-        if (controller.business.value)
-          const Text("4.2",
-              style: TextStyle(fontSize: 14, color: Color(0xffFEC90C))),
-        if (!controller.business.value)
-          const Text("Mysore",
-              style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
+        if (controller.business.value) const Text("4.2", style: TextStyle(fontSize: 14, color: Color(0xffFEC90C))),
+        if (!controller.business.value) const Text("Mysore", style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
         const Spacer(),
-        const Text("Category",
-            style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
+        const Text("Category", style: TextStyle(fontSize: 14, color: Color(0xff292D32))),
         const SizedBox(width: 10),
         Container(
             padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 15),
-            decoration: BoxDecoration(
-                color: const Color(0xffF1F1F3),
-                borderRadius: BorderRadius.circular(51)),
+            decoration: BoxDecoration(color: const Color(0xffF1F1F3), borderRadius: BorderRadius.circular(51)),
             child: const Text(
               "Singing",
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xff949292)),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xff949292)),
             ))
       ],
     );
@@ -531,8 +644,7 @@ class _NotifDetail extends StatelessWidget {
 }
 
 class NotifTitle extends StatelessWidget {
-  NotifTitle({Key? key, required this.showClose, this.title, this.subtitle})
-      : super(key: key);
+  NotifTitle({Key? key, required this.showClose, this.title, this.subtitle}) : super(key: key);
 
   final bool showClose;
   final String? title;
@@ -550,9 +662,7 @@ class NotifTitle extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.asset("assets/images/vertical-image.png",
-                  width: (controller.business.value) ? 40 : 56,
-                  height: (controller.business.value) ? 40 : 55,
-                  fit: BoxFit.cover),
+                  width: (controller.business.value) ? 40 : 56, height: (controller.business.value) ? 40 : 55, fit: BoxFit.cover),
             ),
             const SizedBox(
               width: 10.0,
@@ -560,17 +670,9 @@ class NotifTitle extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title ?? "Wanted Song Composer",
-                    style: const TextStyle(
-                        fontSize: 16,
-                        color: Color(0xff252529),
-                        fontWeight: FontWeight.w600)),
+                Text(title ?? "Wanted Song Composer", style: const TextStyle(fontSize: 16, color: Color(0xff252529), fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
-                Text(subtitle ?? "MESH Studio",
-                    style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff949292)))
+                Text(subtitle ?? "MESH Studio", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xff949292)))
               ],
             )
           ],
@@ -584,6 +686,109 @@ class NotifTitle extends StatelessWidget {
             ),
           )
       ],
+    );
+  }
+}
+
+class ApplyFilter extends StatefulWidget {
+  const ApplyFilter({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<ApplyFilter> createState() => _ApplyFilterState();
+}
+
+class _ApplyFilterState extends State<ApplyFilter> {
+  // final controller = Get.find<HomeController>();
+
+  final List<String> sortOptions = ["New", "Popular", "Rising", "Old"];
+
+  var value = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 332,
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                const SizedBox(
+                  width: 280,
+                  child: Text(
+                    "Apply Filter",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xff252529)),
+                  ),
+                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const CloseCircle())
+              ]),
+            ),
+            const Divider(
+              color: Color(0xffEBEAEA),
+            ),
+            for (int i = 0; i < sortOptions.length; i++)
+              GestureDetector(
+                onTap: () {
+                  if (value != sortOptions[i]) {
+                    setState(() {
+                      value = sortOptions[i];
+                    });
+                  } else {
+                    if (i == 0) {
+                      // controller.business.value = false;
+                    } else {
+                      // controller.business.value = true;
+                    }
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Container(
+                  width: 327,
+                  height: 48,
+                  margin: EdgeInsets.only(top: (i == 0) ? 5 : 8, bottom: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                  ),
+                  decoration: BoxDecoration(
+                    color: (value == sortOptions[i]) ? const Color(0xffEBF9F9) : const Color(0xffF7F7F7),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: (value == sortOptions[i]) ? Colors.transparent : const Color(0xffEEEEF0),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        sortOptions[i],
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: (value == sortOptions[i]) ? Theme.of(context).focusColor : const Color(0xffA5A5A5),
+                        ),
+                      ),
+                      // if (value == sortOptions[i])
+                      //   Radio(
+                      //       activeColor: Theme.of(context).focusColor,
+                      //       splashRadius: 9,
+                      //       value: sortOptions[i],
+                      //       focusColor: Theme.of(context).focusColor,
+                      //       groupValue: value,
+                      //       onChanged: (v) {})
+                    ],
+                  ),
+                ),
+              )
+          ],
+        ),
+      ),
     );
   }
 }

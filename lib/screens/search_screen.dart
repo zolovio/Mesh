@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/feature/home_screens/home_tab/home_tab.dart';
+import 'package:mesh/screens/view_offer_screen.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
 import 'package:mesh/widgets/icon_button.dart';
 import 'package:mesh/widgets/searchbar.dart';
 
-import '../feature/home_screens/controllers/home_controller.dart';
-import '../feature/home_screens/home_tab/home_tab.dart';
+class SearchScreen extends StatefulWidget {
+  static String routeName = "/search";
+  const SearchScreen({Key? key}) : super(key: key);
 
-class SearchScreen extends StatelessWidget {
-  SearchScreen({Key? key}) : super(key: key);
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
   final controller = Get.find<HomeController>();
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -85,18 +93,15 @@ class _SearchSuggestionImages extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(5),
-          child: Image.asset("assets/images/vertical-image.png",
-              width: 75.65, height: 120, fit: BoxFit.cover),
+          child: Image.asset("assets/images/vertical-image.png", width: 75.65, height: 120, fit: BoxFit.cover),
         ),
         ClipRRect(
           borderRadius: BorderRadius.circular(5),
-          child: Image.asset("assets/images/vertical-image.png",
-              width: 75.65, height: 120, fit: BoxFit.cover),
+          child: Image.asset("assets/images/vertical-image.png", width: 75.65, height: 120, fit: BoxFit.cover),
         ),
         ClipRRect(
           borderRadius: BorderRadius.circular(5),
-          child: Image.asset("assets/images/vertical-image.png",
-              width: 75.65, height: 120, fit: BoxFit.cover),
+          child: Image.asset("assets/images/vertical-image.png", width: 75.65, height: 120, fit: BoxFit.cover),
         ),
         Column(
           // mainAxisSize: MainAxisSize.max,
@@ -113,13 +118,8 @@ class _SearchSuggestionImages extends StatelessWidget {
                   height: 54,
                   width: 76.07,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: const Color(0xffE1DFDF).withOpacity(0.6)),
-                  child: const Text("+20",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600)),
+                  decoration: BoxDecoration(color: const Color(0xffE1DFDF).withOpacity(0.6)),
+                  child: const Text("+20", style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
                 )
               ],
             )
@@ -135,7 +135,6 @@ class _SearchSuggestionTitle extends StatelessWidget {
     Key? key,
     required this.user,
   }) : super(key: key);
-
   final String user;
 
   @override
@@ -157,22 +156,16 @@ class _SearchSuggestionTitle extends StatelessWidget {
             //             "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80")),
             //   ),
             // ),
-            GradientOvalImage(
-                imageSize: 48, color: Theme.of(context).focusColor),
+            GradientOvalImage(imageSize: 48, color: Theme.of(context).focusColor),
             const SizedBox(
               width: 10.0,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text("Harley James",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xff252529),
-                        fontWeight: FontWeight.w600)),
+                Text("Harley James", style: TextStyle(fontSize: 16, color: Color(0xff252529), fontWeight: FontWeight.w600)),
                 SizedBox(height: 2),
-                Text("Content Creator",
-                    style: TextStyle(fontSize: 14, color: Color(0xff949292)))
+                Text("Content Creator", style: TextStyle(fontSize: 14, color: Color(0xff949292)))
               ],
             )
           ],
@@ -190,18 +183,23 @@ class _SearchAppBar extends StatelessWidget {
 
   final controller = Get.find<HomeController>();
 
+  showModal(BuildContext context) => showModalBottomSheet<void>(
+        context: context,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (BuildContext context) {
+          return const ApplyFilter();
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Color(0xffF5F6F6),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25)),
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
         ),
-        padding:
-            const EdgeInsets.only(top: 50, left: 20, bottom: 20, right: 20),
+        padding: const EdgeInsets.only(top: 50, left: 20, bottom: 20, right: 20),
         child: Row(
           children: [
             AppBarIconButton(
@@ -211,13 +209,111 @@ class _SearchAppBar extends StatelessWidget {
               image: "assets/images/back.png",
               fillColor: Colors.white70,
             ),
-            const Expanded(
+            Expanded(
                 child: SearchBar(
               topSize: 0,
               color: Colors.white,
               height: 44,
+              tapFunction: () {
+                showModal(context);
+              },
             ))
           ],
         ));
+  }
+}
+
+class ApplyFilter extends StatefulWidget {
+  const ApplyFilter({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<ApplyFilter> createState() => _ApplyFilterState();
+}
+
+class _ApplyFilterState extends State<ApplyFilter> {
+  // final controller = Get.find<HomeController>();
+
+  final List<String> sortOptions = ["New", "Popular", "Skills", "Following"];
+
+  var value = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 332,
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                const SizedBox(
+                  width: 280,
+                  child: Text(
+                    "Apply Filter",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xff252529)),
+                  ),
+                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const CloseCircle())
+              ]),
+            ),
+            const Divider(
+              color: Color(0xffEBEAEA),
+            ),
+            for (int i = 0; i < sortOptions.length; i++)
+              GestureDetector(
+                onTap: () {
+                  if (value != sortOptions[i]) {
+                    setState(() {
+                      value = sortOptions[i];
+                    });
+                  } else {
+                    if (i == 0) {
+                      // controller.business.value = false;
+                    } else {
+                      // controller.business.value = true;
+                    }
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Container(
+                  width: 327,
+                  height: 48,
+                  margin: EdgeInsets.only(top: (i == 0) ? 5 : 8, bottom: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                  ),
+                  decoration: BoxDecoration(
+                      color: (value == sortOptions[i]) ? const Color(0xffEBF9F9) : const Color(0xffF7F7F7),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: (value == sortOptions[i]) ? Colors.transparent : const Color(0xffEEEEF0))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(sortOptions[i],
+                          style: TextStyle(fontSize: 18, color: (value == sortOptions[i]) ? Theme.of(context).focusColor : const Color(0xffA5A5A5))),
+                      // if (value == sortOptions[i])
+                      //   Radio(
+                      //       activeColor: Theme.of(context).focusColor,
+                      //       splashRadius: 9,
+                      //       value: sortOptions[i],
+                      //       focusColor: Theme.of(context).focusColor,
+                      //       groupValue: value,
+                      //       onChanged: (v) {})
+                    ],
+                  ),
+                ),
+              )
+          ],
+        ),
+      ),
+    );
   }
 }
