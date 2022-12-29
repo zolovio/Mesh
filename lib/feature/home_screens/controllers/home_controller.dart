@@ -45,16 +45,14 @@ class HomeController extends GetxController {
 
   var isLoading = true.obs;
   var isUploading = false.obs;
-  var postsList = <PostModel>[].obs;
-  var filesList = <FileModel>[].obs;
 
-  var postIdsList = <String>[].obs;
-  var postLCList = <String>[].obs;
-  var like_count = "0".obs;
-  var like_post = false.obs;
+  var allPostsList = <PostModel>[].obs;
+  var userPostsList = <PostModel>[].obs;
+  var filesList = <FileModel>[].obs;
   var postId = "".obs;
 
-  var questionsList = <Question>[].obs;
+  var allQuestionsList = <Question>[].obs;
+  var userQuestionsList = <Question>[].obs;
   var quesIdsList = <String>[].obs;
   var quesLCList = <String>[].obs;
   var userLikedQuesList = [].obs;
@@ -79,23 +77,50 @@ class HomeController extends GetxController {
         : json.decode(userData)["data"][0]["first_name"];
   }
 
-  void fetchAllPosts(bool loading) async {
+  void fetchAllPosts() async {
     try {
-      isLoading(loading);
+      isLoading(true);
 
-      if (postsList.isNotEmpty) {
-        postsList.clear();
+      if (allPostsList.isNotEmpty) {
+        allPostsList.clear();
       }
 
       var posts = await RemoteHomeServices.fetchAllPosts();
 
       if (posts != null) {
         for (var post in posts) {
-          postsList.add(PostModel.fromJson(post));
+          allPostsList.add(PostModel.fromJson(post));
         }
 
         if (kDebugMode) {
-          print(postsList);
+          print(allPostsList);
+        }
+
+        update();
+      }
+    } finally {
+      isLoading(false);
+      update();
+    }
+  }
+
+  void fetchUserPosts() async {
+    try {
+      isLoading(true);
+
+      if (userPostsList.isNotEmpty) {
+        userPostsList.clear();
+      }
+
+      var posts = await RemoteHomeServices.fetchUserPosts();
+
+      if (posts != null) {
+        for (var post in posts) {
+          userPostsList.add(PostModel.fromJson(post));
+        }
+
+        if (kDebugMode) {
+          print(userPostsList);
         }
 
         update();
@@ -256,19 +281,45 @@ class HomeController extends GetxController {
     try {
       isLoading(true);
 
-      if (questionsList.isNotEmpty) {
-        questionsList.clear();
+      if (allQuestionsList.isNotEmpty) {
+        allQuestionsList.clear();
       }
 
       var questions = await RemoteHomeServices.fetchAllQuestions();
 
       if (questions != null) {
         for (var question in questions) {
-          questionsList.add(Question.fromJson(question));
+          allQuestionsList.add(Question.fromJson(question));
         }
 
         if (kDebugMode) {
-          print(questionsList.length);
+          print(allQuestionsList.length);
+        }
+        update();
+      }
+    } finally {
+      isLoading(false);
+      update();
+    }
+  }
+
+  void fetchUserQuestions() async {
+    try {
+      isLoading(true);
+
+      if (userQuestionsList.isNotEmpty) {
+        userQuestionsList.clear();
+      }
+
+      var questions = await RemoteHomeServices.fetchUserQuestions();
+
+      if (questions != null) {
+        for (var question in questions) {
+          userQuestionsList.add(Question.fromJson(question));
+        }
+
+        if (kDebugMode) {
+          print(userQuestionsList.length);
         }
         update();
       }

@@ -20,7 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    refreshAuthToken();
+    controller.fetchAllPosts();
+    controller.fetchUserPosts();
+    controller.fetchAllQuestions();
+    controller.fetchUserQuestions();
     super.initState();
   }
 
@@ -28,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     refreshToken = await RemoteHomeServices.refreshToken();
 
     if (refreshToken['errors'] == null) {
-      controller.fetchAllPosts(true);
+      controller.fetchAllPosts();
       controller.fetchAllQuestions();
     } else {
       print(refreshToken["errors"]);

@@ -40,8 +40,23 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = widget.myprofile
-        ? <Widget>[Post(), Post(question: true), Bookmarks(), AboutTab(), AboutTab(exp: true), Container(), Portfolio()]
-        : <Widget>[Post(), Post(question: true), AboutTab(), AboutTab(exp: true), Container(), Portfolio()];
+        ? <Widget>[
+            Post(isMyPosts: true),
+            Post(question: true, isMyQuestions: true),
+            Bookmarks(),
+            AboutTab(),
+            AboutTab(exp: true),
+            Container(),
+            Portfolio(),
+          ]
+        : <Widget>[
+            Post(),
+            Post(question: true),
+            AboutTab(),
+            AboutTab(exp: true),
+            Container(),
+            Portfolio(),
+          ];
 
     final List<String> _tabs = widget.myprofile
         ? ["My Post", "My Questions", "Bookmarks", "About", "Experience", "Training", "Portfolio"]

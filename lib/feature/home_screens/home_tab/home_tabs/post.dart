@@ -13,36 +13,53 @@ import 'package:mesh/widgets/video_player/mock_data.dart';
 import 'package:mesh/widgets/video_player/play_video.dart';
 
 class Post extends StatelessWidget {
-  Post({Key? key, this.question = false}) : super(key: key);
+  Post({
+    Key? key,
+    this.question = false,
+    this.isMyPosts = false,
+    this.isMyQuestions = false,
+  }) : super(key: key);
+
   final bool question;
+  final bool isMyPosts;
+  final bool isMyQuestions;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (controller) {
+        print(isMyQuestions);
         if (kDebugMode) {
-          // print(controller.postsList.length);
-          // print(controller.questionsList.length);
+          // print(controller.allPostsList.length);
+          // print(controller.userPostsList.length);
+          print(controller.allQuestionsList.length);
+          print(controller.userQuestionsList.length);
           // print(controller.postLCList.length);
           // print(controller.postLCList);
           // print(controller.quesLCList.length);
           // print(controller.userLikedPostsList.length);
         }
 
-        return controller.isLoading.value && (controller.postsList.isEmpty || controller.questionsList.isEmpty)
+        return controller.isLoading.value && (controller.allPostsList.isEmpty || controller.allQuestionsList.isEmpty)
             ? Center(
                 child: CircularProgressIndicator(
                   color: Colors.teal,
                 ),
               )
-            : controller.postsList.isEmpty
+            : (isMyPosts ? controller.userPostsList.isEmpty : controller.allPostsList.isEmpty)
                 ? Center(
                     child: Text('No Post Available'),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: (question) ? controller.questionsList.length : controller.postsList.length,
+                    itemCount: (question)
+                        ? isMyQuestions
+                            ? controller.userQuestionsList.length
+                            : controller.allQuestionsList.length
+                        : isMyPosts
+                            ? controller.userPostsList.length
+                            : controller.allPostsList.length,
                     itemBuilder: (ctx, i) {
                       return _Post(
                         index: i,
@@ -65,9 +82,13 @@ class Post extends StatelessWidget {
                                 isCommentedByUser: false,
                                 isSavedByUser: false,
                               )
-                            : controller.postsList[i],
+                            : isMyPosts
+                                ? controller.userPostsList[i]
+                                : controller.allPostsList[i],
                         questionsData: question
-                            ? controller.questionsList[i]
+                            ? isMyQuestions
+                                ? controller.userQuestionsList[i]
+                                : controller.allQuestionsList[i]
                             : Question(
                                 id: '',
                                 body: '',
@@ -256,7 +277,7 @@ class _PostDetails extends StatelessWidget {
                           bool postLiked = await controller.likeAPost(postData.id);
 
                           if (postLiked) {
-                            controller.postsList[index] = PostModel(
+                            controller.allPostsList[index] = PostModel(
                                 id: postData.id,
                                 status: postData.status,
                                 userCreated: postData.userCreated,
@@ -319,7 +340,7 @@ class _PostDetails extends StatelessWidget {
                           bool quesLiked = await controller.likeAQuestion(questionsData.id!, index);
 
                           if (quesLiked) {
-                            controller.questionsList[index] = Question(
+                            controller.allQuestionsList[index] = Question(
                               id: questionsData.id,
                               dateCreated: questionsData.dateCreated,
                               userCreated: questionsData.userCreated,
