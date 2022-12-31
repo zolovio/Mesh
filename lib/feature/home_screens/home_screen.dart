@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mesh/configs/app_router.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/feature/home_screens/controllers/profile_controller.dart';
 import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
 import 'package:mesh/screens/drawer.dart';
 
@@ -16,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final controller = Get.put(HomeController());
+  final profileController = Get.put(ProfileController());
   var refreshToken;
 
   @override

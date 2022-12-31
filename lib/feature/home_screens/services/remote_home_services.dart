@@ -12,6 +12,7 @@ import 'package:mesh/feature/home_screens/models/create_question_model.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/like_post_model.dart';
 import 'package:mesh/feature/home_screens/models/like_question_model.dart';
+import 'package:mesh/feature/home_screens/models/portfolio_images_model.dart';
 import 'package:mesh/feature/home_screens/models/post_like_model.dart';
 import 'package:mesh/feature/home_screens/models/post_liked_by_user.dart';
 import 'package:mesh/feature/home_screens/models/post_publish_model.dart';
@@ -583,6 +584,58 @@ class RemoteHomeServices {
       await refreshToken();
 
       return errorMessage;
+    }
+  }
+
+  static Future uploadProfileImages(String fileId) async {
+    var authData = await controller.storage.read(key: 'authTokenData');
+
+    var response = await client.post(
+      Uri.parse("https://mesh.kodagu.today/items/portfolio_images"),
+      body: jsonEncode({"image": fileId}),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+
+    print(response.body);
+    if (response.statusCode == 200) {
+      print(response.body);
+
+      LikeQuestion likeQuestion = LikeQuestion.fromJson(jsonDecode(response.body)["data"]);
+      return likeQuestion;
+    } else {
+      //show error message
+      FlutterToast.show(message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
+
+      return LikeQuestion();
+    }
+  }
+
+  static Future<PortfolioImageModel> fetchUserPortfolioImages() async {
+    var authData = await controller.storage.read(key: 'authTokenData');
+    var userData = await controller.storage.read(key: 'userData');
+
+    var response = await client.get(
+      Uri.parse("https://mesh.kodagu.today/items/portfolio_images?filter[user_created][_eq]=${json.decode(userData!)["data"][0]["id"]}"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      PortfolioImageModel portfolioImages = PortfolioImageModel.fromJson(jsonDecode(response.body));
+      return portfolioImages;
+    } else {
+      await refreshToken();
+
+      return PortfolioImageModel();
     }
   }
 }

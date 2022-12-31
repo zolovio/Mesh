@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mesh/feature/home_screens/controllers/profile_controller.dart';
 
 class CustomButton extends StatelessWidget {
   final String buttonText;
@@ -14,6 +16,7 @@ class CustomButton extends StatelessWidget {
   final Color? textColor;
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
+
   const CustomButton(
       {Key? key,
       required this.buttonText,
@@ -45,22 +48,20 @@ class CustomButton extends StatelessWidget {
               primary: primaryColor ?? Theme.of(context).focusColor,
               shadowColor: shadowColor,
               alignment: Alignment.center,
-              side: BorderSide(
-                  color: borderColor ?? Colors.transparent, width: 1),
+              side: BorderSide(color: borderColor ?? Colors.transparent, width: 1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(borderRadius ?? 15),
               )),
           child: Text(buttonText,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: textColor ?? Colors.white,
-                  fontSize: textSize,
-                  fontWeight: fontWeight)),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: textColor ?? Colors.white, fontSize: textSize, fontWeight: fontWeight)),
         ));
   }
 }
 
 class CancelOrSave extends StatelessWidget {
-  const CancelOrSave({
+  ProfileController controller = Get.find<ProfileController>();
+
+  CancelOrSave({
     Key? key,
   }) : super(key: key);
 
@@ -85,7 +86,16 @@ class CancelOrSave extends StatelessWidget {
         ),
         CustomButton(
           buttonText: "Save",
-          onPressed: () {},
+          onPressed: () {
+            print(controller.imagePath);
+            print(controller.portfolioFilesList);
+            var data = controller.uploadMedia(
+              filepath: controller.imagePath.value,
+              postbody: "",
+              posttags: [],
+              posttype: 'image',
+            );
+          },
           margin: const EdgeInsets.only(top: 10, bottom: 20),
           primaryColor: Theme.of(context).focusColor,
           borderRadius: 8,

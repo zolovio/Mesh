@@ -81,9 +81,7 @@ class _UploadAppBar extends StatelessWidget {
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Color(0xffF5F6F6),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25)),
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
         ),
         padding: const EdgeInsets.only(top: 50, left: 20, bottom: 0, right: 20),
         child: Obx(
@@ -98,21 +96,13 @@ class _UploadAppBar extends StatelessWidget {
               ),
               const Padding(
                 padding: EdgeInsets.fromLTRB(16.0, 16.0, 8.0, 20.0),
-                child: Text("Upload",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xff252529),
-                        fontWeight: FontWeight.w600)),
+                child: Text("Upload", style: TextStyle(fontSize: 20, color: Color(0xff252529), fontWeight: FontWeight.w600)),
               ),
               const Spacer(),
               if (controller.tags.value)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 16.0, 8.0, 20.0),
-                  child: Text("Draft",
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).focusColor,
-                          fontWeight: FontWeight.w600)),
+                  child: Text("Draft", style: TextStyle(fontSize: 20, color: Theme.of(context).focusColor, fontWeight: FontWeight.w600)),
                 ),
             ],
           ),
@@ -135,6 +125,7 @@ class _PostQuesState extends State<PostQues> {
   XFile? _image;
 
   final List<String> tagList = ["Dancing", "Trekking"];
+
   pickImageFromGallery() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -152,125 +143,114 @@ class _PostQuesState extends State<PostQues> {
       () => ListView(
         children: [
           Container(
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color(0xffE3E3E3),
-                  ),
-                  borderRadius: BorderRadius.circular(10)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const OvalImage(imageSize: 40),
-                      const SizedBox(width: 10),
-                      Container(
-                          // height: 30,
-                          width: Get.width * 0.65,
-                          padding: const EdgeInsets.only(bottom: 15),
-                          child: TextField(
-                            controller: caption,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            style: const TextStyle(
-                                fontSize: 14, color: Color(0xff252529)),
-                            decoration: const InputDecoration(
-                                hintText: "What's Happening?",
-                                labelStyle: TextStyle(
-                                    fontSize: 14, color: Color(0xff252529)),
-                                hintStyle: TextStyle(
-                                    fontSize: 14, color: Color(0xff9D9D9D)),
-                                contentPadding: EdgeInsets.all(0),
-                                focusedBorder: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Color(0xffDCDBE0))),
-                                border: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Color(0xffDCDBE0)))),
-                          ))
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  if (!widget.ques)
-                    (_image == null)
-                        ? GestureDetector(
-                            onTap: () => pickImageFromGallery(),
-                            child: DottedBorder(
-                                borderType: BorderType.RRect,
-                                radius: const Radius.circular(10),
-                                dashPattern: const [4, 4],
-                                color: const Color(0xffC1BEC6),
-                                child: Container(
-                                  width: 312,
-                                  height: 99,
-                                  alignment: Alignment.center,
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text("Add Media Files",
-                                            style: TextStyle(
-                                                color: Color(0xff9D9D9D),
-                                                fontSize: 16)),
-                                        const SizedBox(width: 10),
-                                        SvgPicture.asset(
-                                            "assets/icons/download.svg")
-                                      ]),
-                                )),
-                          )
-                        : Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.file(File(_image!.path),
-                                    fit: BoxFit.cover, width: 313, height: 210),
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color(0xffE3E3E3),
+                ),
+                borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const OvalImage(imageSize: 40),
+                    const SizedBox(width: 10),
+                    Container(
+                        // height: 30,
+                        width: Get.width * 0.65,
+                        padding: const EdgeInsets.only(bottom: 15),
+                        child: TextField(
+                          controller: caption,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          style: const TextStyle(fontSize: 14, color: Color(0xff252529)),
+                          decoration: const InputDecoration(
+                              hintText: "What's Happening?",
+                              labelStyle: TextStyle(fontSize: 14, color: Color(0xff252529)),
+                              hintStyle: TextStyle(fontSize: 14, color: Color(0xff9D9D9D)),
+                              contentPadding: EdgeInsets.all(0),
+                              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xffDCDBE0))),
+                              border: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xffDCDBE0)))),
+                        ))
+                  ],
+                ),
+                const SizedBox(height: 10),
+                if (!widget.ques)
+                  (_image == null)
+                      ? GestureDetector(
+                          onTap: () => pickImageFromGallery(),
+                          child: DottedBorder(
+                            borderType: BorderType.RRect,
+                            radius: const Radius.circular(10),
+                            dashPattern: const [4, 4],
+                            color: const Color(0xffC1BEC6),
+                            child: Container(
+                              width: 312,
+                              height: 99,
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Add Media Files",
+                                    style: TextStyle(color: Color(0xff9D9D9D), fontSize: 16),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  SvgPicture.asset("assets/icons/download.svg"),
+                                ],
                               ),
-                              CrossSymbol(
-                                onTap: () {
-                                  setState(() {
-                                    _image = null;
-                                  });
-                                },
-                              )
-                            ],
+                            ),
                           ),
-                  if (!widget.ques) const SizedBox(height: 15),
-                  Form(
-                    child: TextFormField(
-                      controller: tag,
-                      onFieldSubmitted: (val) {
-                        print(tagList);
-                        tagList.add(val.toString());
-                        tag.clear();
-                        setState(() {});
-                      },
-                      style: const TextStyle(
-                          fontSize: 14, color: Color(0xff252529)),
-                      decoration: const InputDecoration(
-                          hintText: "Type Tag to Enter",
-                          labelStyle:
-                              TextStyle(fontSize: 14, color: Color(0xff252529)),
-                          hintStyle:
-                              TextStyle(fontSize: 14, color: Color(0xff9D9D9D)),
-                          contentPadding: EdgeInsets.all(0),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xffDCDBE0))),
-                          border: InputBorder.none),
-                    ),
+                        )
+                      : Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.file(File(_image!.path), fit: BoxFit.cover, width: 313, height: 210),
+                            ),
+                            CrossSymbol(
+                              onTap: () {
+                                setState(() {
+                                  _image = null;
+                                });
+                              },
+                            )
+                          ],
+                        ),
+                if (!widget.ques) const SizedBox(height: 15),
+                Form(
+                  child: TextFormField(
+                    controller: tag,
+                    onFieldSubmitted: (val) {
+                      print(tagList);
+                      tagList.add(val.toString());
+                      tag.clear();
+                      setState(() {});
+                    },
+                    style: const TextStyle(fontSize: 14, color: Color(0xff252529)),
+                    decoration: const InputDecoration(
+                        hintText: "Type Tag to Enter",
+                        labelStyle: TextStyle(fontSize: 14, color: Color(0xff252529)),
+                        hintStyle: TextStyle(fontSize: 14, color: Color(0xff9D9D9D)),
+                        contentPadding: EdgeInsets.all(0),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xffDCDBE0))),
+                        border: InputBorder.none),
                   ),
-                  const SizedBox(height: 15),
-                  Container(
-                    // height: 61,
-                    width: double.infinity,
-                    // margin: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xffF7F7F7)),
-                    child: Wrap(runSpacing: 0, spacing: 0, children: [
+                ),
+                const SizedBox(height: 15),
+                Container(
+                  // height: 61,
+                  width: double.infinity,
+                  // margin: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xffF7F7F7)),
+                  child: Wrap(
+                    runSpacing: 0,
+                    spacing: 0,
+                    children: [
                       if (!controller.tags.value)
                         GestureDetector(
                           onTap: () {
@@ -278,8 +258,7 @@ class _PostQuesState extends State<PostQues> {
                           },
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: FollowButton(
-                                text: "Add Tags", width: 91, height: 45),
+                            child: FollowButton(text: "Add Tags", width: 91, height: 45),
                           ),
                         ),
                       if (controller.tags.value)
@@ -290,41 +269,45 @@ class _PostQuesState extends State<PostQues> {
                               setState(() {});
                             },
                             child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8)),
-                                margin: const EdgeInsets.all(8),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 13, horizontal: 8),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      i,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
-                                          color: Theme.of(context).focusColor),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              margin: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    i,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      color: Theme.of(context).focusColor,
                                     ),
-                                    const SizedBox(width: 3),
-                                    Icon(Icons.close,
-                                        color: Theme.of(context).focusColor,
-                                        size: 12)
-                                  ],
-                                )),
-                          )
-                    ]),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Icon(
+                                    Icons.close,
+                                    color: Theme.of(context).focusColor,
+                                    size: 12,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                    ],
                   ),
-                  const SizedBox(height: 20)
-                ],
-              )),
+                ),
+                const SizedBox(height: 20)
+              ],
+            ),
+          ),
           Expanded(
             child: SizedBox(
               height: (!widget.ques && _image == null) ? 200 : null,
               child: Align(
-                alignment: ((!widget.ques && _image == null))
-                    ? Alignment.bottomCenter
-                    : Alignment.topCenter,
+                alignment: ((!widget.ques && _image == null)) ? Alignment.bottomCenter : Alignment.topCenter,
                 child: (controller.isUploading.value
                     ? Center(
                         child: CircularProgressIndicator(
@@ -337,17 +320,12 @@ class _PostQuesState extends State<PostQues> {
                         height: 59,
                         fontWeight: FontWeight.w600,
                         borderRadius: 8,
-                        primaryColor: (!widget.ques && _image == null ||
-                                widget.ques && !controller.tags.value)
+                        primaryColor: (!widget.ques && _image == null || widget.ques && !controller.tags.value)
                             ? const Color(0xffC9CBCB)
                             : Theme.of(context).focusColor,
-                        buttonText: (!widget.ques && _image == null ||
-                                widget.ques && !controller.tags.value)
-                            ? "Post"
-                            : "Upload",
+                        buttonText: (!widget.ques && _image == null || widget.ques && !controller.tags.value) ? "Post" : "Upload",
                         onPressed: (!widget.ques)
-                            ? (!widget.ques && _image == null ||
-                                    widget.ques && !controller.tags.value)
+                            ? (!widget.ques && _image == null || widget.ques && !controller.tags.value)
                                 ? () async {
                                     var data = await controller.UploadPost(
                                       fileid: null,
@@ -373,8 +351,7 @@ class _PostQuesState extends State<PostQues> {
                                     }
                                   }
                             : () async {
-                                CreateQuestion? model =
-                                    await controller.createQuestion(
+                                CreateQuestion? model = await controller.createQuestion(
                                   quesBody: caption.text.toString(),
                                   quesTags: tagList,
                                 );

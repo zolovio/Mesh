@@ -40,7 +40,7 @@ class Post extends StatelessWidget {
           // print(controller.userLikedPostsList.length);
         }
 
-        return controller.isLoading.value && (controller.allPostsList.isEmpty || controller.allQuestionsList.isEmpty)
+        return controller.isLoading.value
             ? Center(
                 child: CircularProgressIndicator(
                   color: Colors.teal,

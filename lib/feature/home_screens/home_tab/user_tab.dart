@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
-// import 'package:mesh/screens/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
 import 'package:mesh/screens/user_info_screen.dart' as t;
 import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
@@ -18,13 +17,12 @@ class UserTab extends StatefulWidget {
 
 class _UserTabState extends State<UserTab> {
   int _selectedIndex = 0;
+
   final List<Widget> _pages = <Widget>[
     _EditProfileAbout(),
-    _EditProfileAbout(
-      exp: true,
-    ),
+    _EditProfileAbout(exp: true),
     Container(),
-    Portfolio(edit: true)
+    Portfolio(edit: true),
   ];
 
   final List<String> _tabs = ["About", "Experience", "Training", "Portfolio"];
@@ -40,110 +38,117 @@ class _UserTabState extends State<UserTab> {
         return false;
       },
       child: NestedScrollView(
-          controller: ScrollController(),
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                flexibleSpace: _UserTabAppBar(),
-                toolbarHeight: 90,
-                automaticallyImplyLeading: false,
-                backgroundColor: Colors.white,
-                shadowColor: Colors.transparent,
-              )
-            ];
-          },
-          body: MediaQuery.removePadding(
-              removeTop: true,
-              context: context,
-              child: ListView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(25),
-                            bottomRight: Radius.circular(25)),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                20.0, 16.0, 8.0, 12.0),
-                            child: Row(
-                              children: <Widget>[
-                                GradientOvalImage(
-                                  img:
-                                      "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-                                  imageSize: 64,
-                                  color: Theme.of(context).focusColor,
-                                ),
-                                const SizedBox(
-                                  width: 10.0,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Angelina Philip",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            color: Color(0xff252529),
-                                            fontWeight: FontWeight.w600)),
-                                    const SizedBox(height: 2),
-                                    Row(children: [
-                                      SvgPicture.asset(
-                                          "assets/icons/edit-2.svg"),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text("Change Profile Picture",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Theme.of(context)
-                                                  .focusColor)),
-                                    ])
-                                  ],
-                                )
-                              ],
+        controller: ScrollController(),
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              flexibleSpace: _UserTabAppBar(),
+              toolbarHeight: 90,
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.white,
+              shadowColor: Colors.transparent,
+            )
+          ];
+        },
+        body: MediaQuery.removePadding(
+          removeTop: true,
+          context: context,
+          child: ListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25),
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20.0, 16.0, 8.0, 12.0),
+                        child: Row(
+                          children: <Widget>[
+                            GradientOvalImage(
+                              img:
+                                  "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+                              imageSize: 64,
+                              color: Theme.of(context).focusColor,
                             ),
+                            const SizedBox(
+                              width: 10.0,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Angelina Philip",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Color(0xff252529),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Row(children: [
+                                  SvgPicture.asset("assets/icons/edit-2.svg"),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "Change Profile Picture",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context).focusColor,
+                                    ),
+                                  ),
+                                ])
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                          height: 65,
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xffF7F7F7),
                           ),
-                          Container(
-                              height: 65,
-                              alignment: Alignment.center,
-                              width: double.infinity,
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 18, vertical: 10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: const Color(0xffF7F7F7)),
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: _tabs.length,
-                                  itemBuilder: (ctx, i) {
-                                    return t.Tab(
-                                        tabs: _tabs[i],
-                                        i: _selectedIndex,
-                                        index: i,
-                                        onTap: () {
-                                          setState(() {
-                                            _selectedIndex = i;
-                                          });
-                                        });
-                                  })),
-                          _pages.elementAt(_selectedIndex)
-                        ],
-                      )),
-                  if (_selectedIndex == 3)
-                    Container(
-                        margin: const EdgeInsets.all(15),
-                        child: const CancelOrSave())
-                ],
-              ))),
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _tabs.length,
+                              itemBuilder: (ctx, i) {
+                                return t.Tab(
+                                    tabs: _tabs[i],
+                                    i: _selectedIndex,
+                                    index: i,
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedIndex = i;
+                                      });
+                                    });
+                              })),
+                      _pages.elementAt(_selectedIndex)
+                    ],
+                  )),
+              if (_selectedIndex == 3)
+                Container(
+                  margin: const EdgeInsets.all(15),
+                  child: CancelOrSave(),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -152,7 +157,9 @@ class _UserTabAppBar extends StatelessWidget {
   _UserTabAppBar({
     Key? key,
   }) : super(key: key);
+
   final controller = Get.find<HomeController>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -160,7 +167,9 @@ class _UserTabAppBar extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Color(0xffF5F6F6),
         borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
+          bottomLeft: Radius.circular(25),
+          bottomRight: Radius.circular(25),
+        ),
       ),
       padding: const EdgeInsets.only(top: 50, left: 20, bottom: 0, right: 20),
       child: Row(
@@ -176,11 +185,14 @@ class _UserTabAppBar extends StatelessWidget {
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(16.0, 16.0, 8.0, 20.0),
-            child: Text("Edit Profile",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Color(0xff252529),
-                    fontWeight: FontWeight.w600)),
+            child: Text(
+              "Edit Profile",
+              style: TextStyle(
+                fontSize: 20,
+                color: Color(0xff252529),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -194,12 +206,7 @@ class _EditProfileAbout extends StatelessWidget {
 
   final about = TextEditingController(text: "Angela");
   final experience = TextEditingController();
-  final List<String> tags = [
-    "Videography 1 year",
-    "Art 3 year",
-    "Painting 2 year",
-    "Modelling 4 year"
-  ];
+  final List<String> tags = ["Videography 1 year", "Art 3 year", "Painting 2 year", "Modelling 4 year"];
 
   @override
   Widget build(BuildContext context) {
@@ -222,22 +229,24 @@ class _EditProfileAbout extends StatelessWidget {
                 controller: (exp) ? experience : about,
                 style: const TextStyle(fontSize: 16, color: Color(0xff252529)),
                 decoration: InputDecoration(
-                    hintText: (exp) ? "Tell Us Your Exp Level" : "Enter Name",
-                    labelStyle:
-                        const TextStyle(fontSize: 16, color: Color(0xff252529)),
-                    hintStyle:
-                        const TextStyle(fontSize: 16, color: Color(0xff9D9D9D)),
-                    contentPadding: const EdgeInsets.all(8),
-                    enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xffE3E3E3))),
-                    disabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xffE3E3E3))),
-                    focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xffE3E3E3))),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                            const BorderSide(color: Color(0xffE3E3E3)))),
+                  hintText: (exp) ? "Tell Us Your Exp Level" : "Enter Name",
+                  labelStyle: const TextStyle(fontSize: 16, color: Color(0xff252529)),
+                  hintStyle: const TextStyle(fontSize: 16, color: Color(0xff9D9D9D)),
+                  contentPadding: const EdgeInsets.all(8),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xffE3E3E3)),
+                  ),
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xffE3E3E3)),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xffE3E3E3)),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Color(0xffE3E3E3)),
+                  ),
+                ),
               )),
           Container(
               margin: const EdgeInsets.only(left: 10, bottom: 10),
@@ -245,41 +254,57 @@ class _EditProfileAbout extends StatelessWidget {
                 text: "Skills",
               )),
           Container(
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(vertical: 20),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color(0xffE3E3E3),
-                  ),
-                  borderRadius: BorderRadius.circular(10)),
-              child: Wrap(spacing: 15, runSpacing: 10, children: [
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color(0xffE3E3E3),
+                ),
+                borderRadius: BorderRadius.circular(10)),
+            child: Wrap(
+              spacing: 15,
+              runSpacing: 10,
+              children: [
                 for (String tag in tags)
                   Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 9),
-                      decoration: BoxDecoration(
-                          color: const Color(0xffE7F8F8),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Text(tag,
-                          style: TextStyle(
-                              color: Theme.of(context).focusColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600))),
-                Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 9,
+                    ),
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: const Color(0xffE7E6E6)),
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Text("Add tag",
-                        style: TextStyle(
-                            color: Theme.of(context).focusColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600)))
-              ])),
-          const CancelOrSave()
+                      color: const Color(0xffE7F8F8),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      tag,
+                      style: TextStyle(
+                        color: Theme.of(context).focusColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: const Color(0xffE7E6E6)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    "Add tag",
+                    style: TextStyle(
+                      color: Theme.of(context).focusColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          CancelOrSave(),
         ],
       ),
     );
@@ -292,10 +317,13 @@ class HeadingText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Color(0xff252529)));
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: Color(0xff252529),
+      ),
+    );
   }
 }
