@@ -185,7 +185,10 @@ class _PicturesState extends State<Pictures> {
                   ),
                   Container(
                     margin: const EdgeInsets.all(15),
-                    child: CancelOrSave(video: widget.video),
+                    child: CancelOrSave(
+                      video: widget.video,
+                      isSocial: false,
+                    ),
                   ),
                 ],
               ),
@@ -348,7 +351,10 @@ class EditSocial extends StatelessWidget {
         ),
         Container(
           margin: const EdgeInsets.all(15),
-          child: CancelOrSave(video: false),
+          child: CancelOrSave(
+            video: false,
+            isSocial: true,
+          ),
         ),
       ],
     );

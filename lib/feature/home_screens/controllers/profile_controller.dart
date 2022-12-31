@@ -154,4 +154,25 @@ class ProfileController extends GetxController {
       update();
     }
   }
+
+  Future updateUserSocials(
+      {required String facebookURl, required String whatsAppURL, required String twitterURL, required String linkedinURL}) async {
+    try {
+      var userSocials = await RemoteHomeServices.updateUserSocials(fbURL: "fbURL", wpURL: "wpURL", twURL: "twURL", lnURL: "lnURL");
+      // print(portfolioVideos.data);
+      //
+      // if (portfolioVideos.data != null && portfolioVideos.data!.isNotEmpty) {
+      //   for (var video in portfolioVideos.data!) {
+      //     portfolioVideosList.add(video);
+      //   }
+      //
+      //   if (kDebugMode) {
+      //     print(portfolioVideos.data!.length);
+      //   }
+      //   update();
+      // }
+    } finally {
+      // update();
+    }
+  }
 }

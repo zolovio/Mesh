@@ -61,10 +61,12 @@ class CustomButton extends StatelessWidget {
 class CancelOrSave extends StatelessWidget {
   ProfileController controller = Get.find<ProfileController>();
   final bool video;
+  final bool isSocial;
 
   CancelOrSave({
     Key? key,
     required this.video,
+    required this.isSocial,
   }) : super(key: key);
 
   @override
@@ -88,10 +90,20 @@ class CancelOrSave extends StatelessWidget {
         ),
         CustomButton(
           buttonText: "Save",
-          onPressed: () {
-            var data = controller.uploadMedia(
-                filepath: video ? controller.videoPath.value : controller.imagePath.value, mediaType: video ? "video" : "image");
-          },
+          onPressed: isSocial
+              ? () {
+                  print("social");
+                  controller.updateUserSocials(
+                    facebookURl: "facebookURl",
+                    whatsAppURL: "whatsAppURL",
+                    twitterURL: "twitterURL",
+                    linkedinURL: "linkedinURL",
+                  );
+                }
+              : () {
+                  var data = controller.uploadMedia(
+                      filepath: video ? controller.videoPath.value : controller.imagePath.value, mediaType: video ? "video" : "image");
+                },
           margin: const EdgeInsets.only(top: 10, bottom: 20),
           primaryColor: Theme.of(context).focusColor,
           borderRadius: 8,

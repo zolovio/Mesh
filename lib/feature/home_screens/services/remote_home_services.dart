@@ -688,4 +688,44 @@ class RemoteHomeServices {
       return PortfolioVideosModel();
     }
   }
+
+  static Future updateUserSocials({
+    required String fbURL,
+    required String wpURL,
+    required String twURL,
+    required String lnURL,
+  }) async {
+    var body = jsonEncode({"fb": fbURL, "wp": wpURL, "tw": twURL, "ln": lnURL});
+
+    var authData = await controller.storage.read(key: 'authTokenData');
+    var userData = await controller.storage.read(key: 'userData');
+
+    var response = await client.patch(
+      Uri.parse('https://mesh.kodagu.today/users/${json.decode(userData!)["data"][0]["id"]}'),
+      body: body,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      Publish publish = Publish.fromJson(jsonDecode(response.body)["data"]);
+      return publish;
+    } else {
+      if (kDebugMode) {
+        print(response.body);
+      }
+
+      controller.isUploading(false);
+      controller.update();
+
+      await refreshToken();
+
+      return Publish();
+    }
+  }
 }

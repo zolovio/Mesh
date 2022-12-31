@@ -305,7 +305,10 @@ class _EditProfileAbout extends StatelessWidget {
               ],
             ),
           ),
-          CancelOrSave(video: false),
+          CancelOrSave(
+            video: false,
+            isSocial: false,
+          ),
         ],
       ),
     );
