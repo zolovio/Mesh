@@ -58,93 +58,94 @@ class _UserTabState extends State<UserTab> {
             physics: const NeverScrollableScrollPhysics(),
             children: [
               Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(25),
-                      bottomRight: Radius.circular(25),
-                    ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 16.0, 8.0, 12.0),
-                        child: Row(
-                          children: <Widget>[
-                            GradientOvalImage(
-                              img:
-                                  "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-                              imageSize: 64,
-                              color: Theme.of(context).focusColor,
-                            ),
-                            const SizedBox(
-                              width: 10.0,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Angelina Philip",
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20.0, 16.0, 8.0, 12.0),
+                      child: Row(
+                        children: <Widget>[
+                          GradientOvalImage(
+                            img:
+                                "https://images.unsplash.com/photo-1582610285985-a42d9193f2fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHdvbWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+                            imageSize: 64,
+                            color: Theme.of(context).focusColor,
+                          ),
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Angelina Philip",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Color(0xff252529),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Row(children: [
+                                SvgPicture.asset("assets/icons/edit-2.svg"),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "Change Profile Picture",
                                   style: TextStyle(
-                                    fontSize: 20,
-                                    color: Color(0xff252529),
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w600,
+                                    color: Theme.of(context).focusColor,
                                   ),
                                 ),
-                                const SizedBox(height: 2),
-                                Row(children: [
-                                  SvgPicture.asset("assets/icons/edit-2.svg"),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "Change Profile Picture",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).focusColor,
-                                    ),
-                                  ),
-                                ])
-                              ],
-                            )
-                          ],
-                        ),
+                              ])
+                            ],
+                          )
+                        ],
                       ),
-                      Container(
-                          height: 65,
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xffF7F7F7),
-                          ),
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: _tabs.length,
-                              itemBuilder: (ctx, i) {
-                                return t.Tab(
-                                    tabs: _tabs[i],
-                                    i: _selectedIndex,
-                                    index: i,
-                                    onTap: () {
-                                      setState(() {
-                                        _selectedIndex = i;
-                                      });
+                    ),
+                    Container(
+                        height: 65,
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xffF7F7F7),
+                        ),
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _tabs.length,
+                            itemBuilder: (ctx, i) {
+                              return t.Tab(
+                                  tabs: _tabs[i],
+                                  i: _selectedIndex,
+                                  index: i,
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedIndex = i;
                                     });
-                              })),
-                      _pages.elementAt(_selectedIndex)
-                    ],
-                  )),
-              if (_selectedIndex == 3)
-                Container(
-                  margin: const EdgeInsets.all(15),
-                  child: CancelOrSave(),
+                                  });
+                            })),
+                    _pages.elementAt(_selectedIndex)
+                  ],
                 ),
+              ),
+              // if (_selectedIndex == 3)
+              //   Container(
+              //     margin: const EdgeInsets.all(15),
+              //     child: CancelOrSave(),
+              //   ),
             ],
           ),
         ),
@@ -304,7 +305,7 @@ class _EditProfileAbout extends StatelessWidget {
               ],
             ),
           ),
-          CancelOrSave(),
+          CancelOrSave(video: false),
         ],
       ),
     );

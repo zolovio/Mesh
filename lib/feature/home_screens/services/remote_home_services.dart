@@ -13,6 +13,7 @@ import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/like_post_model.dart';
 import 'package:mesh/feature/home_screens/models/like_question_model.dart';
 import 'package:mesh/feature/home_screens/models/portfolio_images_model.dart';
+import 'package:mesh/feature/home_screens/models/portfolio_videos_model.dart';
 import 'package:mesh/feature/home_screens/models/post_like_model.dart';
 import 'package:mesh/feature/home_screens/models/post_liked_by_user.dart';
 import 'package:mesh/feature/home_screens/models/post_publish_model.dart';
@@ -587,7 +588,7 @@ class RemoteHomeServices {
     }
   }
 
-  static Future uploadProfileImages(String fileId) async {
+  static Future uploadPortfolioImages(String fileId) async {
     var authData = await controller.storage.read(key: 'authTokenData');
 
     var response = await client.post(
@@ -604,15 +605,41 @@ class RemoteHomeServices {
     if (response.statusCode == 200) {
       print(response.body);
 
-      LikeQuestion likeQuestion = LikeQuestion.fromJson(jsonDecode(response.body)["data"]);
-      return likeQuestion;
+      return jsonDecode(response.body)["data"];
     } else {
       //show error message
       FlutterToast.show(message: jsonDecode(response.body)['errors'][0]['message']);
 
       await refreshToken();
 
-      return LikeQuestion();
+      return null;
+    }
+  }
+
+  static Future uploadPortfolioVideos(String fileId) async {
+    var authData = await controller.storage.read(key: 'authTokenData');
+
+    var response = await client.post(
+      Uri.parse("https://mesh.kodagu.today/items/portfolio_video"),
+      body: jsonEncode({"image": fileId}),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print(response.body);
+
+      return jsonDecode(response.body)["data"];
+    } else {
+      //show error message
+      FlutterToast.show(message: jsonDecode(response.body)['errors'][0]['message']);
+
+      await refreshToken();
+
+      return null;
     }
   }
 
@@ -636,6 +663,29 @@ class RemoteHomeServices {
       await refreshToken();
 
       return PortfolioImageModel();
+    }
+  }
+
+  static Future<PortfolioVideosModel> fetchUserPortfolioVideos() async {
+    var authData = await controller.storage.read(key: 'authTokenData');
+    var userData = await controller.storage.read(key: 'userData');
+
+    var response = await client.get(
+      Uri.parse("https://mesh.kodagu.today/items/portfolio_video?filter[user_created][_eq]=${json.decode(userData!)["data"][0]["id"]}"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      PortfolioVideosModel portfolioVideos = PortfolioVideosModel.fromJson(jsonDecode(response.body));
+      return portfolioVideos;
+    } else {
+      await refreshToken();
+
+      return PortfolioVideosModel();
     }
   }
 }

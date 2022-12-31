@@ -28,12 +28,11 @@ class Post extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (controller) {
-        print(isMyQuestions);
         if (kDebugMode) {
           // print(controller.allPostsList.length);
           // print(controller.userPostsList.length);
-          print(controller.allQuestionsList.length);
-          print(controller.userQuestionsList.length);
+          // print(controller.allQuestionsList.length);
+          // print(controller.userQuestionsList.length);
           // print(controller.postLCList.length);
           // print(controller.postLCList);
           // print(controller.quesLCList.length);

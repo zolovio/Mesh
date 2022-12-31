@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mesh/feature/home_screens/controllers/profile_controller.dart';
+import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/icon_button.dart';
 import 'package:mesh/widgets/label.dart';
 import 'package:mesh/widgets/video_player/play_video.dart';
@@ -50,7 +51,10 @@ class _PortfolioState extends State<Portfolio> {
                       },
                       child: Text(
                         _tabs[i],
-                        style: TextStyle(fontSize: 16, color: (_selectedIndex == i) ? Theme.of(context).focusColor : const Color(0xff9D9D9D)),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: (_selectedIndex == i) ? Theme.of(context).focusColor : const Color(0xff9D9D9D),
+                        ),
                       ),
                     ),
                     if (_selectedIndex == i)
@@ -62,7 +66,10 @@ class _PortfolioState extends State<Portfolio> {
                           width: 25,
                           height: 4,
                           decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
                               color: Theme.of(context).focusColor),
                         ),
                       ),
@@ -92,87 +99,100 @@ class Pictures extends StatefulWidget {
 class _PicturesState extends State<Pictures> {
   ProfileController profileController = Get.find<ProfileController>();
 
-  XFile? image;
-
   pickImageFromGallery() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = (widget.video) ? await picker.pickVideo(source: ImageSource.gallery) : await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
-        profileController.imagePath.value = XFile(pickedFile.path).path;
-        image = XFile(pickedFile.path);
+        if (widget.video) {
+          profileController.videoPath.value = XFile(pickedFile.path).path;
+        } else {
+          profileController.imagePath.value = XFile(pickedFile.path).path;
+        }
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Container(
-          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 3),
-          width: double.infinity,
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Wrap(
-                spacing: 15,
-                runSpacing: 15,
-                runAlignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                alignment: WrapAlignment.start,
-                children: [
-                  for (int i = 0; i < profileController.portfolioImagesList.length; i++)
-                    Stack(
-                      children: [
-                        (widget.video)
-                            ? VideoPlayer()
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.asset(
-                                  "assets/images/vertical-image.png",
-                                  height: 104,
-                                  width: 103,
-                                  fit: BoxFit.cover,
-                                ),
+    return Obx(
+      () => Container(
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 3),
+        width: double.infinity,
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Wrap(
+              spacing: 15,
+              runSpacing: 15,
+              runAlignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.start,
+              children: [
+                for (int i = 0; i < (widget.video ? profileController.portfolioVideosList.length : profileController.portfolioImagesList.length); i++)
+                  Stack(
+                    children: [
+                      (widget.video)
+                          ? profileController.portfolioVideosList.isEmpty
+                              ? Text("No Data found")
+                              : VideoPlayer()
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.asset(
+                                "assets/images/vertical-image.png",
+                                height: 104,
+                                width: 103,
+                                fit: BoxFit.cover,
                               ),
-                        if (widget.edit && !widget.video) CrossSymbol(onTap: () {}),
-                      ],
-                    )
-                ],
-              ),
-              if (widget.edit) const SizedBox(height: 20),
-              if (widget.edit)
-                Container(
-                  width: double.infinity,
-                  height: 51,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: const Color(0xffF7F7F7),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: GestureDetector(
-                    onTap: () => pickImageFromGallery(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset("assets/icons/plus-circle.svg"),
-                        const SizedBox(width: 10),
-                        Text(
-                          "Add Media",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff9D9D9D),
+                            ),
+                      if (widget.edit && !widget.video) CrossSymbol(onTap: () {}),
+                    ],
+                  )
+              ],
+            ),
+            if (widget.edit) const SizedBox(height: 20),
+            if (widget.edit)
+              Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 51,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xffF7F7F7),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: GestureDetector(
+                      onTap: () => pickImageFromGallery(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset("assets/icons/plus-circle.svg"),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Add Media",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xff9D9D9D),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
-        ));
+                  Container(
+                    margin: const EdgeInsets.all(15),
+                    child: CancelOrSave(video: widget.video),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -253,76 +273,84 @@ class EditSocial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 3),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: icon
-            .map(
-              (i) => Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      "assets/icons/${i.svg.toLowerCase()}.svg",
-                      width: 32,
-                      height: 32,
-                      fit: BoxFit.fill,
-                      color: const Color(0xffBBBBBB),
-                    ),
-                    SizedBox(width: (i.svg == "Twitter") ? 13 : 20),
-                    SizedBox(
-                      // height: 30,
-                      width: 280,
-                      child: TextField(
-                        controller: i.controller,
-                        style: const TextStyle(fontSize: 16, color: Color(0xff252529)),
-                        decoration: InputDecoration(
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.only(top: 12.0, bottom: 8, left: 8),
-                            child: Text("${i.svg}.com/", style: const TextStyle(fontSize: 16, color: Colors.black)),
-                          ),
-                          hintText: "Your ${i.svg}ID",
-                          labelStyle: const TextStyle(
-                            fontSize: 16,
-                            color: Color(0xff252529),
-                          ),
-                          hintStyle: const TextStyle(
-                            fontSize: 16,
-                            color: Color(0xff9D9D9D),
-                          ),
-                          contentPadding: const EdgeInsets.all(8),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color(0xffE3E3E3),
-                            ),
-                          ),
-                          disabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color(0xffE3E3E3),
-                            ),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color(0xffE3E3E3),
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: Color(0xffE3E3E3),
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: icon
+                .map(
+                  (i) => Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/${i.svg.toLowerCase()}.svg",
+                          width: 32,
+                          height: 32,
+                          fit: BoxFit.fill,
+                          color: const Color(0xffBBBBBB),
+                        ),
+                        SizedBox(width: (i.svg == "Twitter") ? 13 : 20),
+                        SizedBox(
+                          // height: 30,
+                          width: 280,
+                          child: TextField(
+                            controller: i.controller,
+                            style: const TextStyle(fontSize: 16, color: Color(0xff252529)),
+                            decoration: InputDecoration(
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.only(top: 12.0, bottom: 8, left: 8),
+                                child: Text("${i.svg}.com/", style: const TextStyle(fontSize: 16, color: Colors.black)),
+                              ),
+                              hintText: "Your ${i.svg}ID",
+                              labelStyle: const TextStyle(
+                                fontSize: 16,
+                                color: Color(0xff252529),
+                              ),
+                              hintStyle: const TextStyle(
+                                fontSize: 16,
+                                color: Color(0xff9D9D9D),
+                              ),
+                              contentPadding: const EdgeInsets.all(8),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0xffE3E3E3),
+                                ),
+                              ),
+                              disabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0xffE3E3E3),
+                                ),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0xffE3E3E3),
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color(0xffE3E3E3),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            )
-            .toList(),
-      ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.all(15),
+          child: CancelOrSave(video: false),
+        ),
+      ],
     );
   }
 }
