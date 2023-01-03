@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,21 +14,19 @@ import 'package:mesh/widgets/video_player/mock_data.dart';
 import 'package:mesh/widgets/video_player/play_video.dart';
 
 class Post extends StatelessWidget {
-  Post({
-    Key? key,
-    this.question = false,
-    this.isMyPosts = false,
-    this.isMyQuestions = false,
-  }) : super(key: key);
+  Post({Key? key, this.question = false, this.isMyPosts = false, this.isMyQuestions = false, this.isBookMarks = false, s}) : super(key: key);
 
   final bool question;
   final bool isMyPosts;
   final bool isMyQuestions;
+  final bool isBookMarks;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (controller) {
+        print(isBookMarks);
+
         if (kDebugMode) {
           // print(controller.allPostsList.length);
           // print(controller.userPostsList.length);
@@ -45,9 +44,13 @@ class Post extends StatelessWidget {
                   color: Colors.teal,
                 ),
               )
-            : (isMyPosts ? controller.userPostsList.isEmpty : controller.allPostsList.isEmpty)
+            : (isMyPosts
+                    ? controller.userPostsList.isEmpty
+                    : isBookMarks
+                        ? controller.bookmarkPostsList.isEmpty
+                        : controller.allPostsList.isEmpty)
                 ? Center(
-                    child: Text('No Post Available'),
+                    child: question ? Text('No Question available') : Text('No Post Available'),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
@@ -55,10 +58,14 @@ class Post extends StatelessWidget {
                     itemCount: (question)
                         ? isMyQuestions
                             ? controller.userQuestionsList.length
-                            : controller.allQuestionsList.length
+                            : isBookMarks
+                                ? controller.bookmarkQuesList.length
+                                : controller.allQuestionsList.length
                         : isMyPosts
                             ? controller.userPostsList.length
-                            : controller.allPostsList.length,
+                            : isBookMarks
+                                ? controller.bookmarkPostsList.length
+                                : controller.allPostsList.length,
                     itemBuilder: (ctx, i) {
                       return _Post(
                         index: i,
@@ -72,7 +79,7 @@ class Post extends StatelessWidget {
                                 dateUpdated: DateTime.now(),
                                 body: "",
                                 tags: [],
-                                file: "",
+                                media: "",
                                 type: "",
                                 userCreated: null,
                                 likesCount: '',
@@ -83,11 +90,15 @@ class Post extends StatelessWidget {
                               )
                             : isMyPosts
                                 ? controller.userPostsList[i]
-                                : controller.allPostsList[i],
+                                : isBookMarks
+                                    ? controller.bookmarkPostsList[i]
+                                    : controller.allPostsList[i],
                         questionsData: question
                             ? isMyQuestions
                                 ? controller.userQuestionsList[i]
-                                : controller.allQuestionsList[i]
+                                : isBookMarks
+                                    ? controller.bookmarkQuesList[i]
+                                    : controller.allQuestionsList[i]
                             : Question(
                                 id: '',
                                 body: '',
@@ -172,16 +183,43 @@ class _PostStatee extends State<_Post> {
                   if (!widget.question)
                     Flexible(
                       fit: FlexFit.loose,
-                      child: ClipRRect(
-                          borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
-                          child: FeedPlayer(items: mockData["items"][0])
-                          // Image.asset(
-                          //   "assets/images/video.jpg",
-                          //   width: double.infinity,
-                          //   height: 254,
-                          //   fit: BoxFit.fill,
-                          // ),
-                          ),
+                      child: widget.postdata!.type == "text"
+                          ? Container(
+                              margin: const EdgeInsets.only(left: 5, right: 5),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffF1F1F1),
+                                  border: Border.all(color: const Color(0xffE7E6E6)),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: _PostDetails(
+                                postData: widget.postdata!,
+                                questionsData: widget.questionsData,
+                                screenWidth: screenWidth,
+                                onTap: () {
+                                  setState(() {
+                                    isPressed = !isPressed;
+                                  });
+                                },
+                                onPressed: isPressed,
+                                controller: controller,
+                                index: widget.index,
+                                question: widget.question,
+                              ),
+                            )
+                          : widget.postdata!.type == "image"
+                              ? CachedNetworkImage(
+                                  placeholder: (context, url) => Center(child: const CircularProgressIndicator()),
+                                  imageUrl: 'https://picsum.photos/250?image=9',
+                                )
+                              : ClipRRect(
+                                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                                  child: FeedPlayer(items: mockData["items"][0])
+                                  // Image.asset(
+                                  //   "assets/images/video.jpg",
+                                  //   width: double.infinity,
+                                  //   height: 254,
+                                  //   fit: BoxFit.fill,
+                                  // ),
+                                  ),
                     ),
                   if (widget.question)
                     _PostDetails(
@@ -285,7 +323,7 @@ class _PostDetails extends StatelessWidget {
                                 dateUpdated: postData.dateUpdated,
                                 body: postData.body,
                                 tags: postData.tags,
-                                file: postData.file,
+                                media: postData.media,
                                 type: postData.type,
                                 likesCount: (int.parse(postData.likesCount) + 1).toString(),
                                 commentsCount: postData.commentsCount,

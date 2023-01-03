@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
+import 'package:mesh/feature/home_screens/controllers/profile_controller.dart';
 import 'package:mesh/feature/home_screens/home_tab/home_tab.dart';
 import 'package:mesh/feature/home_screens/home_tab/home_tabs/post.dart';
 import 'package:mesh/feature/home_screens/home_tab/user_tab.dart';
@@ -28,6 +29,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   bool following = false;
 
   final controller = Get.find<HomeController>();
+  ProfileController profileController = Get.put(ProfileController());
 
   showModal(BuildContext context) => showModalBottomSheet<void>(
         context: context,
@@ -62,127 +64,135 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         ? ["My Post", "My Questions", "Bookmarks", "About", "Experience", "Training", "Portfolio"]
         : ["Post", "Questions", "About", "Experience", "Training", "Portfolio"];
     return NestedScrollView(
-        controller: ScrollController(),
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              flexibleSpace: _HomeAppBar(),
-              toolbarHeight: 226,
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.white,
-              shadowColor: Colors.transparent,
-            )
-          ];
-        },
-        body: MediaQuery.removePadding(
-            removeTop: true,
-            context: context,
-            child: ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                Container(color: Colors.white, child: const _FollowerCount()),
-                Container(
+      controller: ScrollController(),
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            flexibleSpace: _HomeAppBar(),
+            toolbarHeight: 226,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            shadowColor: Colors.transparent,
+          )
+        ];
+      },
+      body: MediaQuery.removePadding(
+        removeTop: true,
+        context: context,
+        child: ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            Container(color: Colors.white, child: const _FollowerCount()),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
+              ),
+              child: Column(
+                children: [
+                  (widget.myprofile)
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomButton(
+                                margin: const EdgeInsets.all(0),
+                                padding: const EdgeInsets.all(0),
+                                borderRadius: 8,
+                                buttonText: "Edit Profile",
+                                onPressed: () {
+                                  controller.pages[3] = const UserTab();
+                                },
+                                width: 116,
+                                height: 40,
+                                textSize: 16,
+                                fontWeight: FontWeight.w600,
+                                textColor: Theme.of(context).focusColor,
+                                shadowColor: Colors.transparent,
+                                borderColor: Theme.of(context).focusColor,
+                                primaryColor: Colors.transparent),
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                              onTap: () {
+                                showModal(context);
+                              },
+                              child: const FollowButton(text: "Switch to Business", width: 176, height: 40),
+                            ),
+                          ],
+                        )
+                      : (following)
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      following = false;
+                                    });
+                                  },
+                                  child: const FollowButton(text: "Following", width: 101, height: 40),
+                                ),
+                                const SizedBox(width: 10),
+                                CustomButton(
+                                    margin: const EdgeInsets.all(0),
+                                    padding: const EdgeInsets.all(0),
+                                    borderRadius: 8,
+                                    buttonText: "Message",
+                                    onPressed: () {},
+                                    width: 101,
+                                    height: 40,
+                                    textSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    textColor: Theme.of(context).focusColor,
+                                    shadowColor: Colors.transparent,
+                                    borderColor: Theme.of(context).focusColor,
+                                    primaryColor: Colors.transparent)
+                              ],
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  following = true;
+                                });
+                              },
+                              child: const FollowButton()),
+                  const SizedBox(height: 10),
+                  Container(
+                    height: 65,
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xffF7F7F7)),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _tabs.length,
+                      itemBuilder: (ctx, i) {
+                        return Tab(
+                          tabs: _tabs[i],
+                          i: controller.userInfoScreenSelectedIndex.value,
+                          index: i,
+                          onTap: () {
+                            setState(() {
+                              controller.userInfoScreenSelectedIndex.value = i;
+                            });
+                          },
+                        );
+                      },
                     ),
-                    child: Column(
-                      children: [
-                        (widget.myprofile)
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomButton(
-                                      margin: const EdgeInsets.all(0),
-                                      padding: const EdgeInsets.all(0),
-                                      borderRadius: 8,
-                                      buttonText: "Edit Profile",
-                                      onPressed: () {
-                                        controller.pages[3] = const UserTab();
-                                      },
-                                      width: 116,
-                                      height: 40,
-                                      textSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      textColor: Theme.of(context).focusColor,
-                                      shadowColor: Colors.transparent,
-                                      borderColor: Theme.of(context).focusColor,
-                                      primaryColor: Colors.transparent),
-                                  const SizedBox(width: 10),
-                                  GestureDetector(
-                                    onTap: () {
-                                      showModal(context);
-                                    },
-                                    child: const FollowButton(text: "Switch to Business", width: 176, height: 40),
-                                  ),
-                                ],
-                              )
-                            : (following)
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            following = false;
-                                          });
-                                        },
-                                        child: const FollowButton(text: "Following", width: 101, height: 40),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      CustomButton(
-                                          margin: const EdgeInsets.all(0),
-                                          padding: const EdgeInsets.all(0),
-                                          borderRadius: 8,
-                                          buttonText: "Message",
-                                          onPressed: () {},
-                                          width: 101,
-                                          height: 40,
-                                          textSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          textColor: Theme.of(context).focusColor,
-                                          shadowColor: Colors.transparent,
-                                          borderColor: Theme.of(context).focusColor,
-                                          primaryColor: Colors.transparent)
-                                    ],
-                                  )
-                                : GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        following = true;
-                                      });
-                                    },
-                                    child: const FollowButton()),
-                        const SizedBox(height: 10),
-                        Container(
-                            height: 65,
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xffF7F7F7)),
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _tabs.length,
-                                itemBuilder: (ctx, i) {
-                                  return Tab(
-                                      tabs: _tabs[i],
-                                      i: controller.userInfoScreenSelectedIndex.value,
-                                      index: i,
-                                      onTap: () {
-                                        setState(() {
-                                          controller.userInfoScreenSelectedIndex.value = i;
-                                        });
-                                      });
-                                })),
-                        _pages.elementAt(controller.userInfoScreenSelectedIndex.value)
-                      ],
-                    ))
-              ],
-            )));
+                  ),
+                  GetBuilder<ProfileController>(builder: (controllerT) {
+                    return _pages.elementAt(controller.userInfoScreenSelectedIndex.value);
+                  }),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -201,14 +211,22 @@ class Tab extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-          decoration: BoxDecoration(color: (i == index) ? Colors.white : null, borderRadius: BorderRadius.circular(8)),
-          margin: const EdgeInsets.all(8),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 15),
-          alignment: Alignment.center,
-          child: Text(
-            _tabs,
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: (i == index) ? Theme.of(context).focusColor : const Color(0xff9D9D9D)),
-          )),
+        decoration: BoxDecoration(
+          color: (i == index) ? Colors.white : null,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 15),
+        alignment: Alignment.center,
+        child: Text(
+          _tabs,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: (i == index) ? Theme.of(context).focusColor : const Color(0xff9D9D9D),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -225,7 +243,10 @@ class _FollowerCount extends StatelessWidget {
       alignment: Alignment.center,
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(25),
+          bottomRight: Radius.circular(25),
+        ),
         boxShadow: [
           BoxShadow(
             color: Color(0xFFEEEFEF),
@@ -239,31 +260,40 @@ class _FollowerCount extends StatelessWidget {
         children: [
           Column(
             children: [
-              const Text("100", style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600)),
+              const Text(
+                "100",
+                style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               Text(
                 "Posts",
                 style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14),
-              )
+              ),
             ],
           ),
           const SizedBox(width: 15),
           Column(
             children: [
-              const Text("300", style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600)),
+              const Text(
+                "300",
+                style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               Text(
                 "Following",
                 style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14),
-              )
+              ),
             ],
           ),
           const SizedBox(width: 15),
           Column(
             children: [
-              const Text("2908", style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600)),
+              const Text(
+                "2908",
+                style: TextStyle(color: Color(0xff252529), fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               Text(
                 "Followers",
                 style: TextStyle(color: Theme.of(context).focusColor, fontSize: 14),
-              )
+              ),
             ],
           ),
         ],
@@ -271,8 +301,6 @@ class _FollowerCount extends StatelessWidget {
     );
   }
 }
-
-// _pages.elementAt(_selectedIndex)
 
 class _HomeAppBar extends StatelessWidget {
   _HomeAppBar({
@@ -283,70 +311,79 @@ class _HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          color: Color(0xffEBF9F9),
-          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Color(0xffEBF9F9),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(25),
+          bottomRight: Radius.circular(25),
         ),
-        padding: const EdgeInsets.only(top: 50, left: 20, bottom: 0),
-        child: Stack(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      ),
+      padding: const EdgeInsets.only(top: 50, left: 20, bottom: 0),
+      child: Stack(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppBarIconButton(
+                onTap: () {
+                  controller.pages[0] = const HomeTab();
+                },
+                image: "assets/images/back.png",
+                fillColor: Colors.white70,
+                green: true,
+              ),
+              const Spacer(),
+              Image.asset(
+                "assets/images/star.png",
+                height: 210,
+                width: 140,
+                fit: BoxFit.fill,
+              ),
+            ],
+          ),
+          Container(
+            alignment: Alignment.center,
+            margin: const EdgeInsets.only(top: 10),
+            child: Column(
               children: [
-                AppBarIconButton(
-                  onTap: () {
-                    controller.pages[0] = const HomeTab();
-                  },
-                  image: "assets/images/back.png",
-                  fillColor: Colors.white70,
-                  green: true,
+                GradientOvalImage(imageSize: 86, color: Theme.of(context).focusColor),
+                const SizedBox(height: 10),
+                const Text(
+                  "Bishen Ponnanna",
+                  style: TextStyle(fontSize: 20, color: Color(0xff252529), fontWeight: FontWeight.w600),
                 ),
-                const Spacer(),
-                Image.asset("assets/images/star.png", height: 210, width: 140, fit: BoxFit.fill)
+                const SizedBox(
+                  height: 10,
+                ),
+                IntrinsicHeight(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Male",
+                        style: TextStyle(fontSize: 16, color: Theme.of(context).focusColor, fontWeight: FontWeight.w600),
+                      ),
+                      const VerticalDivider(),
+                      const Text(
+                        "Age 24",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xff615858),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
               ],
             ),
-            Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(top: 10),
-              child: Column(
-                children: [
-                  GradientOvalImage(imageSize: 86, color: Theme.of(context).focusColor),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Bishen Ponnanna",
-                    style: TextStyle(fontSize: 20, color: Color(0xff252529), fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  IntrinsicHeight(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Male",
-                          style: TextStyle(fontSize: 16, color: Theme.of(context).focusColor, fontWeight: FontWeight.w600),
-                        ),
-                        const VerticalDivider(),
-                        const Text(
-                          "Age 24",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Color(0xff615858),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 2,
-                  ),
-                ],
-              ),
-            )
-          ],
-        ));
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -365,9 +402,10 @@ class TabOption extends StatelessWidget {
       width: 166,
       height: 61,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: (_selectedIndex == index) ? Colors.white : null,
-          border: Border.all(color: Theme.of(context).indicatorColor, width: (_selectedIndex == index) ? 8 : 1)),
+        borderRadius: BorderRadius.circular(10),
+        color: (_selectedIndex == index) ? Colors.white : null,
+        border: Border.all(color: Theme.of(context).indicatorColor, width: (_selectedIndex == index) ? 8 : 1),
+      ),
       child: Align(
         alignment: Alignment.center,
         child: Row(
@@ -382,7 +420,10 @@ class TabOption extends StatelessWidget {
                     unselectedWidgetColor: const Color(0xffC6C5C5),
                   ),
                   child: Radio(
-                      visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                      visualDensity: const VisualDensity(
+                        horizontal: VisualDensity.minimumDensity,
+                        vertical: VisualDensity.minimumDensity,
+                      ),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       activeColor: Theme.of(context).focusColor,
                       value: index.toString(),
@@ -392,11 +433,13 @@ class TabOption extends StatelessWidget {
                 ),
               ),
             if (radio && _selectedIndex == index) const SizedBox(width: 9),
-            Text(text,
-                style: TextStyle(
-                    color: (_selectedIndex != index) ? const Color(0xff9D9D9D) : Theme.of(context).focusColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600)),
+            Text(
+              text,
+              style: TextStyle(
+                  color: (_selectedIndex != index) ? const Color(0xff9D9D9D) : Theme.of(context).focusColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
+            ),
           ],
         ),
       ),
@@ -437,7 +480,11 @@ class _SwitchToBusinessState extends State<SwitchToBusiness> {
                     width: 280,
                     child: Text(
                       "Are you sure you want to switch to business account?",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xff252529)),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff252529),
+                      ),
                     ),
                   ),
                   GestureDetector(
@@ -476,14 +523,22 @@ class _SwitchToBusinessState extends State<SwitchToBusiness> {
                     horizontal: 18,
                   ),
                   decoration: BoxDecoration(
-                      color: (value == sortOptions[i]) ? const Color(0xffEBF9F9) : const Color(0xffF7F7F7),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: (value == sortOptions[i]) ? Colors.transparent : const Color(0xffEEEEF0))),
+                    color: (value == sortOptions[i]) ? const Color(0xffEBF9F9) : const Color(0xffF7F7F7),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: (value == sortOptions[i]) ? Colors.transparent : const Color(0xffEEEEF0),
+                    ),
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(sortOptions[i],
-                          style: TextStyle(fontSize: 18, color: (value == sortOptions[i]) ? Theme.of(context).focusColor : const Color(0xffA5A5A5))),
+                      Text(
+                        sortOptions[i],
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: (value == sortOptions[i]) ? Theme.of(context).focusColor : const Color(0xffA5A5A5),
+                        ),
+                      ),
                       // if (value == sortOptions[i])
                       //   Radio(
                       //       activeColor: Theme.of(context).focusColor,

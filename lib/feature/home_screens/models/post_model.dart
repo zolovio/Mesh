@@ -8,6 +8,19 @@ List<PostModel> PostModelFromJson(String str) => List<PostModel>.from(json.decod
 
 String PostModelToJson(List<PostModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+String? getMedia({required String mediaId, required String mediaType}) {
+  String mediaUrl;
+  if (mediaType == 'Video') {
+    ///call video api and return mediaUrl;
+    // mediaUrl= videoUrl;
+  } else if (mediaType == 'Image') {
+    ///call Image api and return mediaUrl;
+
+    // mediaUrl = imageUrl;
+  }
+  return null;
+}
+
 class PostModel {
   PostModel({
     required this.id,
@@ -18,7 +31,7 @@ class PostModel {
     required this.dateUpdated,
     required this.body,
     required this.tags,
-    required this.file,
+    required this.media,
     required this.type,
     required this.likesCount,
     required this.commentsCount,
@@ -35,7 +48,7 @@ class PostModel {
   DateTime? dateUpdated;
   String? body;
   List<String> tags;
-  dynamic file;
+  String? media;
   String type;
   String likesCount;
   String commentsCount;
@@ -52,7 +65,7 @@ class PostModel {
         dateUpdated: json["date_updated"] == null ? null : DateTime.parse(json["date_updated"]),
         body: json["body"] == null ? null : json["body"],
         tags: json["tags"] == null ? [] : List<String>.from(json["tags"].map((x) => x)),
-        file: json["file"],
+        media: json["media"],
         type: json["type"],
         likesCount: json['likescount'],
         commentsCount: json['commentscount'],
@@ -70,7 +83,7 @@ class PostModel {
         "date_updated": dateUpdated == null ? null : dateUpdated!.toIso8601String(),
         "body": body,
         "tags": List<dynamic>.from(tags.map((x) => x)),
-        "file": file,
+        "media": media,
         "type": type,
         'likescount': this.likesCount,
         'commentscount': this.commentsCount,

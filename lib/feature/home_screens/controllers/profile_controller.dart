@@ -2,12 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mesh/dependency/flutter_toast_dep.dart';
+import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/models/file_model.dart';
 import 'package:mesh/feature/home_screens/models/portfolio_images_model.dart';
 import 'package:mesh/feature/home_screens/models/portfolio_videos_model.dart';
 import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
 
 class ProfileController extends GetxController {
+  HomeController homeController = Get.find<HomeController>();
+
   var isLoading = true.obs;
   var isUploading = false.obs;
 
@@ -20,8 +23,12 @@ class ProfileController extends GetxController {
 
   @override
   void onInit() {
+    homeController.fetchUserPosts();
+    homeController.fetchUserQuestions();
+
     fetchPortfolioImages();
     fetchPortfolioVideos();
+
     super.onInit();
   }
 
@@ -155,8 +162,12 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future updateUserSocials(
-      {required String facebookURl, required String whatsAppURL, required String twitterURL, required String linkedinURL}) async {
+  Future updateUserSocials({
+    required String facebookURl,
+    required String whatsAppURL,
+    required String twitterURL,
+    required String linkedinURL,
+  }) async {
     try {
       var userSocials = await RemoteHomeServices.updateUserSocials(fbURL: "fbURL", wpURL: "wpURL", twURL: "twURL", lnURL: "lnURL");
       // print(portfolioVideos.data);

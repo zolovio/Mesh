@@ -57,6 +57,9 @@ class HomeController extends GetxController {
   var quesLCList = <String>[].obs;
   var userLikedQuesList = [].obs;
 
+  var bookmarkPostsList = <PostModel>[].obs;
+  var bookmarkQuesList = <Question>[].obs;
+
   RxString textFieldValue = "".obs;
 
   FlutterSecureStorage storage = FlutterSecureStorage();
@@ -419,5 +422,10 @@ class HomeController extends GetxController {
 
       return unlikePost.errors;
     } finally {}
+  }
+
+  Future getBookmarkedPost() async {
+    bookmarkPostsList.addAll(allPostsList.where((p0) => p0.isSavedByUser));
+    bookmarkQuesList.addAll(allQuestionsList.where((p0) => p0.isSavedByUser!));
   }
 }

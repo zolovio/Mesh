@@ -17,8 +17,8 @@ class _BookmarksState extends State<Bookmarks> {
   final controller = Get.find<HomeController>();
   final List<String> _tabs = ["Post", "Questions"];
   pages() => <Widget>[
-        Post(),
-        Post(question: true),
+        Post(isBookMarks: true),
+        Post(question: true, isBookMarks: true),
       ];
 
   @override
