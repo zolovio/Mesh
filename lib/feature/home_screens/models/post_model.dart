@@ -8,19 +8,6 @@ List<PostModel> PostModelFromJson(String str) => List<PostModel>.from(json.decod
 
 String PostModelToJson(List<PostModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-String? getMedia({required String mediaId, required String mediaType}) {
-  String mediaUrl;
-  if (mediaType == 'Video') {
-    ///call video api and return mediaUrl;
-    // mediaUrl= videoUrl;
-  } else if (mediaType == 'Image') {
-    ///call Image api and return mediaUrl;
-
-    // mediaUrl = imageUrl;
-  }
-  return null;
-}
-
 class PostModel {
   PostModel({
     required this.id,

@@ -7,10 +7,8 @@ import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/models/error_message.dart';
 import 'package:mesh/feature/home_screens/models/post_model.dart';
 import 'package:mesh/feature/home_screens/models/questions_model.dart';
-import 'package:mesh/feature/home_screens/services/remote_home_services.dart';
 import 'package:mesh/screens/user_info_screen.dart';
 import 'package:mesh/widgets/post_widget.dart';
-import 'package:mesh/widgets/video_player/mock_data.dart';
 import 'package:mesh/widgets/video_player/play_video.dart';
 
 class Post extends StatelessWidget {
@@ -154,8 +152,6 @@ class _PostStatee extends State<_Post> {
     final screenWidth = MediaQuery.of(context).size.width;
     // final screenHeight = MediaQuery.of(context).size.height;
 
-    RemoteHomeServices.fetchMediaFile(widget.postdata!.id);
-
     return Container(
       // width: screenWidth * 0.8,
       margin: const EdgeInsets.only(top: 3, bottom: 10, left: 10, right: 10),
@@ -166,80 +162,76 @@ class _PostStatee extends State<_Post> {
             elevation: 0,
             color: Colors.white,
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      controller.pages[0] = const UserInfoScreen();
-                    },
-                    child: PostTitle(
-                      user: widget.postdata?.userCreated,
-                      datecreated: widget.postdata?.dateCreated,
-                    ),
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    controller.pages[0] = const UserInfoScreen();
+                  },
+                  child: PostTitle(
+                    user: widget.postdata?.userCreated,
+                    datecreated: widget.postdata?.dateCreated,
                   ),
-                  //post image
-                  if (!widget.question)
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: widget.postdata!.type == "text"
-                          ? Container(
-                              margin: const EdgeInsets.only(left: 5, right: 5),
-                              decoration: BoxDecoration(
-                                  color: const Color(0xffF1F1F1),
-                                  border: Border.all(color: const Color(0xffE7E6E6)),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: _PostDetails(
-                                postData: widget.postdata!,
-                                questionsData: widget.questionsData,
-                                screenWidth: screenWidth,
-                                onTap: () {
-                                  setState(() {
-                                    isPressed = !isPressed;
-                                  });
-                                },
-                                onPressed: isPressed,
-                                controller: controller,
-                                index: widget.index,
-                                question: widget.question,
+                ),
+                //post image
+                if (!widget.question)
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: widget.postdata!.type == "text"
+                        ? _PostDetails(
+                            postData: widget.postdata!,
+                            questionsData: widget.questionsData,
+                            screenWidth: screenWidth,
+                            onTap: () {
+                              setState(() {
+                                isPressed = !isPressed;
+                              });
+                            },
+                            onPressed: isPressed,
+                            controller: controller,
+                            index: widget.index,
+                            question: widget.question,
+                          )
+                        : widget.postdata!.type == "image"
+                            ? CachedNetworkImage(
+                                placeholder: (context, url) => Center(child: const CircularProgressIndicator()),
+                                imageUrl: "https://mesh.kodagu.today/assets/652df895-5e19-430d-aecd-a098357f7b72",
+                                fit: BoxFit.fill,
+                                height: 254,
+                              )
+                            : ClipRRect(
+                                borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                                child: FeedPlayer(
+                                  items: {
+                                    "title": widget.postdata!.body,
+                                    "image": "https://mesh.kodagu.today/assets/652df895-5e19-430d-aecd-a098357f7b72",
+                                    "trailer_url": "https://mesh.kodagu.today/assets/652df895-5e19-430d-aecd-a098357f7b72",
+                                  },
+                                ),
                               ),
-                            )
-                          : widget.postdata!.type == "image"
-                              ? CachedNetworkImage(
-                                  placeholder: (context, url) => Center(child: const CircularProgressIndicator()),
-                                  imageUrl: 'https://picsum.photos/250?image=9',
-                                )
-                              : ClipRRect(
-                                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
-                                  child: FeedPlayer(items: mockData["items"][0])
-                                  // Image.asset(
-                                  //   "assets/images/video.jpg",
-                                  //   width: double.infinity,
-                                  //   height: 254,
-                                  //   fit: BoxFit.fill,
-                                  // ),
-                                  ),
-                    ),
-                  if (widget.question)
-                    _PostDetails(
-                      postData: widget.postdata!,
-                      questionsData: widget.questionsData,
-                      screenWidth: screenWidth,
-                      onTap: () {
-                        setState(() {
-                          isPressed = !isPressed;
-                        });
-                      },
-                      onPressed: isPressed,
-                      controller: controller,
-                      index: widget.index,
-                      question: widget.question,
-                    ),
-                ]),
+                  ),
+                if (widget.question)
+                  _PostDetails(
+                    postData: widget.postdata!,
+                    questionsData: widget.questionsData,
+                    screenWidth: screenWidth,
+                    onTap: () {
+                      setState(() {
+                        isPressed = !isPressed;
+                      });
+                    },
+                    onPressed: isPressed,
+                    controller: controller,
+                    index: widget.index,
+                    question: widget.question,
+                  ),
+              ],
+            ),
           ),
           const SizedBox(height: 15),
-          if (!widget.question)
+          if (!widget.question && widget.postdata!.type != "text")
             Container(
               margin: const EdgeInsets.only(left: 5, right: 5),
               decoration: BoxDecoration(
@@ -294,11 +286,11 @@ class _PostDetails extends StatelessWidget {
     return Column(
       children: [
         // post icons
-        (question)
+        (question || postData.type == "text")
             ? PostCaption(
                 tags: this.postData.tags,
                 screenWidth: screenWidth,
-                text: questionsData.body!,
+                text: question ? questionsData.body! : postData.body!,
               )
             : Padding(
                 padding: const EdgeInsets.only(bottom: 3, left: 13, right: 16, top: 13),
@@ -363,7 +355,7 @@ class _PostDetails extends StatelessWidget {
                   ],
                 ),
               ),
-        (question)
+        (question || postData.type == "text")
             ? Padding(
                 padding: const EdgeInsets.only(bottom: 13, left: 13, right: 16, top: 10),
                 child: Row(
@@ -396,8 +388,14 @@ class _PostDetails extends StatelessWidget {
                         }
                       },
                       child: _PostIcon(
-                        image: questionsData.isLikedByUser! ? "assets/images/post-liked.png" : "assets/images/post-unliked.png",
-                        text: questionsData.likesCount!,
+                        image: question
+                            ? questionsData.isLikedByUser!
+                                ? "assets/images/post-liked.png"
+                                : "assets/images/post-unliked.png"
+                            : postData.isLikedByUser
+                                ? "assets/images/post-liked.png"
+                                : "assets/images/post-unliked.png",
+                        text: question ? questionsData.likesCount! : postData.likesCount,
                       ),
                     ),
                     SizedBox(

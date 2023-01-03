@@ -129,31 +129,6 @@ class RemoteHomeServices {
     }
   }
 
-  static Future fetchMediaFile(String postId) async {
-    var authData = await controller.storage.read(key: 'authTokenData');
-
-    var response = await client.get(
-      Uri.parse("https://mesh.kodagu.today/assets/$postId"),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${AuthTokenModel.deserialize(authData!).accessToken}',
-      },
-    );
-
-    print(response.body);
-
-    if (response.statusCode == 200) {
-      print(response.body);
-
-      return jsonDecode(response.body);
-    } else {
-      // await refreshToken();
-
-      return null;
-    }
-  }
-
   static Future UploadFile(String filepath) async {
     var authData = await controller.storage.read(key: 'authTokenData');
 
