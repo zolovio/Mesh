@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -137,14 +138,15 @@ class _PicturesState extends State<Pictures> {
                       (widget.video)
                           ? profileController.portfolioVideosList.isEmpty
                               ? Text("No Data found")
-                              : VideoPlayer()
+                              : VideoPlayer(fileId: profileController.portfolioVideosList[i].video ?? "")
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.asset(
-                                "assets/images/vertical-image.png",
+                              child: CachedNetworkImage(
+                                placeholder: (context, url) => Center(child: const CircularProgressIndicator()),
+                                imageUrl: "https://mesh.kodagu.today/assets/${profileController.portfolioImagesList[i].image}",
                                 height: 104,
                                 width: 103,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
                               ),
                             ),
                       if (widget.edit && !widget.video) CrossSymbol(onTap: () {}),
