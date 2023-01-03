@@ -23,8 +23,6 @@ class Post extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (controller) {
-        print(isBookMarks);
-
         if (kDebugMode) {
           // print(controller.allPostsList.length);
           // print(controller.userPostsList.length);
@@ -298,7 +296,6 @@ class _PostDetails extends StatelessWidget {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () async {
-                        print(postData.isLikedByUser);
                         if (postData.isLikedByUser) {
                           List<Errors>? postUnlike = await controller.unlikeAPost(postData.id);
                           String? errorMessage = postUnlike!.first.message;

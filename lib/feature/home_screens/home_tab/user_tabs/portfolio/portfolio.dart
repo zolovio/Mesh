@@ -138,17 +138,35 @@ class _PicturesState extends State<Pictures> {
                       (widget.video)
                           ? profileController.portfolioVideosList.isEmpty
                               ? Text("No Data found")
-                              : VideoPlayer(fileId: profileController.portfolioVideosList[i].video ?? "")
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: CachedNetworkImage(
-                                placeholder: (context, url) => Center(child: const CircularProgressIndicator()),
-                                imageUrl: "https://mesh.kodagu.today/assets/${profileController.portfolioImagesList[i].image}",
-                                height: 104,
-                                width: 103,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
+                              : profileController.portfolioVideosList[i].video != null
+                                  ? VideoPlayer(fileId: profileController.portfolioVideosList[i].video ?? "")
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: SizedBox(
+                                        height: 104,
+                                        width: 103,
+                                        child: Image.asset("assets/images/noimageavailable.png"),
+                                      ),
+                                    )
+                          : profileController.portfolioImagesList[i].image != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: CachedNetworkImage(
+                                    placeholder: (context, url) => Center(child: const CircularProgressIndicator()),
+                                    imageUrl: "https://mesh.kodagu.today/assets/${profileController.portfolioImagesList[i].image}",
+                                    height: 104,
+                                    width: 103,
+                                    fit: BoxFit.fill,
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: SizedBox(
+                                    height: 104,
+                                    width: 103,
+                                    child: Image.asset("assets/images/noimageavailable.png"),
+                                  ),
+                                ),
                       if (widget.edit && !widget.video) CrossSymbol(onTap: () {}),
                     ],
                   )
