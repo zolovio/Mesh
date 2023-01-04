@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mesh/feature/home_screens/controllers/home_controller.dart';
 import 'package:mesh/feature/home_screens/home_tab/user_tabs/portfolio/portfolio.dart';
+import 'package:mesh/feature/skills/controllers/skill_controller.dart';
 import 'package:mesh/screens/user_info_screen.dart' as t;
 import 'package:mesh/widgets/button.dart';
 import 'package:mesh/widgets/gradient_oval_image.dart';
@@ -205,6 +206,8 @@ class _EditProfileAbout extends StatelessWidget {
   _EditProfileAbout({Key? key, this.exp = false}) : super(key: key);
   final bool exp;
 
+  SkillsController controller = Get.put(SkillsController());
+
   final about = TextEditingController(text: "Angela");
   final experience = TextEditingController();
   final List<String> tags = ["Videography 1 year", "Art 3 year", "Painting 2 year", "Modelling 4 year"];
@@ -218,56 +221,60 @@ class _EditProfileAbout extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-              margin: const EdgeInsets.only(left: 10, bottom: 10),
-              child: HeadingText(
-                text: (exp) ? "Experience" : "Name",
-              )),
+            margin: const EdgeInsets.only(left: 10, bottom: 10),
+            child: HeadingText(
+              text: (exp) ? "Experience" : "Name",
+            ),
+          ),
           Container(
-              // height: 30,
-              width: double.infinity,
-              padding: const EdgeInsets.only(bottom: 15),
-              child: TextField(
-                controller: (exp) ? experience : about,
-                style: const TextStyle(fontSize: 16, color: Color(0xff252529)),
-                decoration: InputDecoration(
-                  hintText: (exp) ? "Tell Us Your Exp Level" : "Enter Name",
-                  labelStyle: const TextStyle(fontSize: 16, color: Color(0xff252529)),
-                  hintStyle: const TextStyle(fontSize: 16, color: Color(0xff9D9D9D)),
-                  contentPadding: const EdgeInsets.all(8),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffE3E3E3)),
-                  ),
-                  disabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffE3E3E3)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffE3E3E3)),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xffE3E3E3)),
-                  ),
+            // height: 30,
+            width: double.infinity,
+            padding: const EdgeInsets.only(bottom: 15),
+            child: TextField(
+              controller: (exp) ? experience : about,
+              style: const TextStyle(fontSize: 16, color: Color(0xff252529)),
+              decoration: InputDecoration(
+                hintText: (exp) ? "Tell Us Your Exp Level" : "Enter Name",
+                labelStyle: const TextStyle(fontSize: 16, color: Color(0xff252529)),
+                hintStyle: const TextStyle(fontSize: 16, color: Color(0xff9D9D9D)),
+                contentPadding: const EdgeInsets.all(8),
+                enabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xffE3E3E3)),
                 ),
-              )),
+                disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xffE3E3E3)),
+                ),
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xffE3E3E3)),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Color(0xffE3E3E3)),
+                ),
+              ),
+            ),
+          ),
           Container(
-              margin: const EdgeInsets.only(left: 10, bottom: 10),
-              child: const HeadingText(
-                text: "Skills",
-              )),
+            margin: const EdgeInsets.only(left: 10, bottom: 10),
+            child: const HeadingText(
+              text: "Skills",
+            ),
+          ),
           Container(
             width: double.infinity,
             margin: const EdgeInsets.symmetric(vertical: 20),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-                border: Border.all(
-                  color: const Color(0xffE3E3E3),
-                ),
-                borderRadius: BorderRadius.circular(10)),
+              border: Border.all(
+                color: const Color(0xffE3E3E3),
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Wrap(
               spacing: 15,
               runSpacing: 10,
               children: [
-                for (String tag in tags)
+                for (var tag in controller.skillsList)
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 15,
@@ -278,7 +285,7 @@ class _EditProfileAbout extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      tag,
+                      tag.title!,
                       style: TextStyle(
                         color: Theme.of(context).focusColor,
                         fontSize: 16,

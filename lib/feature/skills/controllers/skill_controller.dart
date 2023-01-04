@@ -25,6 +25,7 @@ class SkillsController extends GetxController {
       var activeskills = await RemoteServices.fetchactiveskills();
       // print('active skills: ${activeskills.id}');
       if (activeskills != null) {
+        skillsList.clear();
         for (var skill in activeskills['data']) {
           skillsList.add(ActiveSkillsModel.fromJson(skill));
         }
@@ -48,8 +49,7 @@ class SkillsController extends GetxController {
     print(selectedskills);
     try {
       isSaving(true);
-      var res = await RemoteServices.updateactiveskills(
-          skillids: selectedskills, uid: userid);
+      var res = await RemoteServices.updateactiveskills(skillids: selectedskills, uid: userid);
       if (res != null) {
         navigatorKey.currentState?.pushNamed(AppRouter.prepareScreen);
       }
