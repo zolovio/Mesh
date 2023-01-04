@@ -260,32 +260,63 @@ class _EditProfileAbout extends StatelessWidget {
               text: "Skills",
             ),
           ),
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(vertical: 20),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: const Color(0xffE3E3E3),
+          Obx(
+            () => Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xffE3E3E3)),
+                borderRadius: BorderRadius.circular(10),
               ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Wrap(
-              spacing: 15,
-              runSpacing: 10,
-              children: [
-                for (var tag in controller.skillsList)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 9,
+              child: Wrap(
+                spacing: 15,
+                runSpacing: 10,
+                children: [
+                  for (var tag in controller.skillsList)
+                    GestureDetector(
+                      onTap: () {
+                        controller.skillsList.remove(tag);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 9,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffE7F8F8),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              tag.title!,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: Theme.of(context).focusColor,
+                              ),
+                            ),
+                            const SizedBox(width: 3),
+                            Icon(
+                              Icons.close,
+                              color: Theme.of(context).focusColor,
+                              size: 12,
+                            )
+                          ],
+                        ),
+                      ),
                     ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
                     decoration: BoxDecoration(
-                      color: const Color(0xffE7F8F8),
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xffE7E6E6)),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      tag.title!,
+                      "Add tag",
                       style: TextStyle(
                         color: Theme.of(context).focusColor,
                         fontSize: 16,
@@ -293,23 +324,8 @@ class _EditProfileAbout extends StatelessWidget {
                       ),
                     ),
                   ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: const Color(0xffE7E6E6)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    "Add tag",
-                    style: TextStyle(
-                      color: Theme.of(context).focusColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           CancelOrSave(

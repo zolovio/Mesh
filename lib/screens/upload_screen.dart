@@ -231,13 +231,26 @@ class _PostQuesState extends State<PostQues> {
                       tag.clear();
                       setState(() {});
                     },
-                    style: const TextStyle(fontSize: 14, color: Color(0xff252529)),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xff252529),
+                    ),
                     decoration: const InputDecoration(
                         hintText: "Type Tag to Enter",
-                        labelStyle: TextStyle(fontSize: 14, color: Color(0xff252529)),
-                        hintStyle: TextStyle(fontSize: 14, color: Color(0xff9D9D9D)),
+                        labelStyle: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xff252529),
+                        ),
+                        hintStyle: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xff9D9D9D),
+                        ),
                         contentPadding: EdgeInsets.all(0),
-                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xffDCDBE0))),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffDCDBE0),
+                          ),
+                        ),
                         border: InputBorder.none),
                   ),
                 ),
@@ -246,7 +259,10 @@ class _PostQuesState extends State<PostQues> {
                   // height: 61,
                   width: double.infinity,
                   // margin: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xffF7F7F7)),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xffF7F7F7),
+                  ),
                   child: Wrap(
                     runSpacing: 0,
                     spacing: 0,

@@ -76,7 +76,7 @@ class CancelOrSave extends StatelessWidget {
       children: [
         CustomButton(
           buttonText: "Cancel",
-          onPressed: () {},
+          onPressed: () => Get.back(),
           margin: const EdgeInsets.only(top: 10, bottom: 20),
           borderColor: Theme.of(context).focusColor,
           primaryColor: Colors.transparent,

@@ -20,8 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    controller.fetchAllPosts();
-    controller.fetchAllQuestions();
+    refreshAuthToken();
+    // controller.fetchAllPosts();
+    // controller.fetchAllQuestions();
     super.initState();
   }
 
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
       controller.fetchAllQuestions();
     } else {
       print(refreshToken["errors"]);
+      Get.offAndToNamed(AppRouter.loginScreen);
     }
   }
 
